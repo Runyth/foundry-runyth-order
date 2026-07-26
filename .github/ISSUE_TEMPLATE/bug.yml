@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible Runyth Rules Core defect.
+title: "Bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach credentials, private world exports, paid module source, or sensitive player data.
+  - type: input
+    id: core-version
+    attributes:
+      label: Runyth Rules Core version
+    validations:
+      required: true
+  - type: input
+    id: foundry-version
+    attributes:
+      label: Foundry VTT version
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Game system and version
+    validations:
+      required: true
+  - type: textarea
+    id: providers
+    attributes:
+      label: Complementary providers and versions
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result and relevant console output
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Reviewed Rules Hub diagnostics JSON

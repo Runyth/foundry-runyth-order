@@ -1,0 +1,32 @@
+name: Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+      - name: Run complete quality gate
+        run: npm run check
+      - name: Upload deterministic artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: runyth-rules-core-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error

@@ -1,0 +1,241 @@
+<div class="rrc-shell" data-busy="{{busy}}">
+  <header class="rrc-header">
+    <div>
+      <p class="rrc-eyebrow">RUNYTH</p>
+      <h1>{{localize "RRC.Title"}}</h1>
+      <p>{{localize "RRC.Hub.Subtitle"}}</p>
+    </div>
+    <div class="rrc-header-actions">
+      <button type="button" data-action="refresh" title="{{localize 'RRC.Actions.Refresh'}}">
+        <i class="fa-solid fa-arrows-rotate"></i>
+        <span>{{localize "RRC.Actions.Refresh"}}</span>
+      </button>
+      <button type="button" data-action="reset-position" title="{{localize 'RRC.Actions.ResetPosition'}}">
+        <i class="fa-solid fa-window-restore"></i>
+        <span>{{localize "RRC.Actions.ResetPosition"}}</span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="rrc-tabs" aria-label="{{localize 'RRC.Hub.Navigation'}}">
+    <button type="button" data-tab="overview" class="{{#if tabs.overview}}active{{/if}}">
+      <i class="fa-solid fa-gauge-high"></i> {{localize "RRC.Tabs.Overview"}}
+    </button>
+    <button type="button" data-tab="providers" class="{{#if tabs.providers}}active{{/if}}">
+      <i class="fa-solid fa-puzzle-piece"></i> {{localize "RRC.Tabs.Providers"}}
+      <span class="rrc-count">{{providerCount}}</span>
+    </button>
+    <button type="button" data-tab="packs" class="{{#if tabs.packs}}active{{/if}}">
+      <i class="fa-solid fa-box-archive"></i> {{localize "RRC.Tabs.Packs"}}
+      <span class="rrc-count">{{packCount}}</span>
+    </button>
+    <button type="button" data-tab="audit" class="{{#if tabs.audit}}active{{/if}}">
+      <i class="fa-solid fa-user-check"></i> {{localize "RRC.Tabs.Audit"}}
+    </button>
+    <button type="button" data-tab="diagnostics" class="{{#if tabs.diagnostics}}active{{/if}}">
+      <i class="fa-solid fa-stethoscope"></i> {{localize "RRC.Tabs.Diagnostics"}}
+    </button>
+  </nav>
+
+  <main class="rrc-content">
+    {{#if busy}}
+      <div class="rrc-busy" role="status">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        {{localize "RRC.Hub.Working"}}
+      </div>
+    {{/if}}
+
+    {{#if tabs.overview}}
+      <section class="rrc-panel">
+        <div class="rrc-stat-grid">
+          <article><strong>{{providerCount}}</strong><span>{{localize "RRC.Stats.Providers"}}</span></article>
+          <article><strong>{{packCount}}</strong><span>{{localize "RRC.Stats.Packs"}}</span></article>
+          <article><strong>{{validatorCount}}</strong><span>{{localize "RRC.Stats.Validators"}}</span></article>
+          <article><strong>{{pendingMigrationCount}}</strong><span>{{localize "RRC.Stats.PendingMigrations"}}</span></article>
+        </div>
+
+        <div class="rrc-callout">
+          <i class="fa-solid fa-shield-halved"></i>
+          <div>
+            <h2>{{localize "RRC.Overview.BoundaryTitle"}}</h2>
+            <p>{{localize "RRC.Overview.BoundaryBody"}}</p>
+          </div>
+        </div>
+
+        <div class="rrc-two-column">
+          <article>
+            <h2>{{localize "RRC.Overview.Capabilities"}}</h2>
+            <div class="rrc-capability-grid">
+              {{#each capabilities}}
+                <div class="rrc-capability {{#if available}}available{{/if}}">
+                  <i class="fa-solid {{#if available}}fa-circle-check{{else}}fa-circle-minus{{/if}}"></i>
+                  <code>{{id}}</code>
+                </div>
+              {{/each}}
+            </div>
+          </article>
+          <article>
+            <h2>{{localize "RRC.Overview.Runtime"}}</h2>
+            <dl class="rrc-definition-list">
+              <dt>{{localize "RRC.Overview.ApiVersion"}}</dt><dd>{{apiVersion}}</dd>
+              <dt>{{localize "RRC.Overview.SchemaVersion"}}</dt><dd>{{dataSchemaVersion}}</dd>
+              <dt>{{localize "RRC.Overview.RegisteredMigrations"}}</dt><dd>{{migrationCount}}</dd>
+            </dl>
+          </article>
+        </div>
+      </section>
+    {{/if}}
+
+    {{#if tabs.providers}}
+      <section class="rrc-panel">
+        <h2>{{localize "RRC.Providers.Title"}}</h2>
+        <p>{{localize "RRC.Providers.Help"}}</p>
+        {{#if providerRows.length}}
+          <div class="rrc-card-list">
+            {{#each providerRows}}
+              <article class="rrc-card">
+                <header>
+                  <div>
+                    <h3>{{title}}</h3>
+                    <code>{{id}}</code>
+                  </div>
+                  <span class="rrc-version">v{{version}}</span>
+                </header>
+                {{#if description}}<p>{{description}}</p>{{/if}}
+                <dl class="rrc-definition-list compact">
+                  <dt>{{localize "RRC.Providers.Module"}}</dt><dd><code>{{moduleId}}</code></dd>
+                  <dt>{{localize "RRC.Providers.Systems"}}</dt><dd>{{systemSummary}}</dd>
+                  <dt>{{localize "RRC.Providers.Capabilities"}}</dt><dd>{{capabilitySummary}}</dd>
+                  <dt>{{localize "RRC.Providers.Contributions"}}</dt>
+                  <dd>{{packCount}} {{localize "RRC.Stats.Packs"}}, {{validatorCount}} {{localize "RRC.Stats.Validators"}}, {{migrationCount}} {{localize "RRC.Providers.Migrations"}}</dd>
+                </dl>
+              </article>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="rrc-empty">{{localize "RRC.Providers.Empty"}}</div>
+        {{/if}}
+      </section>
+    {{/if}}
+
+    {{#if tabs.packs}}
+      <section class="rrc-panel">
+        <h2>{{localize "RRC.Packs.Title"}}</h2>
+        <p>{{localize "RRC.Packs.Help"}}</p>
+        {{#if packRows.length}}
+          <div class="rrc-card-list">
+            {{#each packRows}}
+              <article class="rrc-card">
+                <header>
+                  <div><h3>{{title}}</h3><code>{{id}}</code></div>
+                  {{#if version}}<span class="rrc-version">v{{version}}</span>{{/if}}
+                </header>
+                {{#if description}}<p>{{description}}</p>{{/if}}
+                <dl class="rrc-definition-list compact">
+                  <dt>{{localize "RRC.Packs.Provider"}}</dt><dd><code>{{providerId}}</code></dd>
+                  <dt>{{localize "RRC.Packs.Kinds"}}</dt><dd>{{kindSummary}}</dd>
+                  <dt>{{localize "RRC.Packs.Compendia"}}</dt><dd>{{compendiumSummary}}</dd>
+                  <dt>{{localize "RRC.Packs.Entries"}}</dt><dd>{{entryCount}}</dd>
+                </dl>
+              </article>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="rrc-empty">{{localize "RRC.Packs.Empty"}}</div>
+        {{/if}}
+      </section>
+    {{/if}}
+
+    {{#if tabs.audit}}
+      <section class="rrc-panel">
+        <h2>{{localize "RRC.Audit.Title"}}</h2>
+        <p>{{localize "RRC.Audit.Help"}}</p>
+        {{#if actor}}
+          <div class="rrc-actor-row">
+            <img src="{{actor.img}}" alt="" />
+            <div><strong>{{actor.name}}</strong><code>{{actor.uuid}}</code></div>
+            <button type="button" data-action="audit" {{#unless actor.mayAudit}}disabled{{/unless}}>
+              <i class="fa-solid fa-magnifying-glass-chart"></i>
+              {{localize "RRC.Actions.AuditActor"}}
+            </button>
+          </div>
+        {{else}}
+          <div class="rrc-empty">{{localize "RRC.Audit.NoActor"}}</div>
+        {{/if}}
+
+        {{#if auditReport}}
+          <div class="rrc-result-summary">
+            <span class="danger">{{auditReport.counts.error}} {{localize "RRC.Severity.Errors"}}</span>
+            <span class="warning">{{auditReport.counts.warning}} {{localize "RRC.Severity.Warnings"}}</span>
+            <span class="info">{{auditReport.counts.info}} {{localize "RRC.Severity.Info"}}</span>
+          </div>
+          {{#if auditReport.issues.length}}
+            <div class="rrc-findings">
+              {{#each auditReport.issues}}
+                <article class="rrc-finding {{cssClass}}">
+                  <header><strong>{{title}}</strong><code>{{providerId}} · {{code}}</code></header>
+                  <p>{{message}}</p>
+                  {{#if remediation}}<p class="rrc-remediation"><i class="fa-solid fa-screwdriver-wrench"></i> {{remediation}}</p>{{/if}}
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <div class="rrc-success"><i class="fa-solid fa-circle-check"></i> {{localize "RRC.Audit.Clean"}}</div>
+          {{/if}}
+        {{/if}}
+      </section>
+    {{/if}}
+
+    {{#if tabs.diagnostics}}
+      <section class="rrc-panel">
+        <div class="rrc-section-heading">
+          <div><h2>{{localize "RRC.Diagnostics.Title"}}</h2><p>{{localize "RRC.Diagnostics.Help"}}</p></div>
+          <div class="rrc-button-group">
+            <button type="button" data-action="diagnostics" data-deep="false">
+              <i class="fa-solid fa-stethoscope"></i> {{localize "RRC.Actions.RunDiagnostics"}}
+            </button>
+            <button type="button" data-action="diagnostics" data-deep="true">
+              <i class="fa-solid fa-microscope"></i> {{localize "RRC.Actions.RunDeepDiagnostics"}}
+            </button>
+          </div>
+        </div>
+
+        {{#if pendingMigrations.length}}
+          <div class="rrc-callout warning">
+            <i class="fa-solid fa-database"></i>
+            <div>
+              <h3>{{localize "RRC.Migrations.PendingTitle"}}</h3>
+              <p><strong>{{pendingMigrationCount}}</strong> {{localize "RRC.Migrations.PendingBody"}}</p>
+              {{#if isGM}}
+                <button type="button" data-action="run-migrations">
+                  <i class="fa-solid fa-play"></i> {{localize "RRC.Actions.RunMigrations"}}
+                </button>
+              {{/if}}
+            </div>
+          </div>
+        {{/if}}
+
+        {{#if diagnosticsReport}}
+          <div class="rrc-result-summary">
+            <span class="danger">{{diagnosticsReport.counts.error}} {{localize "RRC.Severity.Errors"}}</span>
+            <span class="warning">{{diagnosticsReport.counts.warning}} {{localize "RRC.Severity.Warnings"}}</span>
+            <span class="info">{{diagnosticsReport.counts.info}} {{localize "RRC.Severity.Info"}}</span>
+            <button type="button" data-action="copy-diagnostics"><i class="fa-solid fa-copy"></i> {{localize "RRC.Actions.CopyJson"}}</button>
+          </div>
+          {{#if diagnosticsReport.findings.length}}
+            <div class="rrc-findings">
+              {{#each diagnosticsReport.findings}}
+                <article class="rrc-finding {{cssClass}}">
+                  <header><strong>{{code}}</strong>{{#if providerId}}<code>{{providerId}}{{#if packId}} · {{packId}}{{/if}}</code>{{/if}}</header>
+                  <p>{{message}}</p>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <div class="rrc-success"><i class="fa-solid fa-circle-check"></i> {{localize "RRC.Diagnostics.Clean"}}</div>
+          {{/if}}
+        {{/if}}
+      </section>
+    {{/if}}
+  </main>
+</div>

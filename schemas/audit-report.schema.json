@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runyth.github.io/schemas/runyth-rules-core/audit-report-v1.json",
+  "title": "Runyth Rules Core Actor audit report",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "actor",
+    "counts",
+    "issues"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "uuid",
+        "name"
+      ],
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "properties": {
+        "info": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warning": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "error": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "providerId",
+          "severity",
+          "code",
+          "title",
+          "message"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "remediation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "documentUuid": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

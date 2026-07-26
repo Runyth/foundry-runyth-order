@@ -1,0 +1,25 @@
+{
+  "name": "runyth-rules-core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runyth's thin Foundry VTT gateway for modular homebrew providers.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0 <27"
+  },
+  "scripts": {
+    "format": "node tools/format.mjs --write",
+    "format:check": "node tools/format.mjs --check",
+    "lint": "node tools/lint.mjs",
+    "test": "node --test test/*.test.mjs",
+    "validate": "node tools/validate.mjs",
+    "check": "npm run format:check && npm run lint && npm test && npm run validate && npm run build && npm run verify:release",
+    "build": "node tools/build.mjs",
+    "verify:release": "node tools/verify-release.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Runyth/runyth-rules-core.git"
+  },
+  "license": "AGPL-3.0-or-later"
+}

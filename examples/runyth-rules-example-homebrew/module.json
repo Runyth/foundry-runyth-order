@@ -1,0 +1,36 @@
+{
+  "id": "runyth-rules-example-homebrew",
+  "title": "Runyth Rules Example Homebrew",
+  "description": "Reference complementary provider for Runyth Rules Core. Development example only.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13.341",
+    "verified": "13.351",
+    "maximum": "13.351"
+  },
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.3.3",
+          "maximum": "5.3.3"
+        }
+      }
+    ],
+    "requires": [
+      {
+        "id": "runyth-rules-core",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.0.0",
+          "maximum": "1.0.0"
+        }
+      }
+    ]
+  }
+}
