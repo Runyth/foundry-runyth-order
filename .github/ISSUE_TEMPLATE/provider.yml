@@ -1,0 +1,38 @@
+name: Provider integration issue
+description: Report a provider registration, schema, capability, audit, or migration problem.
+title: "Provider: "
+labels:
+  - integration
+body:
+  - type: input
+    id: provider-id
+    attributes:
+      label: Provider ID and version
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Contract area
+      options:
+        - Registration
+        - Content pack
+        - Capability
+        - Actor validator
+        - Source metadata
+        - Migration
+        - Diagnostics
+    validations:
+      required: true
+  - type: textarea
+    id: descriptor
+    attributes:
+      label: Minimal sanitized descriptor or code excerpt
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Exact error and diagnostics finding
+    validations:
+      required: true

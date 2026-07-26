@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runyth.github.io/schemas/runyth-rules-core/source-descriptor-v1.json",
+  "title": "Runyth Rules Core managed source",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "providerId",
+    "packId",
+    "entryId",
+    "sourceUuid",
+    "contentVersion",
+    "checksum",
+    "importedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "providerId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "packId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+$"
+    },
+    "entryId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceUuid": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contentVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "checksum": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "importedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
