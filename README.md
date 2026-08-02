@@ -126,6 +126,8 @@ See:
 
 A manifest range is not a substitute for live testing. Complete [the manual test checklist](docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
 
+Version 1.0.1 uses Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Rules Core API remains 1.0.0.
+
 ## Installation
 
 The install ZIP contains exactly one non-versioned root folder:
@@ -155,10 +157,10 @@ npm run check
 
 Build output is written to `dist/`:
 
-- `runyth-rules-core-v1.0.0.zip`
-- `runyth-rules-core-source-v1.0.0.zip`
-- `runyth-rules-core-v1.0.0-SHA256SUMS.txt`
-- `runyth-rules-core-v1.0.0-build-report.json`
+- `runyth-rules-core-v1.0.1.zip`
+- `runyth-rules-core-source-v1.0.1.zip`
+- `runyth-rules-core-v1.0.1-SHA256SUMS.txt`
+- `runyth-rules-core-v1.0.1-build-report.json`
 
 ## Licence
 

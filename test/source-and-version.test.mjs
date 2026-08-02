@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { normalizeSourceDescriptor, readSource, tagDocument } from "../src/core/source-flags.mjs";
-import { compareVersions, parseVersion, versionInRange } from "../src/util/versions.mjs";
+import { compareVersions, normalizeCompatibility, parseVersion, versionInRange, versionSeries } from "../src/util/versions.mjs";
 
 test("parses and compares Foundry-style numeric versions", () => {
   assert.deepEqual(parseVersion("v13.351"), [13, 351, 0]);
   assert.equal(compareVersions("5.3.3", "5.3.2"), 1);
   assert.equal(versionInRange("5.3.3", { minimum: "5.3.3", maximum: "5.3.3" }), true);
   assert.equal(versionInRange("5.4.0", { maximum: "5.3.3" }), false);
+  assert.equal(versionInRange("5.3.3", { maximum: "invalid" }), false);
+  assert.equal(versionSeries("1.0.1"), "1.0");
+  assert.throws(() => normalizeCompatibility({ minimum: "2.0.0", maximum: "1.0.0" }), /minimum/u);
 });
 
 test("normalizes namespaced source metadata", () => {

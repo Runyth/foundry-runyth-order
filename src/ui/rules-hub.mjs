@@ -1,12 +1,22 @@
 import { MODULE_ID, MODULE_TITLE, SETTINGS, STANDARD_CAPABILITIES } from "../constants.mjs";
 import { mayAuditActor } from "../settings.mjs";
+import { HUB_POSITION_DEFAULTS, sanitizeHubPosition } from "./window-position.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
-function selectedActor() {
+function actorSelection() {
   const controlled = canvas?.tokens?.controlled ?? [];
-  if (controlled.length === 1) return controlled[0].actor ?? null;
-  return game.user?.character ?? null;
+  const actors = [
+    ...new Map(
+      controlled
+        .map((token) => token.actor)
+        .filter(Boolean)
+        .map((actor) => [actor.uuid, actor]),
+    ).values(),
+  ];
+  if (actors.length === 1) return { actor: actors[0], reason: null };
+  if (actors.length > 1) return { actor: null, reason: "multiple" };
+  return { actor: game.user?.character ?? null, reason: null };
 }
 
 function severityClass(severity) {
@@ -29,10 +39,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       icon: "fa-solid fa-diagram-project",
       resizable: true,
     },
-    position: {
-      width: 920,
-      height: 720,
-    },
+    position: HUB_POSITION_DEFAULTS,
   };
 
   static PARTS = {
@@ -42,7 +49,9 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   constructor(options = {}) {
-    super(options);
+    const stored = game.settings.get(MODULE_ID, SETTINGS.HUB_POSITION) ?? {};
+    const position = sanitizeHubPosition({ ...stored, ...(options.position ?? {}) });
+    super({ ...options, position });
     this.api = game.modules.get(MODULE_ID)?.api ?? null;
     this.activeTab = options.activeTab ?? game.settings.get(MODULE_ID, SETTINGS.HUB_TAB) ?? "overview";
     this.auditReport = null;
@@ -58,7 +67,8 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       validators: [],
       migrations: [],
     };
-    const actor = selectedActor();
+    const selection = actorSelection();
+    const actor = selection.actor;
     const pendingMigrations = this.api ? await this.api.listPendingMigrations() : [];
     const providerRows = snapshot.providers.map((provider) => ({
       ...provider,
@@ -76,6 +86,10 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       compendiumSummary: pack.compendia.join(", ") || "—",
       entryCount: pack.entries.length,
     }));
+    const visibleAuditReport =
+      !this.auditReport || !actor || this.auditReport.actor.uuid === actor.uuid
+        ? this.auditReport
+        : null;
 
     return {
       moduleId: MODULE_ID,
@@ -103,6 +117,10 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       migrationCount: snapshot.migrations.length,
       pendingMigrationCount: pendingMigrations.length,
       pendingMigrations,
+      actorSelectionMessage:
+        selection.reason === "multiple"
+          ? game.i18n.localize("RRC.Audit.MultipleActors")
+          : game.i18n.localize("RRC.Audit.NoActor"),
       actor: actor
         ? {
             id: actor.id,
@@ -110,12 +128,13 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
             name: actor.name,
             img: actor.img,
             mayAudit: mayAuditActor(actor),
+            auditDisabled: this.busy || !mayAuditActor(actor),
           }
         : null,
-      auditReport: this.auditReport
+      auditReport: visibleAuditReport
         ? {
-            ...this.auditReport,
-            issues: this.auditReport.issues.map((issue) => ({
+            ...visibleAuditReport,
+            issues: visibleAuditReport.issues.map((issue) => ({
               ...issue,
               cssClass: severityClass(issue.severity),
             })),
@@ -141,33 +160,28 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     for (const tab of root.querySelectorAll("[data-tab]")) {
       tab.addEventListener("click", async (event) => {
         event.preventDefault();
+        if (this.busy) return;
         this.activeTab = event.currentTarget.dataset.tab;
         await game.settings.set(MODULE_ID, SETTINGS.HUB_TAB, this.activeTab);
-        await this.render({ force: true });
+        await this.render();
       });
     }
 
-    root.querySelector('[data-action="refresh"]')?.addEventListener("click", () =>
-      this.render({ force: true }),
-    );
-    root.querySelector('[data-action="audit"]')?.addEventListener("click", () => this.#runAudit());
+    root.querySelector('[data-action="refresh"]')?.addEventListener("click", () => {
+      if (!this.busy) void this.render();
+    });
+    root.querySelector('[data-action="audit"]')?.addEventListener("click", () => void this.#runAudit());
     root
       .querySelector('[data-action="diagnostics"]')
-      ?.addEventListener("click", (event) => this.#runDiagnostics(event.currentTarget.dataset.deep === "true"));
+      ?.addEventListener("click", (event) => void this.#runDiagnostics(event.currentTarget.dataset.deep === "true"));
     root
       .querySelector('[data-action="copy-diagnostics"]')
-      ?.addEventListener("click", () => this.#copyDiagnostics());
+      ?.addEventListener("click", () => void this.#copyDiagnostics());
     root
       .querySelector('[data-action="run-migrations"]')
-      ?.addEventListener("click", () => this.#runMigrations());
+      ?.addEventListener("click", () => void this.#runMigrations());
     root.querySelector('[data-action="reset-position"]')?.addEventListener("click", () => {
-      game.settings.set(MODULE_ID, SETTINGS.HUB_POSITION, {});
-      this.setPosition({
-        left: Math.max(0, Math.round((window.innerWidth - 920) / 2)),
-        top: Math.max(0, Math.round((window.innerHeight - 720) / 2)),
-        width: 920,
-        height: 720,
-      });
+      void this.#resetPosition();
     });
   }
 
@@ -176,19 +190,43 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!this.rendered) return;
     clearTimeout(this.positionSaveTimer);
     this.positionSaveTimer = setTimeout(() => {
-      game.settings.set(MODULE_ID, SETTINGS.HUB_POSITION, {
-        left: position.left,
-        top: position.top,
-        width: position.width,
-        height: position.height,
-      });
+      const safePosition = sanitizeHubPosition(position);
+      void game.settings
+        .set(MODULE_ID, SETTINGS.HUB_POSITION, safePosition)
+        .catch((error) => console.warn(`${MODULE_TITLE} | Could not save Rules Hub position`, error));
     }, 200);
   }
 
+  _onClose(options) {
+    clearTimeout(this.positionSaveTimer);
+    this.positionSaveTimer = null;
+    return super._onClose(options);
+  }
+
+  async #renderIfOpen() {
+    if (!this.rendered) return;
+    await this.render();
+  }
+
+  async #resetPosition() {
+    if (this.busy) return;
+    try {
+      const position = sanitizeHubPosition({});
+      await game.settings.set(MODULE_ID, SETTINGS.HUB_POSITION, {});
+      this.setPosition(position);
+    } catch (error) {
+      notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
+    }
+  }
+
   async #runAudit() {
-    const actor = selectedActor();
+    if (this.busy) return;
+    const { actor, reason } = actorSelection();
     if (!actor) {
-      notification("warn", game.i18n.localize("RRC.Notifications.SelectActor"));
+      notification(
+        "warn",
+        game.i18n.localize(reason === "multiple" ? "RRC.Notifications.SelectOneActor" : "RRC.Notifications.SelectActor"),
+      );
       return;
     }
     if (!mayAuditActor(actor)) {
@@ -197,7 +235,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     this.busy = true;
-    await this.render({ force: true });
+    await this.#renderIfOpen();
     try {
       this.auditReport = await this.api.auditActor(actor);
       this.activeTab = "audit";
@@ -206,13 +244,14 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
     } finally {
       this.busy = false;
-      await this.render({ force: true });
+      await this.#renderIfOpen();
     }
   }
 
   async #runDiagnostics(deep) {
+    if (this.busy) return;
     this.busy = true;
-    await this.render({ force: true });
+    await this.#renderIfOpen();
     try {
       this.diagnosticsReport = await this.api.runDiagnostics({ deep });
       this.activeTab = "diagnostics";
@@ -221,13 +260,16 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
     } finally {
       this.busy = false;
-      await this.render({ force: true });
+      await this.#renderIfOpen();
     }
   }
 
   async #copyDiagnostics() {
-    if (!this.diagnosticsReport) return;
+    if (!this.diagnosticsReport || this.busy) return;
     try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error(game.i18n.localize("RRC.Notifications.ClipboardUnavailable"));
+      }
       await navigator.clipboard.writeText(JSON.stringify(this.diagnosticsReport, null, 2));
       notification("info", game.i18n.localize("RRC.Notifications.DiagnosticsCopied"));
     } catch (error) {
@@ -236,7 +278,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async #runMigrations() {
-    if (!game.user?.isGM) return;
+    if (!game.user?.isGM || this.busy) return;
     const pending = await this.api.listPendingMigrations();
     if (!pending.length) {
       notification("info", game.i18n.localize("RRC.Notifications.NoMigrations"));
@@ -249,10 +291,10 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       modal: true,
       rejectClose: false,
     });
-    if (!confirmed) return;
+    if (!confirmed || !this.rendered) return;
 
     this.busy = true;
-    await this.render({ force: true });
+    await this.#renderIfOpen();
     try {
       await this.api.runPendingMigrations();
       this.diagnosticsReport = await this.api.runDiagnostics();
@@ -262,7 +304,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
     } finally {
       this.busy = false;
-      await this.render({ force: true });
+      await this.#renderIfOpen();
     }
   }
 }

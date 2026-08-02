@@ -11,7 +11,7 @@ The executable registration object contains descriptors plus optional handler fu
 | `title` | Yes | Human-readable provider title. |
 | `description` | No | Concise scope description. |
 | `version` | No | Provider version; defaults to active module version. |
-| `coreApi` | Yes in practice | Supported core API minimum/verified/maximum. |
+| `coreApi` | Yes | Supported core API minimum/verified/maximum. |
 | `systems` | No | Supported game-system IDs and version ranges. Empty means system-neutral. |
 | `dependencies` | No | Required or optional Foundry module dependencies. |
 | `capabilities` | No | Standard capabilities or provider-namespaced custom capabilities. |
@@ -42,7 +42,7 @@ IDs are permanent database keys, not display labels. Do not rename them merely t
 }
 ```
 
-All fields are optional individually. Providers should normally specify minimum and maximum for the core API and system versions they have actually tested.
+Version values must use Foundry-style numeric versions. Minimum cannot exceed maximum, and verified must fall inside the declared range. `coreApi` must declare at least a minimum or maximum boundary. Duplicate system IDs and duplicate dependency module IDs are rejected.
 
 ## Dependency object
 
@@ -55,7 +55,7 @@ All fields are optional individually. Providers should normally specify minimum 
 }
 ```
 
-Core diagnostics report missing and incompatible optional dependencies as warnings and required dependencies as errors.
+Core diagnostics report missing and incompatible optional dependencies as warnings and required dependencies as errors. The same checks apply to provider-level and pack-level dependencies.
 
 ## Pack object
 

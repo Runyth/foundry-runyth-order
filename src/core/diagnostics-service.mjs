@@ -7,13 +7,63 @@ function diagnostic({ severity, code, message, providerId = null, packId = null,
 }
 
 export class DiagnosticsService {
-  constructor({ registry, migrationService, getModule, getPack, getSystem, getCoreVersion }) {
+  constructor({
+    registry,
+    migrationService,
+    getModule,
+    getPack,
+    getSystem,
+    getCoreVersion,
+    resolveUuid = (uuid) => globalThis.fromUuid(uuid),
+  }) {
     this.registry = registry;
     this.migrationService = migrationService;
     this.getModule = getModule;
     this.getPack = getPack;
     this.getSystem = getSystem;
     this.getCoreVersion = getCoreVersion;
+    this.resolveUuid = resolveUuid;
+  }
+
+  #diagnoseDependencies(dependencies, { providerId, packId = null }) {
+    const findings = [];
+    for (const dependency of dependencies) {
+      const dependencyModule = this.getModule(dependency.moduleId);
+      const missing = !dependencyModule?.active;
+      const incompatible =
+        dependencyModule?.active && !versionInRange(dependencyModule.version, dependency);
+      if (!missing && !incompatible) continue;
+
+      const scope = packId ? `Pack ${packId}` : `Provider ${providerId}`;
+      if (dependency.required) {
+        findings.push(
+          diagnostic({
+            severity: "error",
+            code: missing ? "REQUIRED_DEPENDENCY_MISSING" : "REQUIRED_DEPENDENCY_INCOMPATIBLE",
+            providerId,
+            packId,
+            message: missing
+              ? `${scope} requires active module ${dependency.moduleId}.`
+              : `${scope} requires ${dependency.moduleId} within its declared version range; ${dependencyModule.version} is active.`,
+            data: { dependency },
+          }),
+        );
+      } else {
+        findings.push(
+          diagnostic({
+            severity: "warning",
+            code: missing ? "OPTIONAL_DEPENDENCY_MISSING" : "OPTIONAL_DEPENDENCY_INCOMPATIBLE",
+            providerId,
+            packId,
+            message: missing
+              ? `${scope} optionally integrates with module ${dependency.moduleId}, which is not active.`
+              : `${scope} optionally integrates with ${dependency.moduleId}, but active version ${dependencyModule.version} is outside the declared range.`,
+            data: { dependency },
+          }),
+        );
+      }
+    }
+    return findings;
   }
 
   async run({ deep = false } = {}) {
@@ -66,38 +116,31 @@ export class DiagnosticsService {
         );
       }
 
-      for (const dependency of provider.dependencies) {
-        const dependencyModule = this.getModule(dependency.moduleId);
-        const missing = !dependencyModule?.active;
-        const incompatible =
-          dependencyModule?.active && !versionInRange(dependencyModule.version, dependency);
-        if ((missing || incompatible) && dependency.required) {
-          findings.push(
-            diagnostic({
-              severity: "error",
-              code: missing ? "REQUIRED_DEPENDENCY_MISSING" : "REQUIRED_DEPENDENCY_INCOMPATIBLE",
-              providerId: provider.id,
-              message: missing
-                ? `Required module ${dependency.moduleId} is not active.`
-                : `Required module ${dependency.moduleId} ${dependencyModule.version} is outside the declared range.`,
-            }),
-          );
-        } else if (missing || incompatible) {
-          findings.push(
-            diagnostic({
-              severity: "warning",
-              code: missing ? "OPTIONAL_DEPENDENCY_MISSING" : "OPTIONAL_DEPENDENCY_INCOMPATIBLE",
-              providerId: provider.id,
-              message: missing
-                ? `Optional module ${dependency.moduleId} is not active.`
-                : `Optional module ${dependency.moduleId} ${dependencyModule.version} is outside the declared range.`,
-            }),
-          );
-        }
-      }
+      findings.push(...this.#diagnoseDependencies(provider.dependencies, { providerId: provider.id }));
     }
 
+    const resolutionCache = new Map();
+    const resolveAvailable = async (uuid) => {
+      if (!resolutionCache.has(uuid)) {
+        resolutionCache.set(
+          uuid,
+          Promise.resolve()
+            .then(() => this.resolveUuid(uuid))
+            .then(Boolean)
+            .catch(() => false),
+        );
+      }
+      return resolutionCache.get(uuid);
+    };
+
     for (const pack of packs) {
+      findings.push(
+        ...this.#diagnoseDependencies(pack.dependencies, {
+          providerId: pack.providerId,
+          packId: pack.id,
+        }),
+      );
+
       for (const compendiumId of pack.compendia) {
         if (!this.getPack(compendiumId)) {
           findings.push(
@@ -123,23 +166,23 @@ export class DiagnosticsService {
         );
       }
       if (deep) {
-        for (const entry of pack.entries) {
-          if (!entry.uuid) continue;
-          try {
-            const resolved = await globalThis.fromUuid(entry.uuid);
-            if (!resolved) throw new Error("No document returned.");
-          } catch {
-            findings.push(
-              diagnostic({
-                severity: "warning",
-                code: "CONTENT_UUID_UNRESOLVED",
-                providerId: pack.providerId,
-                packId: pack.id,
-                message: `${entry.title} cannot be resolved from ${entry.uuid}.`,
-                data: { entryId: entry.id, uuid: entry.uuid },
-              }),
-            );
-          }
+        const results = await Promise.all(
+          pack.entries
+            .filter((entry) => entry.uuid)
+            .map(async (entry) => ({ entry, available: await resolveAvailable(entry.uuid) })),
+        );
+        for (const { entry, available } of results) {
+          if (available) continue;
+          findings.push(
+            diagnostic({
+              severity: "warning",
+              code: "CONTENT_UUID_UNRESOLVED",
+              providerId: pack.providerId,
+              packId: pack.id,
+              message: `${entry.title} cannot be resolved from ${entry.uuid}.`,
+              data: { entryId: entry.id, uuid: entry.uuid },
+            }),
+          );
         }
       }
     }

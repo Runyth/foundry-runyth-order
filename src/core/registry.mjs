@@ -47,35 +47,67 @@ function optionalString(value) {
   return normalized || null;
 }
 
-function normalizeSystems(systems = []) {
-  if (!Array.isArray(systems)) {
-    throw new ProviderValidationError("systems must be an array.", { path: "systems" });
+function normalizeCompatibilityAt(value, path) {
+  try {
+    return normalizeCompatibility(value);
+  } catch (error) {
+    throw new ProviderValidationError(`${path} is invalid: ${error.message}`, {
+      code: "INVALID_COMPATIBILITY",
+      path,
+    });
   }
+}
 
-  return systems.map((system, index) => {
+function requireArray(value, path) {
+  if (!Array.isArray(value)) {
+    throw new ProviderValidationError(`${path} must be an array.`, { path });
+  }
+  return value;
+}
+
+function normalizeStringArray(value, path) {
+  return uniqueStrings(requireArray(value ?? [], path));
+}
+
+function rejectDuplicateIds(values, path, key) {
+  const seen = new Set();
+  for (const value of values) {
+    const id = value[key];
+    if (seen.has(id)) {
+      throw new ProviderValidationError(`${path} contains duplicate ${key} ${id}.`, {
+        code: "DUPLICATE_DECLARATION",
+        path,
+      });
+    }
+    seen.add(id);
+  }
+  return values;
+}
+
+function normalizeSystems(systems = []) {
+  const normalized = requireArray(systems, "systems").map((system, index) => {
     requireObject(system, `systems[${index}]`);
     return {
       id: requireString(system.id, `systems[${index}].id`, { pattern: PROVIDER_ID_PATTERN }),
-      ...normalizeCompatibility(system),
+      ...normalizeCompatibilityAt(system, `systems[${index}]`),
     };
   });
+  return rejectDuplicateIds(normalized, "systems", "id");
 }
 
-function normalizeDependencies(dependencies = []) {
-  if (!Array.isArray(dependencies)) {
-    throw new ProviderValidationError("dependencies must be an array.", { path: "dependencies" });
-  }
-
-  return dependencies.map((dependency, index) => {
-    requireObject(dependency, `dependencies[${index}]`);
+function normalizeDependencies(dependencies = [], path = "dependencies") {
+  const normalized = requireArray(dependencies, path).map((dependency, index) => {
+    const itemPath = `${path}[${index}]`;
+    requireObject(dependency, itemPath);
     return {
-      moduleId: requireString(dependency.moduleId, `dependencies[${index}].moduleId`, {
+      moduleId: requireString(dependency.moduleId, `${itemPath}.moduleId`, {
         pattern: PROVIDER_ID_PATTERN,
       }),
       required: dependency.required !== false,
-      ...normalizeCompatibility(dependency),
+      ...normalizeCompatibilityAt(dependency, itemPath),
     };
   });
+  return rejectDuplicateIds(normalized, path, "moduleId");
 }
 
 function normalizeCapabilities(providerId, capabilities = []) {
@@ -83,7 +115,7 @@ function normalizeCapabilities(providerId, capabilities = []) {
     throw new ProviderValidationError("capabilities must be an array.", { path: "capabilities" });
   }
 
-  return uniqueStrings(capabilities).map((capability) => {
+  return normalizeStringArray(capabilities, "capabilities").map((capability) => {
     if (!CAPABILITY_PATTERN.test(capability)) {
       throw new ProviderValidationError(`Capability ${capability} has an invalid format.`, {
         code: "INVALID_CAPABILITY",
@@ -117,7 +149,7 @@ function normalizeEntry(entry, path) {
     uuid: optionalString(entry.uuid),
     identifier: optionalString(entry.identifier),
     version: optionalString(entry.version),
-    tags: uniqueStrings(entry.tags),
+    tags: normalizeStringArray(entry.tags ?? [], `${path}.tags`),
     metadata: isPlainObject(entry.metadata) ? publicClone(entry.metadata) : {},
   };
 }
@@ -125,7 +157,7 @@ function normalizeEntry(entry, path) {
 function normalizePack(providerId, pack, path = "pack") {
   requireObject(pack, path);
   const localId = requireString(pack.id, `${path}.id`, { pattern: LOCAL_ID_PATTERN });
-  const contentKinds = uniqueStrings(pack.contentKinds ?? []);
+  const contentKinds = normalizeStringArray(pack.contentKinds ?? [], `${path}.contentKinds`);
   for (const kind of contentKinds) {
     if (!CONTENT_KIND_SET.has(kind)) {
       throw new ProviderValidationError(`${path}.contentKinds contains unsupported kind ${kind}.`, {
@@ -158,9 +190,9 @@ function normalizePack(providerId, pack, path = "pack") {
     version: optionalString(pack.version),
     systemId: optionalString(pack.systemId),
     contentKinds,
-    compendia: uniqueStrings(pack.compendia),
+    compendia: normalizeStringArray(pack.compendia ?? [], `${path}.compendia`),
     entries,
-    dependencies: normalizeDependencies(pack.dependencies),
+    dependencies: normalizeDependencies(pack.dependencies ?? [], `${path}.dependencies`),
     documentationUrl: optionalString(pack.documentationUrl),
     metadata: isPlainObject(pack.metadata) ? publicClone(pack.metadata) : {},
   };
@@ -263,7 +295,14 @@ export class ProviderRegistry {
       });
     }
 
-    const coreApi = normalizeCompatibility(provider.coreApi);
+    requireObject(provider.coreApi, "provider.coreApi");
+    const coreApi = normalizeCompatibilityAt(provider.coreApi, "provider.coreApi");
+    if (!coreApi.minimum && !coreApi.maximum) {
+      throw new ProviderValidationError(
+        "provider.coreApi must declare a minimum or maximum supported API version.",
+        { code: "INVALID_COMPATIBILITY", path: "provider.coreApi" },
+      );
+    }
     if (!versionInRange(API_VERSION, coreApi)) {
       throw new ProviderValidationError(
         `Provider ${id} does not support Runyth Rules Core API ${API_VERSION}.`,
@@ -298,9 +337,15 @@ export class ProviderRegistry {
     });
 
     try {
-      for (const pack of provider.packs ?? []) this.registerPack(id, pack);
-      for (const validator of provider.validators ?? []) this.registerValidator(id, validator);
-      for (const migration of provider.migrations ?? []) this.registerMigration(id, migration);
+      for (const pack of requireArray(provider.packs ?? [], "provider.packs")) {
+        this.registerPack(id, pack);
+      }
+      for (const validator of requireArray(provider.validators ?? [], "provider.validators")) {
+        this.registerValidator(id, validator);
+      }
+      for (const migration of requireArray(provider.migrations ?? [], "provider.migrations")) {
+        this.registerMigration(id, migration);
+      }
     } catch (error) {
       this.unregisterProvider(id);
       throw error;

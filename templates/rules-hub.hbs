@@ -6,11 +6,11 @@
       <p>{{localize "RRC.Hub.Subtitle"}}</p>
     </div>
     <div class="rrc-header-actions">
-      <button type="button" data-action="refresh" title="{{localize 'RRC.Actions.Refresh'}}">
+      <button type="button" data-action="refresh" {{#if busy}}disabled{{/if}} title="{{localize 'RRC.Actions.Refresh'}}">
         <i class="fa-solid fa-arrows-rotate"></i>
         <span>{{localize "RRC.Actions.Refresh"}}</span>
       </button>
-      <button type="button" data-action="reset-position" title="{{localize 'RRC.Actions.ResetPosition'}}">
+      <button type="button" data-action="reset-position" {{#if busy}}disabled{{/if}} title="{{localize 'RRC.Actions.ResetPosition'}}">
         <i class="fa-solid fa-window-restore"></i>
         <span>{{localize "RRC.Actions.ResetPosition"}}</span>
       </button>
@@ -18,21 +18,21 @@
   </header>
 
   <nav class="rrc-tabs" aria-label="{{localize 'RRC.Hub.Navigation'}}">
-    <button type="button" data-tab="overview" class="{{#if tabs.overview}}active{{/if}}">
+    <button type="button" data-tab="overview" {{#if busy}}disabled{{/if}} class="{{#if tabs.overview}}active{{/if}}">
       <i class="fa-solid fa-gauge-high"></i> {{localize "RRC.Tabs.Overview"}}
     </button>
-    <button type="button" data-tab="providers" class="{{#if tabs.providers}}active{{/if}}">
+    <button type="button" data-tab="providers" {{#if busy}}disabled{{/if}} class="{{#if tabs.providers}}active{{/if}}">
       <i class="fa-solid fa-puzzle-piece"></i> {{localize "RRC.Tabs.Providers"}}
       <span class="rrc-count">{{providerCount}}</span>
     </button>
-    <button type="button" data-tab="packs" class="{{#if tabs.packs}}active{{/if}}">
+    <button type="button" data-tab="packs" {{#if busy}}disabled{{/if}} class="{{#if tabs.packs}}active{{/if}}">
       <i class="fa-solid fa-box-archive"></i> {{localize "RRC.Tabs.Packs"}}
       <span class="rrc-count">{{packCount}}</span>
     </button>
-    <button type="button" data-tab="audit" class="{{#if tabs.audit}}active{{/if}}">
+    <button type="button" data-tab="audit" {{#if busy}}disabled{{/if}} class="{{#if tabs.audit}}active{{/if}}">
       <i class="fa-solid fa-user-check"></i> {{localize "RRC.Tabs.Audit"}}
     </button>
-    <button type="button" data-tab="diagnostics" class="{{#if tabs.diagnostics}}active{{/if}}">
+    <button type="button" data-tab="diagnostics" {{#if busy}}disabled{{/if}} class="{{#if tabs.diagnostics}}active{{/if}}">
       <i class="fa-solid fa-stethoscope"></i> {{localize "RRC.Tabs.Diagnostics"}}
     </button>
   </nav>
@@ -154,13 +154,13 @@
           <div class="rrc-actor-row">
             <img src="{{actor.img}}" alt="" />
             <div><strong>{{actor.name}}</strong><code>{{actor.uuid}}</code></div>
-            <button type="button" data-action="audit" {{#unless actor.mayAudit}}disabled{{/unless}}>
+            <button type="button" data-action="audit" {{#if actor.auditDisabled}}disabled{{/if}}>
               <i class="fa-solid fa-magnifying-glass-chart"></i>
               {{localize "RRC.Actions.AuditActor"}}
             </button>
           </div>
         {{else}}
-          <div class="rrc-empty">{{localize "RRC.Audit.NoActor"}}</div>
+          <div class="rrc-empty">{{actorSelectionMessage}}</div>
         {{/if}}
 
         {{#if auditReport}}
@@ -191,10 +191,10 @@
         <div class="rrc-section-heading">
           <div><h2>{{localize "RRC.Diagnostics.Title"}}</h2><p>{{localize "RRC.Diagnostics.Help"}}</p></div>
           <div class="rrc-button-group">
-            <button type="button" data-action="diagnostics" data-deep="false">
+            <button type="button" data-action="diagnostics" data-deep="false" {{#if busy}}disabled{{/if}}>
               <i class="fa-solid fa-stethoscope"></i> {{localize "RRC.Actions.RunDiagnostics"}}
             </button>
-            <button type="button" data-action="diagnostics" data-deep="true">
+            <button type="button" data-action="diagnostics" data-deep="true" {{#if busy}}disabled{{/if}}>
               <i class="fa-solid fa-microscope"></i> {{localize "RRC.Actions.RunDeepDiagnostics"}}
             </button>
           </div>
@@ -207,7 +207,7 @@
               <h3>{{localize "RRC.Migrations.PendingTitle"}}</h3>
               <p><strong>{{pendingMigrationCount}}</strong> {{localize "RRC.Migrations.PendingBody"}}</p>
               {{#if isGM}}
-                <button type="button" data-action="run-migrations">
+                <button type="button" data-action="run-migrations" {{#if busy}}disabled{{/if}}>
                   <i class="fa-solid fa-play"></i> {{localize "RRC.Actions.RunMigrations"}}
                 </button>
               {{/if}}
@@ -220,7 +220,7 @@
             <span class="danger">{{diagnosticsReport.counts.error}} {{localize "RRC.Severity.Errors"}}</span>
             <span class="warning">{{diagnosticsReport.counts.warning}} {{localize "RRC.Severity.Warnings"}}</span>
             <span class="info">{{diagnosticsReport.counts.info}} {{localize "RRC.Severity.Info"}}</span>
-            <button type="button" data-action="copy-diagnostics"><i class="fa-solid fa-copy"></i> {{localize "RRC.Actions.CopyJson"}}</button>
+            <button type="button" data-action="copy-diagnostics" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-copy"></i> {{localize "RRC.Actions.CopyJson"}}</button>
           </div>
           {{#if diagnosticsReport.findings.length}}
             <div class="rrc-findings">
