@@ -1,7 +1,14 @@
-import { MODULE_ID } from "../constants.mjs";
+import { MODULE_ID, MODULE_TITLE } from "../constants.mjs";
 
 function openHub(activeTab = "overview") {
-  return game.modules.get(MODULE_ID)?.api?.openHub({ activeTab });
+  const promise = game.modules.get(MODULE_ID)?.api?.openHub({ activeTab });
+  promise?.catch?.((error) => {
+    console.error(`${MODULE_TITLE} | Could not open Rules Hub`, error);
+    ui.notifications?.error?.(
+      game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }),
+    );
+  });
+  return promise;
 }
 
 function htmlRoot(html) {
@@ -10,13 +17,37 @@ function htmlRoot(html) {
   return null;
 }
 
+function settingsLauncherTarget(root) {
+  if (root.matches?.(".settings-sidebar, .directory-list")) return root;
+  return root.querySelector(".settings-sidebar, .directory-list");
+}
+
+export function createSceneControlTool(tools) {
+  const orders = Object.values(tools ?? {})
+    .map((tool) => Number(tool?.order))
+    .filter(Number.isFinite);
+  const order = orders.length ? Math.max(...orders) + 1 : Object.keys(tools ?? {}).length;
+
+  return {
+    name: `${MODULE_ID}-hub`,
+    title: "RRC.Launcher.Open",
+    icon: "fa-solid fa-diagram-project",
+    order,
+    button: true,
+    visible: true,
+    onChange: () => {
+      void openHub();
+    },
+  };
+}
+
 export function registerLaunchers() {
   game.keybindings.register(MODULE_ID, "openRulesHub", {
     name: "RRC.Keybindings.OpenHub.Name",
     hint: "RRC.Keybindings.OpenHub.Hint",
     editable: [{ key: "KeyR", modifiers: ["Control", "Shift"] }],
     onDown: () => {
-      openHub();
+      void openHub();
       return true;
     },
     restricted: false,
@@ -26,7 +57,9 @@ export function registerLaunchers() {
   Hooks.on("renderSettings", (_application, html) => {
     const root = htmlRoot(html);
     if (!root || root.querySelector(`.${MODULE_ID}-launcher`)) return;
-    const target = root.querySelector(".settings-sidebar") ?? root.querySelector(".directory-list") ?? root;
+    const target = settingsLauncherTarget(root);
+    if (!target) return;
+
     const card = document.createElement("section");
     card.className = `${MODULE_ID}-launcher`;
     card.innerHTML = `
@@ -34,30 +67,17 @@ export function registerLaunchers() {
       <p>${game.i18n.localize("RRC.Launcher.Summary")}</p>
       <button type="button" data-action="open-rules-hub">
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        ${game.i18n.localize("RRC.Launcher.Open")}
+        <span>${game.i18n.localize("RRC.Launcher.Open")}</span>
       </button>
     `;
-    card.querySelector("button")?.addEventListener("click", () => openHub());
+    card.querySelector("button")?.addEventListener("click", () => void openHub());
     target.prepend(card);
   });
 
   Hooks.on("getSceneControlButtons", (controls) => {
-    const tokenControls = Array.isArray(controls)
-      ? controls.find((control) => control.name === "token")
-      : controls?.tokens ?? controls?.token;
-    if (!tokenControls) return;
-    const tool = {
-      name: `${MODULE_ID}-hub`,
-      title: "RRC.Launcher.Open",
-      icon: "fa-solid fa-diagram-project",
-      button: true,
-      visible: true,
-      onClick: () => openHub(),
-    };
-    if (Array.isArray(tokenControls.tools)) {
-      if (!tokenControls.tools.some((candidate) => candidate.name === tool.name)) tokenControls.tools.push(tool);
-    } else if (tokenControls.tools && typeof tokenControls.tools === "object") {
-      tokenControls.tools[tool.name] ??= tool;
-    }
+    const tokenControls = controls?.tokens;
+    if (!tokenControls?.tools || typeof tokenControls.tools !== "object") return;
+    const toolName = `${MODULE_ID}-hub`;
+    tokenControls.tools[toolName] ??= createSceneControlTool(tokenControls.tools);
   });
 }

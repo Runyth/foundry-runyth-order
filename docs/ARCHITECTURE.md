@@ -42,7 +42,8 @@ The internal registry stores descriptors separately from executable handlers:
 - provider, pack, validator, and migration identifiers are globally namespaced;
 - duplicate identifiers are rejected;
 - provider modules must be active;
-- declared API compatibility is checked;
+- declared API compatibility is structurally validated, range-checked, and checked against the current API;
+- duplicate system and dependency declarations are rejected;
 - custom capabilities must be provider-namespaced;
 - registration is atomic and rolled back if any child contribution fails;
 - public reads return deep-frozen copies;
@@ -54,7 +55,7 @@ The core stores only:
 
 - its own world schema version;
 - completed migration versions;
-- client-local Rules Hub geometry and selected tab;
+- client-local Rules Hub geometry and selected tab, with viewport clamping on every new window instance;
 - world settings controlling audit permission and onboarding;
 - optional source flags explicitly added to Foundry documents.
 
@@ -65,3 +66,11 @@ It does not duplicate provider compendium content into a hidden core database.
 Foundry modules are trusted code running in a client. Descriptor validation protects registry integrity and diagnostics quality, but cannot sandbox a malicious installed module. Provider modules must be reviewed and installed as independently trusted software.
 
 Players cannot invoke core migration methods successfully because the service checks the current Foundry user. Hiding data in an application or setting is not treated as protection from an adversarial client.
+
+## Foundry V13 UI integration
+
+Rules Hub is an ApplicationV2 instance with a stable application ID. All launchers reuse `foundry.applications.instances`, so opening through Module Settings, the Settings sidebar, Scene Controls, or the keybinding brings forward one shared window instead of creating competing instances.
+
+The Scene Controls launcher follows Foundry V13's record-based `getSceneControlButtons` contract and registers a `SceneControlTool` with explicit `order`, `button`, and `onChange` fields. The former V12 array and `onClick` compatibility branch is intentionally absent.
+
+Long-running audits, diagnostics, and migrations update the UI only while the application remains rendered. Closing the window does not cause a completion callback to reopen it.

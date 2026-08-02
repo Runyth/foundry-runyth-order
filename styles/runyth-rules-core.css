@@ -415,3 +415,124 @@
     display: none;
   }
 }
+
+/* v1.0.1 resilience and accessibility hardening. */
+.runyth-rules-core,
+.runyth-rules-core * {
+  box-sizing: border-box;
+}
+
+.runyth-rules-core {
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  min-width: min(600px, calc(100vw - 16px));
+}
+
+.runyth-rules-core button {
+  max-width: 100%;
+  min-width: 0;
+  padding: 0.45rem 0.7rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.runyth-rules-core button > i + span,
+.runyth-rules-core button > i + .rrc-count {
+  margin-left: 0.3rem;
+}
+
+.runyth-rules-core input,
+.runyth-rules-core select,
+.runyth-rules-core textarea {
+  max-width: 100%;
+  min-height: 2.2rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--rrc-border);
+  border-radius: 0.35rem;
+  background: #0d1724;
+  color: var(--rrc-text);
+}
+
+.runyth-rules-core textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.rrc-header > div,
+.rrc-section-heading > div,
+.rrc-card > header > div,
+.rrc-callout > div {
+  min-width: 0;
+}
+
+.rrc-header h1,
+.rrc-panel h2,
+.rrc-panel h3,
+.rrc-card p,
+.rrc-finding p {
+  overflow-wrap: anywhere;
+}
+
+.rrc-card > header,
+.rrc-finding > header,
+.rrc-section-heading,
+.rrc-actor-row {
+  flex-wrap: wrap;
+}
+
+.rrc-tabs button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.rrc-result-summary > span {
+  overflow-wrap: anywhere;
+}
+
+.runyth-rules-core-launcher,
+.runyth-rules-core-launcher * {
+  box-sizing: border-box;
+}
+
+.runyth-rules-core-launcher button {
+  min-height: 2.2rem;
+  padding: 0.45rem 0.7rem;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+@media (max-width: 600px) {
+  .runyth-rules-core {
+    min-width: min(320px, calc(100vw - 8px));
+  }
+
+  .rrc-header,
+  .rrc-panel {
+    padding: 0.75rem;
+  }
+
+  .rrc-header-actions,
+  .rrc-button-group,
+  .rrc-actor-row {
+    width: 100%;
+  }
+
+  .rrc-header-actions button,
+  .rrc-button-group button,
+  .rrc-actor-row button,
+  .rrc-result-summary button {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .rrc-definition-list {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .rrc-definition-list dd {
+    margin-bottom: 0.55rem;
+  }
+}

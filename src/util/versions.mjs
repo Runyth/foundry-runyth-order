@@ -20,15 +20,55 @@ export function compareVersions(left, right) {
 
 export function versionInRange(version, range = {}) {
   if (!parseVersion(version)) return false;
-  if (range.minimum && compareVersions(version, range.minimum) < 0) return false;
-  if (range.maximum && compareVersions(version, range.maximum) > 0) return false;
+
+  for (const boundary of [range.minimum, range.verified, range.maximum]) {
+    if (boundary && !parseVersion(boundary)) return false;
+  }
+
+  if (range.minimum) {
+    const comparison = compareVersions(version, range.minimum);
+    if (comparison === null || comparison < 0) return false;
+  }
+  if (range.maximum) {
+    const comparison = compareVersions(version, range.maximum);
+    if (comparison === null || comparison > 0) return false;
+  }
   return true;
 }
 
 export function normalizeCompatibility(value = {}) {
-  return {
-    minimum: value.minimum ? String(value.minimum) : null,
-    verified: value.verified ? String(value.verified) : null,
-    maximum: value.maximum ? String(value.maximum) : null,
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    throw new TypeError("Compatibility must be an object.");
+  }
+
+  const normalized = {
+    minimum: value.minimum ? String(value.minimum).trim() : null,
+    verified: value.verified ? String(value.verified).trim() : null,
+    maximum: value.maximum ? String(value.maximum).trim() : null,
   };
+
+  for (const [key, version] of Object.entries(normalized)) {
+    if (version && !parseVersion(version)) {
+      throw new TypeError(`Compatibility ${key} version ${version} is invalid.`);
+    }
+  }
+
+  if (
+    normalized.minimum &&
+    normalized.maximum &&
+    compareVersions(normalized.minimum, normalized.maximum) > 0
+  ) {
+    throw new TypeError("Compatibility minimum cannot be greater than maximum.");
+  }
+
+  if (normalized.verified && !versionInRange(normalized.verified, normalized)) {
+    throw new TypeError("Compatibility verified version must be inside the declared range.");
+  }
+
+  return normalized;
+}
+
+export function versionSeries(value) {
+  const parsed = parseVersion(value);
+  return parsed ? `${parsed[0]}.${parsed[1]}` : null;
 }

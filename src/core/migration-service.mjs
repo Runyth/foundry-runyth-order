@@ -9,7 +9,8 @@ function defaultState() {
 }
 
 export class MigrationService {
-  #running = null;
+  #queue = Promise.resolve();
+  #runningById = new Map();
 
   constructor({ registry, readState, writeState, hooks = globalThis.Hooks, logger }) {
     this.registry = registry;
@@ -39,14 +40,28 @@ export class MigrationService {
 
   async runMigration(migrationId) {
     if (!globalThis.game?.user?.isGM) throw new Error("Only a Game Master can run migrations.");
-    if (this.#running) return this.#running;
 
     const registered = this.registry.getMigration(migrationId);
     if (!registered) throw new Error(`Unknown migration ${migrationId}.`);
-    this.#running = this.#run(registered).finally(() => {
-      this.#running = null;
+
+    const existing = this.#runningById.get(migrationId);
+    if (existing) return existing;
+
+    const queued = this.#queue
+      .catch(() => undefined)
+      .then(() => this.#run(registered));
+    const tracked = queued.finally(() => {
+      if (this.#runningById.get(migrationId) === tracked) {
+        this.#runningById.delete(migrationId);
+      }
     });
-    return this.#running;
+
+    this.#runningById.set(migrationId, tracked);
+    this.#queue = tracked.then(
+      () => undefined,
+      () => undefined,
+    );
+    return tracked;
   }
 
   async runPending({ providerId = null } = {}) {

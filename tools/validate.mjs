@@ -21,6 +21,7 @@ const requiredFiles = [
   "src/core/migration-service.mjs",
   "src/core/source-flags.mjs",
   "src/ui/rules-hub.mjs",
+  "src/ui/window-position.mjs",
   "templates/rules-hub.hbs",
   "styles/runyth-rules-core.css",
   "lang/en.json",
@@ -95,9 +96,21 @@ for (const method of [
   if (!apiSource.includes(`${method}(`)) failures.push(`Public API method missing: ${method}`);
 }
 
+
+const launcherSource = await readFile(resolve(root, "src/ui/launchers.mjs"), "utf8");
+if (!launcherSource.includes("controls?.tokens")) failures.push("Scene Controls launcher does not use the Foundry V13 token control record.");
+if (!launcherSource.includes("onChange:")) failures.push("Scene Controls launcher is missing the Foundry V13 onChange callback.");
+if (/\bonClick\s*:/u.test(launcherSource)) failures.push("Scene Controls launcher still contains the Foundry V12 onClick callback.");
+if (!launcherSource.includes("order,")) failures.push("Scene Controls launcher is missing explicit tool ordering.");
+
+const rulesHubSource = await readFile(resolve(root, "src/ui/rules-hub.mjs"), "utf8");
+if (!rulesHubSource.includes("if (!this.rendered) return;")) failures.push("Rules Hub does not guard against reopening after close.");
+if (!rulesHubSource.includes("sanitizeHubPosition")) failures.push("Rules Hub does not sanitize saved window geometry.");
+
 const mainSource = await readFile(resolve(root, "src/main.mjs"), "utf8");
 if (!mainSource.includes("Hooks.once(\"init\"")) failures.push("Core API must initialize on init.");
 if (!mainSource.includes("module.api = api")) failures.push("Core API is not exposed on the module record.");
+if (!mainSource.includes("foundry.applications.instances.get")) failures.push("Rules Hub launchers do not reuse the public ApplicationV2 instance registry.");
 if (!mainSource.includes("ApplicationV2") && !(await readFile(resolve(root, "src/ui/rules-hub.mjs"), "utf8")).includes("ApplicationV2")) failures.push("ApplicationV2 UI is missing.");
 
 for (const file of (await walk(resolve(root, "src"))).filter((entry) => extname(entry.path) === ".mjs")) {

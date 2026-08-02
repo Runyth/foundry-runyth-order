@@ -8,10 +8,10 @@ import { ProviderRegistry } from "./core/registry.mjs";
 import { registerSettings } from "./settings.mjs";
 import { registerLaunchers } from "./ui/launchers.mjs";
 import { RulesHub } from "./ui/rules-hub.mjs";
+import { versionSeries } from "./util/versions.mjs";
 
 const logger = createLogger();
 let api;
-let hub;
 
 function getModule(id) {
   return game.modules.get(id) ?? null;
@@ -25,16 +25,18 @@ function getSystem() {
   };
 }
 
-function openHub(options = {}) {
-  const stored = game.settings.get(MODULE_ID, SETTINGS.HUB_POSITION) ?? {};
-  if (!hub) {
-    hub = new RulesHub({
-      ...options,
-      position: { ...stored, ...(options.position ?? {}) },
-    });
+async function openHub(options = {}) {
+  const appId = `${MODULE_ID}-hub`;
+  let current = foundry.applications.instances.get(appId) ?? null;
+  if (current && !(current instanceof RulesHub)) {
+    await current.close().catch(() => undefined);
+    current = null;
   }
+
+  const hub = current ?? new RulesHub(options);
   if (options.activeTab) hub.activeTab = options.activeTab;
-  hub.render({ force: true });
+  await hub.render({ force: true });
+  hub.bringToFront();
   return hub;
 }
 
@@ -64,6 +66,7 @@ Hooks.once("init", () => {
       getPack: (id) => game.packs.get(id) ?? null,
       getSystem,
       getCoreVersion: () => game.version,
+      resolveUuid: (uuid) => globalThis.fromUuid(uuid),
     });
 
     api = new RunythRulesApi({
@@ -94,12 +97,18 @@ Hooks.once("ready", async () => {
   const showOnboarding = game.settings.get(MODULE_ID, SETTINGS.SHOW_ONBOARDING);
   const seenVersion = game.settings.get(MODULE_ID, SETTINGS.ONBOARDING_VERSION);
   const version = game.modules.get(MODULE_ID)?.version ?? "0.0.0";
-  if (game.user?.isGM && showOnboarding && seenVersion !== version) {
+  const currentSeries = versionSeries(version) ?? version;
+  const alreadySeenSeries =
+    seenVersion === currentSeries ||
+    seenVersion === version ||
+    seenVersion.startsWith(`${currentSeries}.`);
+
+  if (game.user?.isGM && showOnboarding && !alreadySeenSeries) {
     ui.notifications?.info?.(game.i18n.localize("RRC.Notifications.Onboarding"), {
       permanent: true,
       console: false,
     });
-    await game.settings.set(MODULE_ID, SETTINGS.ONBOARDING_VERSION, version);
+    await game.settings.set(MODULE_ID, SETTINGS.ONBOARDING_VERSION, currentSeries);
   }
 
   logger.info(`Ready with ${api.listProviders().length} registered provider(s).`);

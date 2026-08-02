@@ -37,7 +37,7 @@
       "minLength": 1
     },
     "coreApi": {
-      "$ref": "#/$defs/compatibility"
+      "$ref": "#/$defs/coreCompatibility"
     },
     "systems": {
       "type": "array",
@@ -134,19 +134,22 @@
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
         },
         "verified": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
         },
         "maximum": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
         }
       }
     },
@@ -288,6 +291,37 @@
           "type": "object"
         }
       }
+    },
+    "coreCompatibility": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/compatibility"
+        },
+        {
+          "anyOf": [
+            {
+              "required": [
+                "minimum"
+              ],
+              "properties": {
+                "minimum": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "required": [
+                "maximum"
+              ],
+              "properties": {
+                "maximum": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   }
 }

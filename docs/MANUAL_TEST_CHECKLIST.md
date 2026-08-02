@@ -13,9 +13,12 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 - [ ] Open Rules Hub from Configure Settings.
 - [ ] Open it from the Settings sidebar card.
-- [ ] Open it from Token Scene Controls.
+- [ ] Open it from Token Scene Controls and confirm the button responds under the V13 `onChange` contract.
 - [ ] Open it with `Ctrl+Shift+R`.
 - [ ] Resize and move the window; reload and confirm geometry is restored and remains on-screen.
+- [ ] Save the window near an edge, reduce the browser viewport, and confirm it is clamped back into view.
+- [ ] Start a deep diagnostic or slow validator, close Rules Hub before it completes, and confirm it stays closed afterward.
+- [ ] Open Rules Hub through two different launchers and confirm only one ApplicationV2 instance exists.
 - [ ] Reset the window position.
 - [ ] Verify ordinary narrow widths do not clip essential controls.
 - [ ] Verify English and German UI.
@@ -39,6 +42,7 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 - [ ] Test a missing required dependency and verify an error.
 - [ ] Test a missing optional dependency and verify a warning.
+- [ ] Test required and optional dependencies declared by an individual pack.
 - [ ] Test an unsupported game system.
 - [ ] Test a system version outside the provider range.
 - [ ] Test a declared missing compendium.
@@ -70,6 +74,8 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Run a successful migration and confirm it is no longer pending.
 - [ ] Simulate a failed migration and confirm it remains pending and can be retried.
 - [ ] Reload and confirm completion state persists.
+- [ ] Trigger two different migrations concurrently and confirm they execute serially.
+- [ ] Trigger the same migration twice concurrently and confirm its handler runs only once.
 
 ## Compatibility regression
 

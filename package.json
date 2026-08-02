@@ -1,6 +1,6 @@
 {
   "name": "runyth-rules-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Runyth's thin Foundry VTT gateway for modular homebrew providers.",
   "type": "module",

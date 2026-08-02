@@ -104,3 +104,47 @@ test("discovers capabilities by provider and system", () => {
   assert.equal(subject.hasCapability("content.subclasses", { systemId: "pf2e" }), false);
   assert.equal(subject.hasCapability("content.spells"), false);
 });
+
+test("rejects malformed and inverted compatibility ranges", () => {
+  const subject = registry();
+  assert.throws(
+    () => subject.registerProvider(provider({ coreApi: { minimum: "banana" } })),
+    (error) => error.code === "INVALID_COMPATIBILITY",
+  );
+  assert.throws(
+    () =>
+      subject.registerProvider(
+        provider({ coreApi: { minimum: "2.0.0", maximum: "1.0.0" } }),
+      ),
+    (error) => error.code === "INVALID_COMPATIBILITY",
+  );
+});
+
+test("rejects duplicate system and dependency declarations", () => {
+  const systems = [
+    { id: "dnd5e", minimum: "5.3.3", maximum: "5.3.3" },
+    { id: "dnd5e", minimum: "5.3.3", maximum: "5.3.3" },
+  ];
+  assert.throws(
+    () => registry().registerProvider(provider({ systems })),
+    (error) => error.code === "DUPLICATE_DECLARATION",
+  );
+
+  const dependencies = [
+    { moduleId: "other-homebrew", required: true },
+    { moduleId: "other-homebrew", required: false },
+  ];
+  assert.throws(
+    () => registry().registerProvider(provider({ dependencies })),
+    (error) => error.code === "DUPLICATE_DECLARATION",
+  );
+});
+
+test("rejects non-array nested contribution collections without partial registration", () => {
+  const subject = registry();
+  assert.throws(
+    () => subject.registerProvider(provider({ packs: { id: "invalid" } })),
+    (error) => error instanceof ProviderValidationError,
+  );
+  assert.equal(subject.getProvider("example-homebrew"), null);
+});

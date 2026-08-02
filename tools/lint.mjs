@@ -22,6 +22,11 @@ for (const file of await walk(resolve(root, "src"))) {
   for (const [pattern, message] of prohibited) {
     if (pattern.test(source)) failures.push(`${file.path}: ${message}`);
   }
+  if (file.path === "ui/launchers.mjs") {
+    if (/\bonClick\s*:/u.test(source)) failures.push(`${file.path}: Foundry V12 SceneControlTool.onClick is prohibited`);
+    if (/Array\.isArray\(controls\)/u.test(source)) failures.push(`${file.path}: Foundry V12 Scene Controls array compatibility is prohibited`);
+    if (!/\bonChange\s*:/u.test(source)) failures.push(`${file.path}: Foundry V13 SceneControlTool.onChange is required`);
+  }
   const syntax = spawnSync(process.execPath, ["--check", file.absolute], { encoding: "utf8" });
   if (syntax.status !== 0) failures.push(`${file.path}: ${syntax.stderr.trim()}`);
 }
