@@ -536,3 +536,34 @@
     margin-bottom: 0.55rem;
   }
 }
+
+.runyth-rules-core .rrc-provider-naming {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.runyth-rules-core .rrc-naming-finding {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: start;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 0.4rem;
+  overflow-wrap: anywhere;
+}
+
+.runyth-rules-core .rrc-naming-finding.warning {
+  border-color: color-mix(in srgb, var(--color-level-warning, #d6a20b) 65%, transparent);
+  background: color-mix(in srgb, var(--color-level-warning, #d6a20b) 12%, transparent);
+}
+
+.runyth-rules-core .rrc-naming-finding.info {
+  border-color: color-mix(in srgb, var(--color-level-info, #4a90c2) 55%, transparent);
+  background: color-mix(in srgb, var(--color-level-info, #4a90c2) 10%, transparent);
+}
+
+.runyth-rules-core .rrc-naming-finding p {
+  margin: 0.2rem 0 0.35rem;
+}

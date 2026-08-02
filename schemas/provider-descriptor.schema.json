@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://runyth.github.io/schemas/runyth-rules-core/provider-descriptor-v1.json",
-  "title": "Runyth Rules Core provider descriptor",
+  "title": "Runyth Order provider descriptor",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -116,6 +116,16 @@
       "items": {
         "type": "string"
       }
+    },
+    "naming": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/naming"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "metadata": {
       "type": "object"
@@ -322,6 +332,34 @@
           ]
         }
       ]
+    },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "orderName",
+        "moduleKind",
+        "contentName",
+        "canonicalTitle"
+      ],
+      "properties": {
+        "orderName": {
+          "const": "Runyth Order"
+        },
+        "moduleKind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonicalTitle": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^Runyth Order: .+ .+$"
+        }
+      }
     }
   }
 }

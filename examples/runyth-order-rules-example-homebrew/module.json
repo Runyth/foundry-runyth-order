@@ -1,7 +1,7 @@
 {
-  "id": "runyth-rules-example-homebrew",
-  "title": "Runyth Rules Example Homebrew",
-  "description": "Reference complementary provider for Runyth Rules Core. Development example only.",
+  "id": "runyth-order-rules-example-homebrew",
+  "title": "Runyth Order: Rules Example Homebrew",
+  "description": "Reference complementary provider for Runyth Order. Development example only.",
   "version": "1.0.0",
   "compatibility": {
     "minimum": "13.341",
@@ -28,9 +28,17 @@
         "type": "module",
         "compatibility": {
           "minimum": "1.0.0",
-          "maximum": "1.0.0"
+          "maximum": "1.0.2"
         }
       }
     ]
+  },
+  "flags": {
+    "runyth": {
+      "orderName": "Runyth Order",
+      "moduleKind": "Rules",
+      "contentName": "Example Homebrew",
+      "canonicalTitle": "Runyth Order: Rules Example Homebrew"
+    }
   }
 }

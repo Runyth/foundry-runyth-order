@@ -2,8 +2,25 @@ import { API_VERSION, DATA_SCHEMA_VERSION, MODULE_ID } from "../constants.mjs";
 import { publicClone } from "../util/objects.mjs";
 import { versionInRange } from "../util/versions.mjs";
 
-function diagnostic({ severity, code, message, providerId = null, packId = null, data = {} }) {
-  return { severity, code, message, providerId, packId, data };
+function diagnostic({ severity, code, message, messageKey = null, providerId = null, packId = null, data = {} }) {
+  return { severity, code, message, messageKey, providerId, packId, data };
+}
+
+function namingMessage(finding) {
+  const data = finding.data ?? {};
+  if (finding.code === "PROVIDER_NAMING_MISMATCH") {
+    return `Provider ${finding.providerId} title ${data.actualProviderTitle} does not match ${data.expectedTitle}.`;
+  }
+  if (finding.code === "MODULE_NAMING_MISMATCH") {
+    return `Module ${finding.moduleId} title ${data.actualModuleTitle} does not match ${data.expectedTitle}.`;
+  }
+  if (finding.code === "NAMING_METADATA_CONFLICT") {
+    return `Provider and manifest naming metadata disagree for ${finding.providerId}.`;
+  }
+  if (finding.code === "NAMING_METADATA_INVALID") {
+    return `Module naming metadata is invalid for ${finding.providerId}: ${data.reason}.`;
+  }
+  return `Legacy provider ${finding.providerId} does not declare Runyth Order naming metadata.`;
 }
 
 export class DiagnosticsService {
@@ -71,6 +88,19 @@ export class DiagnosticsService {
     const system = this.getSystem();
     const providers = this.registry.listProviders();
     const packs = this.registry.listPacks();
+
+    for (const namingFinding of this.registry.listNamingFindings()) {
+      findings.push(
+        diagnostic({
+          severity: namingFinding.severity,
+          code: namingFinding.code,
+          providerId: namingFinding.providerId,
+          message: namingMessage(namingFinding),
+          messageKey: namingFinding.messageKey,
+          data: namingFinding.data,
+        }),
+      );
+    }
 
     for (const provider of providers) {
       const module = this.getModule(provider.moduleId);

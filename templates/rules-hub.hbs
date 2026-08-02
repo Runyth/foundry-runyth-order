@@ -102,6 +102,20 @@
                   <span class="rrc-version">v{{version}}</span>
                 </header>
                 {{#if description}}<p>{{description}}</p>{{/if}}
+                {{#if namingFindings.length}}
+                  <div class="rrc-provider-naming" aria-label="{{localize 'RRC.Providers.Naming'}}">
+                    {{#each namingFindings}}
+                      <div class="rrc-naming-finding {{cssClass}}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div>
+                          <strong>{{localize "RRC.Naming.ContractLabel"}}</strong>
+                          <p>{{message}}</p>
+                          <code>{{code}}</code>
+                        </div>
+                      </div>
+                    {{/each}}
+                  </div>
+                {{/if}}
                 <dl class="rrc-definition-list compact">
                   <dt>{{localize "RRC.Providers.Module"}}</dt><dd><code>{{moduleId}}</code></dd>
                   <dt>{{localize "RRC.Providers.Systems"}}</dt><dd>{{systemSummary}}</dd>

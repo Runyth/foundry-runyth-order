@@ -13,6 +13,29 @@ export type ProviderSystem = Compatibility & {
   id: string;
 };
 
+export type RunythNamingMetadata = {
+  orderName: "Runyth Order";
+  moduleKind: string;
+  contentName: string;
+  canonicalTitle: string;
+};
+
+export type NamingFindingCode =
+  | "PROVIDER_NAMING_MISMATCH"
+  | "MODULE_NAMING_MISMATCH"
+  | "NAMING_METADATA_CONFLICT"
+  | "NAMING_METADATA_INVALID"
+  | "NAMING_METADATA_MISSING";
+
+export type NamingFinding = {
+  severity: "info" | "warning";
+  code: NamingFindingCode;
+  messageKey: string;
+  providerId: string;
+  moduleId: string;
+  data: Record<string, unknown>;
+};
+
 export type ContentKind =
   | "background"
   | "class"
@@ -113,6 +136,7 @@ export type ProviderRegistration = {
   documentationUrl?: string;
   repositoryUrl?: string;
   authors?: string[];
+  naming?: RunythNamingMetadata | null;
   metadata?: Record<string, unknown>;
 };
 
@@ -168,6 +192,7 @@ export type RegistrySnapshot = {
   packs: RegisteredContentPack[];
   validators: RegisteredValidator[];
   migrations: RegisteredMigration[];
+  namingFindings: NamingFinding[];
 };
 
 export type ManagedSource = {
@@ -194,6 +219,10 @@ export interface RunythRulesCoreApi {
   unregisterProvider(providerId: string): boolean;
   listProviders(): ReadonlyArray<Readonly<ProviderDescriptor>>;
   getProvider(providerId: string): Readonly<ProviderDescriptor> | null;
+  listNamingFindings(filters?: {
+    providerId?: string;
+    severity?: "info" | "warning";
+  }): ReadonlyArray<Readonly<NamingFinding>>;
   listPacks(filters?: {
     providerId?: string;
     contentKind?: ContentKind;

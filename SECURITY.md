@@ -8,7 +8,7 @@ The newest `1.x` release receives security fixes. Compatibility is limited to th
 
 ## Trust boundary
 
-Runyth Rules Core validates descriptors and coordinates code supplied by active complementary modules. Foundry modules execute with the permissions available to the logged-in client. Installing a complementary module therefore means trusting its code independently of this core.
+Runyth Order validates descriptors and coordinates code supplied by active complementary modules. Foundry modules execute with the permissions available to the logged-in client. Installing a complementary module therefore means trusting its code independently of this core.
 
 The core deliberately does not:
 

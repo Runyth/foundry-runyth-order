@@ -83,3 +83,17 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Test level-up, level-down, rests, activities, effects, and embedded Item updates in the provider module.
 - [ ] Test with optional workflow modules both enabled and disabled.
 - [ ] Review the browser console for errors after a full client reload.
+
+
+## Runyth Order rename and naming contract
+
+- [ ] Confirm Foundry module management displays **Runyth Order** while the installed folder and module ID remain `runyth-rules-core`.
+- [ ] Confirm Module Settings, Settings sidebar, Rules Hub title, notifications, and console prefixes display **Runyth Order**.
+- [ ] Enable a conforming provider and confirm no naming mismatch warning appears.
+- [ ] Enable a provider whose provider title is wrong and confirm one `PROVIDER_NAMING_MISMATCH` console warning appears with IDs, both actual titles, expected title, and pattern.
+- [ ] Enable a provider whose module title is wrong and confirm one `MODULE_NAMING_MISMATCH` warning appears.
+- [ ] Rerender Rules Hub and run diagnostics repeatedly; confirm console warnings are not repeated.
+- [ ] Confirm naming findings appear in Rules Hub provider cards and diagnostics.
+- [ ] Switch Foundry to German and confirm naming findings are localized.
+- [ ] Load a world containing legacy providers without naming metadata; confirm they remain registered and receive only informational `NAMING_METADATA_MISSING` findings.
+- [ ] Confirm existing settings, completed migrations, and `flags.runyth-rules-core.source` data remain unchanged.

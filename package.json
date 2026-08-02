@@ -1,8 +1,8 @@
 {
   "name": "runyth-rules-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
-  "description": "Runyth's thin Foundry VTT gateway for modular homebrew providers.",
+  "description": "Runyth Order: a thin Foundry VTT gateway for modular homebrew providers.",
   "type": "module",
   "engines": {
     "node": ">=22.13.0 <27"

@@ -16,6 +16,7 @@ const requiredFiles = [
   "src/main.mjs",
   "src/api.mjs",
   "src/core/registry.mjs",
+  "src/core/naming-contract.mjs",
   "src/core/audit-service.mjs",
   "src/core/diagnostics-service.mjs",
   "src/core/migration-service.mjs",
@@ -32,8 +33,9 @@ const requiredFiles = [
   "docs/COMPLEMENTARY_MODULE_GUIDE.md",
   "docs/DND5E_2024_GUIDE.md",
   "docs/MANUAL_TEST_CHECKLIST.md",
-  "examples/runyth-rules-example-homebrew/module.json",
-  "examples/runyth-rules-example-homebrew/scripts/main.mjs"
+  "docs/NAMING_CONTRACT.md",
+  "examples/runyth-order-rules-example-homebrew/module.json",
+  "examples/runyth-order-rules-example-homebrew/scripts/main.mjs"
 ];
 
 for (const path of requiredFiles) {
@@ -47,6 +49,8 @@ for (const path of requiredFiles) {
 const manifest = await readJson(resolve(root, "module.json"));
 const packageJson = await readJson(resolve(root, "package.json"));
 if (manifest.id !== "runyth-rules-core") failures.push("Manifest ID must be runyth-rules-core.");
+if (manifest.title !== "Runyth Order") failures.push("Manifest title must be exactly Runyth Order.");
+if (manifest.version !== "1.0.2") failures.push("Patch release version must be 1.0.2.");
 if (manifest.version !== packageJson.version) failures.push("Manifest and package versions differ.");
 if (manifest.compatibility?.minimum !== "13.341") failures.push("Foundry minimum must be 13.341.");
 if (manifest.compatibility?.verified !== "13.351") failures.push("Foundry verified target must be 13.351.");
@@ -89,7 +93,7 @@ for (const key of literalKeys) if (!(key in en)) failures.push(`Missing localiza
 const apiSource = await readFile(resolve(root, "src/api.mjs"), "utf8");
 for (const method of [
   "whenReady", "registerProvider", "registerPack", "registerActorValidator", "registerMigration",
-  "unregisterProvider", "listProviders", "getProvider", "listPacks", "getPack", "hasCapability",
+  "unregisterProvider", "listProviders", "getProvider", "listNamingFindings", "listPacks", "getPack", "hasCapability",
   "snapshot", "resolveContent", "auditActor", "runDiagnostics", "listPendingMigrations",
   "runMigration", "runPendingMigrations", "normalizeSource", "readSource", "tagDocument", "openHub"
 ]) {
@@ -112,6 +116,21 @@ if (!mainSource.includes("Hooks.once(\"init\"")) failures.push("Core API must in
 if (!mainSource.includes("module.api = api")) failures.push("Core API is not exposed on the module record.");
 if (!mainSource.includes("foundry.applications.instances.get")) failures.push("Rules Hub launchers do not reuse the public ApplicationV2 instance registry.");
 if (!mainSource.includes("ApplicationV2") && !(await readFile(resolve(root, "src/ui/rules-hub.mjs"), "utf8")).includes("ApplicationV2")) failures.push("ApplicationV2 UI is missing.");
+if (mainSource.includes("registerMigration(")) failures.push("Display-only rename must not register a core data migration.");
+
+const constantsSource = await readFile(resolve(root, "src/constants.mjs"), "utf8");
+if (!constantsSource.includes('MODULE_ID = "runyth-rules-core"')) failures.push("Technical module ID changed unexpectedly.");
+if (!constantsSource.includes('MODULE_TITLE = "Runyth Order"')) failures.push("Runtime display title is not Runyth Order.");
+
+const namingSource = await readFile(resolve(root, "src/core/naming-contract.mjs"), "utf8");
+for (const code of ["PROVIDER_NAMING_MISMATCH", "MODULE_NAMING_MISMATCH", "NAMING_METADATA_MISSING"]) {
+  if (!namingSource.includes(code)) failures.push(`Naming contract code missing: ${code}`);
+}
+
+const sourceFlagsSource = await readFile(resolve(root, "src/core/source-flags.mjs"), "utf8");
+if (!sourceFlagsSource.includes("document.getFlag(MODULE_ID, SOURCE_FLAG_KEY)") || !sourceFlagsSource.includes("flags.${MODULE_ID}.${SOURCE_FLAG_KEY}")) {
+  failures.push("Managed source namespace is no longer derived from runyth-rules-core.");
+}
 
 for (const file of (await walk(resolve(root, "src"))).filter((entry) => extname(entry.path) === ".mjs")) {
   const source = await readFile(file.absolute, "utf8");
@@ -125,11 +144,17 @@ for (const file of (await walk(resolve(root, "src"))).filter((entry) => extname(
   }
 }
 
-const exampleManifest = await readJson(resolve(root, "examples/runyth-rules-example-homebrew/module.json"));
+const exampleManifest = await readJson(resolve(root, "examples/runyth-order-rules-example-homebrew/module.json"));
 const coreDependency = exampleManifest.relationships?.requires?.find((entry) => entry.id === manifest.id);
 if (!coreDependency) failures.push("Example provider does not require the core.");
+if (exampleManifest.title !== "Runyth Order: Rules Example Homebrew") failures.push("Example provider title does not follow the naming contract.");
+if (exampleManifest.flags?.runyth?.canonicalTitle !== exampleManifest.title) failures.push("Example provider manifest naming metadata is invalid.");
 
-for (const file of (await walk(resolve(root, "examples/runyth-rules-example-homebrew"))).filter((entry) => extname(entry.path) === ".mjs")) {
+const qualityWorkflow = await readFile(resolve(root, ".github/workflows/quality.yml"), "utf8");
+if (!qualityWorkflow.includes("- master")) failures.push("Quality workflow must use master as the default branch.");
+if (qualityWorkflow.includes("- main")) failures.push("Quality workflow still references main.");
+
+for (const file of (await walk(resolve(root, "examples/runyth-order-rules-example-homebrew"))).filter((entry) => extname(entry.path) === ".mjs")) {
   const syntax = spawnSync(process.execPath, ["--check", file.absolute], { encoding: "utf8" });
   if (syntax.status !== 0) failures.push(`${file.path}: ${syntax.stderr.trim()}`);
 }

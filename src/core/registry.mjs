@@ -8,6 +8,12 @@ import {
   STANDARD_CAPABILITIES,
 } from "../constants.mjs";
 import { deepFreeze, isPlainObject, publicClone, uniqueStrings } from "../util/objects.mjs";
+import {
+  evaluateProviderNaming,
+  formatNamingConsoleWarning,
+  isConsoleNamingWarning,
+  normalizeNamingMetadata,
+} from "./naming-contract.mjs";
 import { normalizeCompatibility, versionInRange } from "../util/versions.mjs";
 
 const STANDARD_CAPABILITY_SET = new Set(STANDARD_CAPABILITIES);
@@ -269,9 +275,12 @@ export class ProviderRegistry {
   #packs = new Map();
   #validators = new Map();
   #migrations = new Map();
+  #namingFindings = new Map();
+  #emittedNamingWarnings = new Set();
 
-  constructor({ getModule = () => null } = {}) {
+  constructor({ getModule = () => null, warn = (...args) => console.warn(...args) } = {}) {
     this.getModule = getModule;
+    this.warn = warn;
   }
 
   registerProvider(provider) {
@@ -305,7 +314,7 @@ export class ProviderRegistry {
     }
     if (!versionInRange(API_VERSION, coreApi)) {
       throw new ProviderValidationError(
-        `Provider ${id} does not support Runyth Rules Core API ${API_VERSION}.`,
+        `Provider ${id} does not support Runyth Order API ${API_VERSION}.`,
         { code: "INCOMPATIBLE_CORE_API", path: "provider.coreApi" },
       );
     }
@@ -325,6 +334,16 @@ export class ProviderRegistry {
       authors: Array.isArray(provider.authors)
         ? provider.authors.map((author) => String(author).trim()).filter(Boolean)
         : [],
+      naming: (() => {
+        try {
+          return normalizeNamingMetadata(provider.naming, { path: "provider.naming" });
+        } catch (error) {
+          throw new ProviderValidationError(error.message, {
+            code: "INVALID_NAMING_METADATA",
+            path: "provider.naming",
+          });
+        }
+      })(),
       metadata: isPlainObject(provider.metadata) ? publicClone(provider.metadata) : {},
       packIds: [],
       validatorIds: [],
@@ -351,6 +370,16 @@ export class ProviderRegistry {
       throw error;
     }
 
+    const namingFindings = evaluateProviderNaming({ provider: descriptor, module });
+    this.#namingFindings.set(id, namingFindings);
+    for (const finding of namingFindings.filter(isConsoleNamingWarning)) {
+      const warningKey = `${id}:${finding.code}:${finding.data.expectedTitle}:${finding.data.actualProviderTitle}:${finding.data.actualModuleTitle}`;
+      if (this.#emittedNamingWarnings.has(warningKey)) continue;
+      this.#emittedNamingWarnings.add(warningKey);
+      const warning = formatNamingConsoleWarning(finding);
+      this.warn(warning.message, warning.data);
+    }
+
     return this.getProvider(id);
   }
 
@@ -362,6 +391,7 @@ export class ProviderRegistry {
     for (const validatorId of provider.descriptor.validatorIds) this.#validators.delete(validatorId);
     for (const migrationId of provider.descriptor.migrationIds) this.#migrations.delete(migrationId);
     this.#providers.delete(providerId);
+    this.#namingFindings.delete(providerId);
     return true;
   }
 
@@ -444,6 +474,14 @@ export class ProviderRegistry {
       .sort((left, right) => left.title.localeCompare(right.title));
   }
 
+  listNamingFindings({ providerId = null, severity = null } = {}) {
+    return [...this.#namingFindings.entries()]
+      .filter(([id]) => !providerId || id === providerId)
+      .flatMap(([, findings]) => findings)
+      .filter((finding) => !severity || finding.severity === severity)
+      .map((finding) => publicClone(finding));
+  }
+
   getPack(packId) {
     const pack = this.#packs.get(packId);
     return pack ? publicClone(pack) : null;
@@ -495,6 +533,7 @@ export class ProviderRegistry {
       packs: this.listPacks(),
       validators: this.listValidators(),
       migrations: this.listMigrations(),
+      namingFindings: this.listNamingFindings(),
     });
   }
 }

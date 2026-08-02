@@ -15,6 +15,8 @@ const installEntries = await listZip(installPath);
 const sourceEntries = await listZip(sourcePath);
 const failures = [];
 
+if (report.displayTitle !== "Runyth Order") failures.push("Build report display title is not Runyth Order.");
+if (report.namingContract?.pattern !== "Runyth Order: <Category> <Content Name>") failures.push("Build report naming contract is missing.");
 if (!installEntries.length) failures.push("Install archive is empty.");
 if (!sourceEntries.length) failures.push("Source archive is empty.");
 if (installEntries.some((entry) => !entry.startsWith(`${report.installRoot}/`))) failures.push("Install archive has an invalid root.");

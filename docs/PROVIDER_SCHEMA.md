@@ -21,7 +21,24 @@ The executable registration object contains descriptors plus optional handler fu
 | `documentationUrl` | No | Provider documentation URL. |
 | `repositoryUrl` | No | Source repository URL. |
 | `authors` | No | Author names. |
+| `naming` | No | Runyth Order naming metadata. Required for new complementary modules. |
 | `metadata` | No | JSON-safe provider-specific metadata. |
+
+
+## Naming metadata
+
+```javascript
+{
+  orderName: "Runyth Order",
+  moduleKind: "Class",
+  contentName: "Example Vanguard",
+  canonicalTitle: "Runyth Order: Class Example Vanguard"
+}
+```
+
+When `naming` is present, all four fields are required. `orderName` must be exactly `Runyth Order`, and `canonicalTitle` must equal `<orderName>: <moduleKind> <contentName>`. A malformed provider `naming` object is a descriptor validation error. A valid descriptor whose title differs from the derived title is still registered and receives a non-blocking naming warning.
+
+Manifest metadata uses the same fields under `flags.runyth`. Provider metadata is authoritative if provider and manifest metadata disagree. See [Naming Contract](NAMING_CONTRACT.md).
 
 ## IDs
 

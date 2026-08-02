@@ -27,3 +27,8 @@ Static and unit tests do not prove browser rendering, Foundry hook signatures, m
 ## Provider test doubles
 
 Complementary modules should test their registration against the public API rather than importing core private classes. The included example demonstrates a minimal registration flow.
+
+
+## Naming-contract coverage
+
+Automated tests cover canonical titles, provider/module mismatches, warning deduplication, multiword metadata, legacy compatibility, core exclusion, diagnostics visibility, provider-count preservation, and absence of a display-only migration. Live tests verify module-management text and console behavior in Foundry.

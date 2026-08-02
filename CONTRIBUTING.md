@@ -37,3 +37,8 @@ npm run check
 ```
 
 Do not weaken a quality gate to make a change pass.
+
+
+## Default branch
+
+Use `master` as the default branch for this repository and complementary Runyth Order repositories. Initialize new repositories with `git init -b master` and target `master` in pull requests and workflow filters unless a repository explicitly documents another branch.
