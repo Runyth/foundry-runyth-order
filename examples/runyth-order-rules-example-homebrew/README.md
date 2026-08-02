@@ -1,8 +1,8 @@
-# Runyth Rules Example Homebrew
+# Runyth Order: Rules Example Homebrew
 
 This directory is a complete minimal complementary-module example. It demonstrates:
 
-- a required relationship on Runyth Rules Core;
+- a required relationship on Runyth Order;
 - strict provider registration during `init`;
 - D&D 5e version declaration;
 - standard and custom capabilities;
@@ -15,8 +15,8 @@ The example intentionally does not ship actual playable rules or a compiled comp
 
 ## Try it locally
 
-1. Copy this directory to `Data/modules/runyth-rules-example-homebrew/`.
-2. Install and enable Runyth Rules Core.
+1. Copy this directory to `Data/modules/runyth-order-rules-example-homebrew/`.
+2. Install and enable Runyth Order.
 3. Use a D&D 5e 5.3.3 test world.
 4. Enable the example module.
 5. Open Rules Hub and inspect the provider, pack, capabilities, validator, migration, and diagnostics.

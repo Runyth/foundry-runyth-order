@@ -84,6 +84,10 @@ export class RunythRulesApi {
     return this.registry.getProvider(providerId);
   }
 
+  listNamingFindings(filters = {}) {
+    return this.registry.listNamingFindings(filters);
+  }
+
   listPacks(filters = {}) {
     return this.registry.listPacks(filters);
   }

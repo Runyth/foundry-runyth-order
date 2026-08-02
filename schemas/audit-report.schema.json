@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://runyth.github.io/schemas/runyth-rules-core/audit-report-v1.json",
-  "title": "Runyth Rules Core Actor audit report",
+  "title": "Runyth Order Actor audit report",
   "type": "object",
   "required": [
     "schemaVersion",

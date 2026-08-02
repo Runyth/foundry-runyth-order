@@ -1,6 +1,6 @@
-# Runyth Rules Core
+# Runyth Order
 
-**Runyth Rules Core** is a deliberately thin Foundry VTT foundation module for homebrew-heavy worlds. It provides one stable gateway through which independent complementary modules can declare character options, automation capabilities, validation rules, source provenance, and controlled migrations.
+**Runyth Order** is a deliberately thin Foundry VTT foundation module for homebrew-heavy worlds. It provides one stable gateway through which independent complementary modules can declare character options, automation capabilities, validation rules, source provenance, and controlled migrations.
 
 It is not a replacement game system, character builder, rules engine, compendium library, or combat-automation suite. The complementary modules own the actual classes, subclasses, species, backgrounds, feats, spells, equipment, activities, effects, macros, and campaign rules.
 
@@ -14,13 +14,13 @@ It is not a replacement game system, character builder, rules engine, compendium
 | Fail closed | Invalid, duplicate, inactive, incompatible, or partially registered providers are rejected atomically. |
 | No silent mutation | Actor audits are read-only. Migrations are GM-only, explicitly confirmed, and never automatic. |
 | Traceability | Imported or generated Foundry documents can carry a normalized provider/pack/entry source flag. |
-| Diagnose first | The Rules Hub explains missing modules, incompatible systems, missing compendia, stale sources, and pending migrations. |
+| Diagnose first | The Rules Hub explains missing modules, incompatible systems, missing compendia, stale sources, naming mismatches, and pending migrations. |
 | Runyth consistency | ApplicationV2, bilingual UI, permanent launchers, saved geometry, deterministic dual-ZIP builds, tests, checksums, and release reports. |
 
 ## Intended module topology
 
 ```text
-Runyth Rules Core
+Runyth Order
 ├── campaign classes and subclasses module
 ├── campaign species and backgrounds module
 ├── campaign feats and spells module
@@ -36,10 +36,10 @@ A content module may register one or more packs. An automation module may regist
 
 ## Game Master workflow
 
-1. Install and enable **Runyth Rules Core**.
+1. Install and enable **Runyth Order**.
 2. Install complementary modules for the homebrew actually used by the world.
 3. Open **Rules Hub** through any permanent launcher:
-   - Configure Settings → Module Settings → Runyth Rules Core → **Open Rules Hub**;
+   - Configure Settings → Module Settings → Runyth Order → **Open Rules Hub**;
    - the Settings sidebar card;
    - Token Scene Controls;
    - `Ctrl+Shift+R`.
@@ -107,11 +107,25 @@ await core.whenReady();
 See:
 
 - [Complementary Module Developer Guide](docs/COMPLEMENTARY_MODULE_GUIDE.md)
+- [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md)
 - [API Reference](docs/API.md)
 - [Provider Schema](docs/PROVIDER_SCHEMA.md)
 - [Capability Vocabulary](docs/CAPABILITIES.md)
 - [D&D 5e 2024 Guidance](docs/DND5E_2024_GUIDE.md)
-- [Example Complementary Module](examples/runyth-rules-example-homebrew/)
+- [Example Complementary Module](examples/runyth-order-rules-example-homebrew/)
+
+
+## Complementary naming contract
+
+New complementary modules use the display format:
+
+```text
+Runyth Order: <Category> <Content Name>
+```
+
+They should use technical IDs in the form `runyth-order-<category-slug>-<content-name-slug>` and declare matching metadata in `module.json` under `flags.runyth` and in the provider descriptor under `naming`. Legacy providers without metadata remain registered and receive only an informational diagnostic. Title mismatches are non-blocking, deduplicated, and visible in the console, diagnostics, and Rules Hub.
+
+See [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md).
 
 ## Compatibility
 
@@ -126,7 +140,7 @@ See:
 
 A manifest range is not a substitute for live testing. Complete [the manual test checklist](docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
 
-Version 1.0.1 uses Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Rules Core API remains 1.0.0.
+Version 1.0.2 retains Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Order API remains 1.0.0. Version 1.0.2 adds non-breaking naming metadata and diagnostics while preserving all technical namespaces.
 
 ## Installation
 
@@ -157,10 +171,10 @@ npm run check
 
 Build output is written to `dist/`:
 
-- `runyth-rules-core-v1.0.1.zip`
-- `runyth-rules-core-source-v1.0.1.zip`
-- `runyth-rules-core-v1.0.1-SHA256SUMS.txt`
-- `runyth-rules-core-v1.0.1-build-report.json`
+- `runyth-rules-core-v1.0.2.zip`
+- `runyth-rules-core-source-v1.0.2.zip`
+- `runyth-rules-core-v1.0.2-SHA256SUMS.txt`
+- `runyth-rules-core-v1.0.2-build-report.json`
 
 ## Licence
 

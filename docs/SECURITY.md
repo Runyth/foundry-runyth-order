@@ -2,7 +2,7 @@
 
 ## Installed modules are trusted code
 
-Runyth Rules Core validates provider descriptors, but it cannot sandbox the JavaScript of an enabled Foundry module. A malicious provider could ignore the public API and access any data available to the client. Review providers as independent software.
+Runyth Order validates provider descriptors, but it cannot sandbox the JavaScript of an enabled Foundry module. A malicious provider could ignore the public API and access any data available to the client. Review providers as independent software.
 
 ## GM authority
 

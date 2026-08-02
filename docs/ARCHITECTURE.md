@@ -2,7 +2,7 @@
 
 ## Responsibility boundary
 
-Runyth Rules Core owns contracts, not campaign rules.
+Runyth Order owns contracts, not campaign rules.
 
 | Core owns | Complementary modules own |
 |---|---|
@@ -74,3 +74,7 @@ Rules Hub is an ApplicationV2 instance with a stable application ID. All launche
 The Scene Controls launcher follows Foundry V13's record-based `getSceneControlButtons` contract and registers a `SceneControlTool` with explicit `order`, `button`, and `onChange` fields. The former V12 array and `onClick` compatibility branch is intentionally absent.
 
 Long-running audits, diagnostics, and migrations update the UI only while the application remains rendered. Closing the window does not cause a completion callback to reopen it.
+
+## Naming contract boundary
+
+Naming evaluation occurs only after atomic provider registration succeeds. The registry stores findings and deduplicates console warnings for the world load. Diagnostics and Rules Hub read stored findings without re-emitting warnings. No naming check mutates provider data or creates a migration.

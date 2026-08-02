@@ -14,3 +14,10 @@
 | Scene Controls button is visible but does nothing | Confirm version 1.0.1 or newer is installed. Version 1.0.0 used the V12 `onClick` tool callback instead of Foundry V13 `onChange`. |
 | Rules Hub reappears after being closed | Update to 1.0.1 or newer. Long-running operations no longer force-render a closed window. |
 | Provider is rejected for compatibility data | Use valid numeric Foundry-style versions, keep minimum less than or equal to maximum, keep verified inside the range, and do not duplicate system or dependency IDs. |
+
+
+## Naming warning appears
+
+Open Rules Hub → Providers or run diagnostics. Compare the provider title, active module title, provider `naming`, and manifest `flags.runyth` with the canonical title. The required pattern is `Runyth Order: <Category> <Content Name>`.
+
+Naming warnings are non-blocking. Legacy providers without metadata receive `NAMING_METADATA_MISSING` as information and continue to work. Do not rename an already published technical module or provider ID merely to silence a display-name warning.

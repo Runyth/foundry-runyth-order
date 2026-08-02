@@ -51,6 +51,7 @@ await writeFile(
 const report = {
   schemaVersion: 1,
   moduleId,
+  displayTitle: manifest.title,
   version,
   apiVersion: "1.0.0",
   dataSchemaVersion: 1,
@@ -65,6 +66,12 @@ const report = {
   installBytes: (await readFile(resolve(dist, installName))).length,
   sourceBytes: (await readFile(resolve(dist, sourceName))).length,
   reproducibleTimestamp: "1980-01-01T00:00:00Z",
+  namingContract: {
+    pattern: "Runyth Order: <Category> <Content Name>",
+    recommendedIdPattern: "runyth-order-<category-slug>-<content-name-slug>",
+    providerWarningCodes: ["PROVIDER_NAMING_MISMATCH", "MODULE_NAMING_MISMATCH"],
+    nonBlocking: true,
+  },
   generatedArtifacts: [installName, sourceName, checksumName, reportName],
 };
 await writeFile(resolve(dist, reportName), `${JSON.stringify(report, null, 2)}\n`);

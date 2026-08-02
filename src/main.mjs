@@ -45,7 +45,7 @@ Hooks.once("init", () => {
     registerSettings({ RulesHub });
     registerLaunchers();
 
-    const registry = new ProviderRegistry({ getModule });
+    const registry = new ProviderRegistry({ getModule, warn: (...args) => logger.warn(...args) });
     const migrationService = new MigrationService({
       registry,
       readState: () => game.settings.get(MODULE_ID, SETTINGS.STATE),

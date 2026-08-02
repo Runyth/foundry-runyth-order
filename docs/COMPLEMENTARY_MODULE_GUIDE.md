@@ -1,6 +1,6 @@
 # Complementary Module Developer Guide
 
-This guide describes how to build a homebrew module that uses Runyth Rules Core without coupling unrelated content into the core.
+This guide describes how to build a homebrew module that uses Runyth Order without coupling unrelated content into the core.
 
 ## 1. Choose one responsibility
 
@@ -39,22 +39,52 @@ Add a required module relationship:
 
 Declare game-system compatibility separately when the module depends on a system.
 
-## 3. Register during `init`
+
+## 3. Declare Runyth Order naming metadata
+
+Use the canonical display format `Runyth Order: <Category> <Content Name>`. Declare the exact components in the manifest so the core never has to guess multiword boundaries:
+
+```json
+{
+  "id": "runyth-order-class-example-vanguard",
+  "title": "Runyth Order: Class Example Vanguard",
+  "flags": {
+    "runyth": {
+      "orderName": "Runyth Order",
+      "moduleKind": "Class",
+      "contentName": "Example Vanguard",
+      "canonicalTitle": "Runyth Order: Class Example Vanguard"
+    }
+  }
+}
+```
+
+Expose the same values through provider `naming`. Published technical IDs are permanent. Legacy providers remain compatible, but new modules should follow `runyth-order-<category-slug>-<content-name-slug>`.
+
+See [Naming Contract](NAMING_CONTRACT.md).
+
+## 4. Register during `init`
 
 ```javascript
-const PROVIDER_ID = "example-character-options";
+const PROVIDER_ID = "runyth-order-class-example-vanguard";
 
 Hooks.once("init", () => {
   const core = game.modules.get("runyth-rules-core")?.api;
   if (!core) {
-    throw new Error("Runyth Rules Core is required but its API is unavailable.");
+    throw new Error("Runyth Order is required but its API is unavailable.");
   }
 
   core.registerProvider({
     id: PROVIDER_ID,
     moduleId: PROVIDER_ID,
-    title: "Example Character Options",
+    title: "Runyth Order: Class Example Vanguard",
     version: game.modules.get(PROVIDER_ID).version,
+    naming: {
+      orderName: "Runyth Order",
+      moduleKind: "Class",
+      contentName: "Example Vanguard",
+      canonicalTitle: "Runyth Order: Class Example Vanguard"
+    },
     coreApi: {
       minimum: "1.0.0",
       maximum: "1.0.0"
@@ -81,7 +111,7 @@ Hooks.once("init", () => {
 
 When load ordering cannot be guaranteed, listen once for `runyth-rules-core.apiReady`, but prevent duplicate registration.
 
-## 4. Keep canonical content in provider compendia
+## 5. Keep canonical content in provider compendia
 
 The provider should own canonical Items in module compendia. Use stable document IDs and identifiers where the game system supports them. Reference those documents from pack entries by UUID.
 
@@ -89,7 +119,7 @@ The provider should own canonical Items in module compendia. Use stable document
 function createCharacterOptionsPack() {
   return {
     id: "character-options",
-    title: "Example Character Options",
+    title: "Runyth Order: Class Example Vanguard",
     version: "1.0.0",
     systemId: "dnd5e",
     contentKinds: ["class", "subclass", "feature", "feat"],
@@ -114,7 +144,7 @@ function createCharacterOptionsPack() {
 
 Do not copy official proprietary rules text into an open-source module unless the licence explicitly permits redistribution.
 
-## 5. Use native progression first
+## 6. Use native progression first
 
 A provider should automate only what the active system can represent reliably.
 
@@ -129,7 +159,7 @@ For D&D 5e 2024 content, prefer:
 
 Keep optional reactions, subjective conditions, and narrative decisions prompted or manual rather than silently resolving them.
 
-## 6. Add a read-only Actor validator
+## 7. Add a read-only Actor validator
 
 Validators should report actionable issues, not repair the Actor.
 
@@ -174,7 +204,7 @@ Validator requirements:
 - catch optional integration failures internally when they are not actionable core errors;
 - provide stable `code` values and clear remediation.
 
-## 7. Tag imported documents
+## 8. Tag imported documents
 
 Source metadata enables audits and controlled update logic:
 
@@ -198,7 +228,7 @@ const itemData = {
 
 Never infer provider ownership from document names.
 
-## 8. Add migrations sparingly
+## 9. Add migrations sparingly
 
 A migration is appropriate when provider-owned world copies or flags cannot continue to function without transformation. It is not a release-notification mechanism.
 
@@ -233,7 +263,7 @@ Make migrations:
 - covered by tests and a manual checklist;
 - safe when no matching documents exist.
 
-## 9. Publish diagnostics-friendly metadata
+## 10. Publish diagnostics-friendly metadata
 
 Declare every required and optional module with a supported version range. Do not inspect another module's private implementation when a public API or capability can express the dependency.
 
@@ -247,7 +277,7 @@ if (core.hasCapability("integration.midi-qol")) {
 
 A capability announces availability; it does not define another provider's private API. Document any direct provider-to-provider API dependency separately.
 
-## 10. Test provider failure modes
+## 11. Test provider failure modes
 
 At minimum, test:
 
@@ -267,4 +297,4 @@ At minimum, test:
 - GM and player views;
 - core diagnostics and Actor audit output.
 
-Use the complete example under `examples/runyth-rules-example-homebrew` as a starting point.
+Use the complete example under `examples/runyth-order-rules-example-homebrew` as a starting point.

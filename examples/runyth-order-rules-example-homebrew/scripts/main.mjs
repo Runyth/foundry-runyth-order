@@ -1,4 +1,4 @@
-const MODULE_ID = "runyth-rules-example-homebrew";
+const MODULE_ID = "runyth-order-rules-example-homebrew";
 const CORE_ID = "runyth-rules-core";
 
 function providerVersion() {
@@ -75,7 +75,7 @@ Hooks.once("init", async () => {
   core.registerProvider({
     id: MODULE_ID,
     moduleId: MODULE_ID,
-    title: "Runyth Rules Example Homebrew",
+    title: "Runyth Order: Rules Example Homebrew",
     description: "Reference provider demonstrating packs, validation, capabilities, and migration.",
     version: providerVersion(),
     coreApi: {
@@ -112,8 +112,14 @@ Hooks.once("init", async () => {
     ],
     validators: [actorValidator()],
     migrations: [exampleMigration()],
-    documentationUrl: "https://github.com/Runyth/runyth-rules-core/tree/main/examples/runyth-rules-example-homebrew",
+    documentationUrl: "https://github.com/Runyth/runyth-rules-core/tree/master/examples/runyth-order-rules-example-homebrew",
     repositoryUrl: "https://github.com/Runyth/runyth-rules-core",
     authors: ["Runyth"],
+    naming: {
+      orderName: "Runyth Order",
+      moduleKind: "Rules",
+      contentName: "Example Homebrew",
+      canonicalTitle: "Runyth Order: Rules Example Homebrew",
+    },
   });
 });

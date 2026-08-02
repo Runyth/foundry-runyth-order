@@ -39,3 +39,8 @@ Large worlds should process documents in deterministic batches and yield to the 
 ## Rollback
 
 Foundry document updates are not one global transaction. A provider should document whether rollback is possible, emit enough counts for verification, and require a world backup for material transformations.
+
+
+## Display-name changes are not migrations
+
+The 1.0.2 rename to **Runyth Order** changes only user-facing text. It does not transform settings, provider IDs, source flags, migration records, or world documents. No migration is registered for this rename.

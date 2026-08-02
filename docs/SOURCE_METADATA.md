@@ -1,6 +1,6 @@
 # Managed-document source metadata
 
-Runyth Rules Core defines one normalized flag for tracing a world document or embedded document back to provider-owned source content.
+Runyth Order defines one normalized flag for tracing a world document or embedded document back to provider-owned source content.
 
 ## Flag path
 

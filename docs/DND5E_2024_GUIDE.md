@@ -1,6 +1,6 @@
 # D&D 5e 2024 complementary-module guidance
 
-Runyth Rules Core remains system-neutral. This document describes the preferred shape of a D&D 5e 2024 provider. Version examples use the explicitly stated example system baseline D&D 5e 5.3.3.
+Runyth Order remains system-neutral. This document describes the preferred shape of a D&D 5e 2024 provider. Version examples use the explicitly stated example system baseline D&D 5e 5.3.3.
 
 ## Content model
 

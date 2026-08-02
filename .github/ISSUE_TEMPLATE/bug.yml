@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible Runyth Rules Core defect.
+description: Report a reproducible Runyth Order defect.
 title: "Bug: "
 labels:
   - bug
@@ -10,7 +10,7 @@ body:
   - type: input
     id: core-version
     attributes:
-      label: Runyth Rules Core version
+      label: Runyth Order version
     validations:
       required: true
   - type: input

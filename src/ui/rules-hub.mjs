@@ -29,6 +29,14 @@ function notification(method, message) {
   ui.notifications?.[method]?.(message);
 }
 
+function localizeFinding(finding) {
+  if (!finding?.messageKey) return finding;
+  return {
+    ...finding,
+    message: game.i18n.format(finding.messageKey, finding.data ?? {}),
+  };
+}
+
 export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: `${MODULE_ID}-hub`,
@@ -66,12 +74,22 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       packs: [],
       validators: [],
       migrations: [],
+      namingFindings: [],
     };
     const selection = actorSelection();
     const actor = selection.actor;
     const pendingMigrations = this.api ? await this.api.listPendingMigrations() : [];
-    const providerRows = snapshot.providers.map((provider) => ({
+    const providerRows = snapshot.providers.map((provider) => {
+      const namingFindings = snapshot.namingFindings
+        .filter((finding) => finding.providerId === provider.id)
+        .map((finding) => ({
+          ...localizeFinding(finding),
+          cssClass: severityClass(finding.severity),
+        }));
+      return {
       ...provider,
+      namingFindings,
+      namingWarningCount: namingFindings.filter((finding) => finding.severity === "warning").length,
       systemSummary: provider.systems.length
         ? provider.systems.map((system) => `${system.id} ${system.minimum ?? "*"}–${system.maximum ?? "*"}`).join(", ")
         : game.i18n.localize("RRC.Hub.SystemNeutral"),
@@ -79,7 +97,8 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       packCount: provider.packIds.length,
       validatorCount: provider.validatorIds.length,
       migrationCount: provider.migrationIds.length,
-    }));
+    };
+    });
     const packRows = snapshot.packs.map((pack) => ({
       ...pack,
       kindSummary: pack.contentKinds.join(", ") || "—",
@@ -144,7 +163,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
         ? {
             ...this.diagnosticsReport,
             findings: this.diagnosticsReport.findings.map((finding) => ({
-              ...finding,
+              ...localizeFinding(finding),
               cssClass: severityClass(finding.severity),
             })),
           }

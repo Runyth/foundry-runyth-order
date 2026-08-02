@@ -1,6 +1,17 @@
 # Changelog
 
-All notable changes to **Runyth Rules Core** are documented here.
+All notable changes to **Runyth Order** are documented here.
+
+## 1.0.2 — 2026-08-02
+
+- Renamed the complete user-facing core brand to **Runyth Order** while preserving module ID `runyth-rules-core`, API lookup, hooks, settings, source flags, provider IDs, and migration records.
+- Added the canonical complementary-module naming contract `Runyth Order: <Category> <Content Name>` and recommended `runyth-order-<category-slug>-<content-name-slug>` IDs.
+- Added validated provider `naming` metadata and manifest `flags.runyth` guidance.
+- Added non-blocking provider-title and module-title mismatch warnings with stable codes, machine-readable details, per-world-load deduplication, diagnostics visibility, and localized Rules Hub presentation.
+- Added a legacy compatibility policy that accepts providers without naming metadata and reports an informational finding without guessing a canonical title.
+- Added a dedicated naming-contract document and updated all developer, API, architecture, troubleshooting, migration, testing, and release documentation.
+- Changed repository workflow and example links to use `master` as the default branch.
+- Added comprehensive naming-contract tests without introducing a display-only data migration.
 
 ## 1.0.1 — 2026-08-02
 

@@ -15,6 +15,7 @@ The same object is supplied by `runyth-rules-core.apiReady` and resolves from `a
 | `moduleId` | `runyth-rules-core` |
 | `apiVersion` | `1.0.0` |
 | `dataSchemaVersion` | `1` |
+| Display title | `Runyth Order` |
 
 ## Registration
 
@@ -42,7 +43,11 @@ Removes the provider and all of its runtime descriptors and handlers. It does no
 
 ### `listProviders()` / `getProvider(providerId)`
 
-Returns immutable descriptors. Unknown providers return `null`.
+Returns immutable descriptors. Unknown providers return `null`. A descriptor may include normalized Runyth Order `naming` metadata.
+
+### `listNamingFindings(filters)`
+
+Returns immutable naming findings without emitting new console warnings. Filters support `providerId` and `severity` (`info` or `warning`). Stable codes and compatibility behavior are defined in [Naming Contract](NAMING_CONTRACT.md).
 
 ### `listPacks(filters)` / `getPack(packId)`
 
