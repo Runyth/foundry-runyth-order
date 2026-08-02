@@ -4,7 +4,9 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 ## Fresh install
 
-- [ ] Extract the install ZIP and confirm `Data/modules/runyth-rules-core/module.json`.
+- [ ] Remove any earlier unpublished development build before extracting 1.0.3; do not merge module folders.
+
+- [ ] Extract the install ZIP and confirm `Data/modules/runyth-order/module.json`.
 - [ ] Enable the module without any complementary provider.
 - [ ] Confirm no startup error or deprecation warning originates from the core.
 - [ ] Confirm the update guidance appears once for the GM.
@@ -85,9 +87,9 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Review the browser console for errors after a full client reload.
 
 
-## Runyth Order rename and naming contract
+## Runyth Order identity and naming contract
 
-- [ ] Confirm Foundry module management displays **Runyth Order** while the installed folder and module ID remain `runyth-rules-core`.
+- [ ] Confirm Foundry module management displays **Runyth Order** and the installed folder and module ID are both `runyth-order`.
 - [ ] Confirm Module Settings, Settings sidebar, Rules Hub title, notifications, and console prefixes display **Runyth Order**.
 - [ ] Enable a conforming provider and confirm no naming mismatch warning appears.
 - [ ] Enable a provider whose provider title is wrong and confirm one `PROVIDER_NAMING_MISMATCH` console warning appears with IDs, both actual titles, expected title, and pattern.
@@ -95,5 +97,5 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Rerender Rules Hub and run diagnostics repeatedly; confirm console warnings are not repeated.
 - [ ] Confirm naming findings appear in Rules Hub provider cards and diagnostics.
 - [ ] Switch Foundry to German and confirm naming findings are localized.
-- [ ] Load a world containing legacy providers without naming metadata; confirm they remain registered and receive only informational `NAMING_METADATA_MISSING` findings.
-- [ ] Confirm existing settings, completed migrations, and `flags.runyth-rules-core.source` data remain unchanged.
+- [ ] Load a provider without naming metadata; confirm it remains registered and receives only an informational `NAMING_METADATA_MISSING` finding.
+- [ ] Confirm settings, completed migrations, and managed source metadata use only the `runyth-order` namespace.

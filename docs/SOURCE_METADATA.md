@@ -5,7 +5,7 @@ Runyth Order defines one normalized flag for tracing a world document or embedde
 ## Flag path
 
 ```text
-flags.runyth-rules-core.source
+flags.runyth-order.source
 ```
 
 ## Shape
@@ -30,7 +30,7 @@ flags.runyth-rules-core.source
 Normalize the descriptor and include it directly in source data:
 
 ```javascript
-const core = game.modules.get("runyth-rules-core").api;
+const core = game.modules.get("runyth-order").api;
 const source = core.normalizeSource({
   providerId: PROVIDER_ID,
   packId: `${PROVIDER_ID}.character-options`,
@@ -45,7 +45,7 @@ const created = await actor.createEmbeddedDocuments("Item", [
     _id: undefined,
     flags: {
       ...sourceItem.flags,
-      "runyth-rules-core": {
+      "runyth-order": {
         source
       }
     }

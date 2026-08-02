@@ -2,9 +2,19 @@
 
 All notable changes to **Runyth Order** are documented here.
 
+## 1.0.3 — 2026-08-03
+
+- Finalized the unpublished foundation module ID as `runyth-order`.
+- Changed the API lookup, settings namespace, hook prefix, managed-source flag namespace, ApplicationV2 IDs, CSS namespace, package name, repository links, archive roots, schemas, examples, tests, and release tooling to the canonical Runyth Order identity.
+- Renamed the runtime API class and TypeScript interface to `RunythOrderApi`.
+- Renamed localization keys from the former internal abbreviation to the `RO.*` namespace and renamed UI CSS selectors and variables to the `ro-` namespace.
+- Updated the example complementary provider to require `runyth-order` 1.0.3 and use the new API and source namespace.
+- Added validation that rejects any reintroduction of the retired experimental identity in source files.
+- Documented that all complementary modules must update their dependency ID and API integration; no compatibility migration is included because the previous identity was never published or distributed.
+
 ## 1.0.2 — 2026-08-02
 
-- Renamed the complete user-facing core brand to **Runyth Order** while preserving module ID `runyth-rules-core`, API lookup, hooks, settings, source flags, provider IDs, and migration records.
+- Established **Runyth Order** as the complete user-facing brand and introduced the complementary-module naming contract.
 - Added the canonical complementary-module naming contract `Runyth Order: <Category> <Content Name>` and recommended `runyth-order-<category-slug>-<content-name-slug>` IDs.
 - Added validated provider `naming` metadata and manifest `flags.runyth` guidance.
 - Added non-blocking provider-title and module-title mismatch warnings with stable codes, machine-readable details, per-world-load deduplication, diagnostics visibility, and localized Rules Hub presentation.

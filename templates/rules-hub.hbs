@@ -1,73 +1,73 @@
-<div class="rrc-shell" data-busy="{{busy}}">
-  <header class="rrc-header">
+<div class="ro-shell" data-busy="{{busy}}">
+  <header class="ro-header">
     <div>
-      <p class="rrc-eyebrow">RUNYTH</p>
-      <h1>{{localize "RRC.Title"}}</h1>
-      <p>{{localize "RRC.Hub.Subtitle"}}</p>
+      <p class="ro-eyebrow">RUNYTH</p>
+      <h1>{{localize "RO.Title"}}</h1>
+      <p>{{localize "RO.Hub.Subtitle"}}</p>
     </div>
-    <div class="rrc-header-actions">
-      <button type="button" data-action="refresh" {{#if busy}}disabled{{/if}} title="{{localize 'RRC.Actions.Refresh'}}">
+    <div class="ro-header-actions">
+      <button type="button" data-action="refresh" {{#if busy}}disabled{{/if}} title="{{localize 'RO.Actions.Refresh'}}">
         <i class="fa-solid fa-arrows-rotate"></i>
-        <span>{{localize "RRC.Actions.Refresh"}}</span>
+        <span>{{localize "RO.Actions.Refresh"}}</span>
       </button>
-      <button type="button" data-action="reset-position" {{#if busy}}disabled{{/if}} title="{{localize 'RRC.Actions.ResetPosition'}}">
+      <button type="button" data-action="reset-position" {{#if busy}}disabled{{/if}} title="{{localize 'RO.Actions.ResetPosition'}}">
         <i class="fa-solid fa-window-restore"></i>
-        <span>{{localize "RRC.Actions.ResetPosition"}}</span>
+        <span>{{localize "RO.Actions.ResetPosition"}}</span>
       </button>
     </div>
   </header>
 
-  <nav class="rrc-tabs" aria-label="{{localize 'RRC.Hub.Navigation'}}">
+  <nav class="ro-tabs" aria-label="{{localize 'RO.Hub.Navigation'}}">
     <button type="button" data-tab="overview" {{#if busy}}disabled{{/if}} class="{{#if tabs.overview}}active{{/if}}">
-      <i class="fa-solid fa-gauge-high"></i> {{localize "RRC.Tabs.Overview"}}
+      <i class="fa-solid fa-gauge-high"></i> {{localize "RO.Tabs.Overview"}}
     </button>
     <button type="button" data-tab="providers" {{#if busy}}disabled{{/if}} class="{{#if tabs.providers}}active{{/if}}">
-      <i class="fa-solid fa-puzzle-piece"></i> {{localize "RRC.Tabs.Providers"}}
-      <span class="rrc-count">{{providerCount}}</span>
+      <i class="fa-solid fa-puzzle-piece"></i> {{localize "RO.Tabs.Providers"}}
+      <span class="ro-count">{{providerCount}}</span>
     </button>
     <button type="button" data-tab="packs" {{#if busy}}disabled{{/if}} class="{{#if tabs.packs}}active{{/if}}">
-      <i class="fa-solid fa-box-archive"></i> {{localize "RRC.Tabs.Packs"}}
-      <span class="rrc-count">{{packCount}}</span>
+      <i class="fa-solid fa-box-archive"></i> {{localize "RO.Tabs.Packs"}}
+      <span class="ro-count">{{packCount}}</span>
     </button>
     <button type="button" data-tab="audit" {{#if busy}}disabled{{/if}} class="{{#if tabs.audit}}active{{/if}}">
-      <i class="fa-solid fa-user-check"></i> {{localize "RRC.Tabs.Audit"}}
+      <i class="fa-solid fa-user-check"></i> {{localize "RO.Tabs.Audit"}}
     </button>
     <button type="button" data-tab="diagnostics" {{#if busy}}disabled{{/if}} class="{{#if tabs.diagnostics}}active{{/if}}">
-      <i class="fa-solid fa-stethoscope"></i> {{localize "RRC.Tabs.Diagnostics"}}
+      <i class="fa-solid fa-stethoscope"></i> {{localize "RO.Tabs.Diagnostics"}}
     </button>
   </nav>
 
-  <main class="rrc-content">
+  <main class="ro-content">
     {{#if busy}}
-      <div class="rrc-busy" role="status">
+      <div class="ro-busy" role="status">
         <i class="fa-solid fa-spinner fa-spin"></i>
-        {{localize "RRC.Hub.Working"}}
+        {{localize "RO.Hub.Working"}}
       </div>
     {{/if}}
 
     {{#if tabs.overview}}
-      <section class="rrc-panel">
-        <div class="rrc-stat-grid">
-          <article><strong>{{providerCount}}</strong><span>{{localize "RRC.Stats.Providers"}}</span></article>
-          <article><strong>{{packCount}}</strong><span>{{localize "RRC.Stats.Packs"}}</span></article>
-          <article><strong>{{validatorCount}}</strong><span>{{localize "RRC.Stats.Validators"}}</span></article>
-          <article><strong>{{pendingMigrationCount}}</strong><span>{{localize "RRC.Stats.PendingMigrations"}}</span></article>
+      <section class="ro-panel">
+        <div class="ro-stat-grid">
+          <article><strong>{{providerCount}}</strong><span>{{localize "RO.Stats.Providers"}}</span></article>
+          <article><strong>{{packCount}}</strong><span>{{localize "RO.Stats.Packs"}}</span></article>
+          <article><strong>{{validatorCount}}</strong><span>{{localize "RO.Stats.Validators"}}</span></article>
+          <article><strong>{{pendingMigrationCount}}</strong><span>{{localize "RO.Stats.PendingMigrations"}}</span></article>
         </div>
 
-        <div class="rrc-callout">
+        <div class="ro-callout">
           <i class="fa-solid fa-shield-halved"></i>
           <div>
-            <h2>{{localize "RRC.Overview.BoundaryTitle"}}</h2>
-            <p>{{localize "RRC.Overview.BoundaryBody"}}</p>
+            <h2>{{localize "RO.Overview.BoundaryTitle"}}</h2>
+            <p>{{localize "RO.Overview.BoundaryBody"}}</p>
           </div>
         </div>
 
-        <div class="rrc-two-column">
+        <div class="ro-two-column">
           <article>
-            <h2>{{localize "RRC.Overview.Capabilities"}}</h2>
-            <div class="rrc-capability-grid">
+            <h2>{{localize "RO.Overview.Capabilities"}}</h2>
+            <div class="ro-capability-grid">
               {{#each capabilities}}
-                <div class="rrc-capability {{#if available}}available{{/if}}">
+                <div class="ro-capability {{#if available}}available{{/if}}">
                   <i class="fa-solid {{#if available}}fa-circle-check{{else}}fa-circle-minus{{/if}}"></i>
                   <code>{{id}}</code>
                 </div>
@@ -75,11 +75,11 @@
             </div>
           </article>
           <article>
-            <h2>{{localize "RRC.Overview.Runtime"}}</h2>
-            <dl class="rrc-definition-list">
-              <dt>{{localize "RRC.Overview.ApiVersion"}}</dt><dd>{{apiVersion}}</dd>
-              <dt>{{localize "RRC.Overview.SchemaVersion"}}</dt><dd>{{dataSchemaVersion}}</dd>
-              <dt>{{localize "RRC.Overview.RegisteredMigrations"}}</dt><dd>{{migrationCount}}</dd>
+            <h2>{{localize "RO.Overview.Runtime"}}</h2>
+            <dl class="ro-definition-list">
+              <dt>{{localize "RO.Overview.ApiVersion"}}</dt><dd>{{apiVersion}}</dd>
+              <dt>{{localize "RO.Overview.SchemaVersion"}}</dt><dd>{{dataSchemaVersion}}</dd>
+              <dt>{{localize "RO.Overview.RegisteredMigrations"}}</dt><dd>{{migrationCount}}</dd>
             </dl>
           </article>
         </div>
@@ -87,28 +87,28 @@
     {{/if}}
 
     {{#if tabs.providers}}
-      <section class="rrc-panel">
-        <h2>{{localize "RRC.Providers.Title"}}</h2>
-        <p>{{localize "RRC.Providers.Help"}}</p>
+      <section class="ro-panel">
+        <h2>{{localize "RO.Providers.Title"}}</h2>
+        <p>{{localize "RO.Providers.Help"}}</p>
         {{#if providerRows.length}}
-          <div class="rrc-card-list">
+          <div class="ro-card-list">
             {{#each providerRows}}
-              <article class="rrc-card">
+              <article class="ro-card">
                 <header>
                   <div>
                     <h3>{{title}}</h3>
                     <code>{{id}}</code>
                   </div>
-                  <span class="rrc-version">v{{version}}</span>
+                  <span class="ro-version">v{{version}}</span>
                 </header>
                 {{#if description}}<p>{{description}}</p>{{/if}}
                 {{#if namingFindings.length}}
-                  <div class="rrc-provider-naming" aria-label="{{localize 'RRC.Providers.Naming'}}">
+                  <div class="ro-provider-naming" aria-label="{{localize 'RO.Providers.Naming'}}">
                     {{#each namingFindings}}
-                      <div class="rrc-naming-finding {{cssClass}}">
+                      <div class="ro-naming-finding {{cssClass}}">
                         <i class="fa-solid fa-circle-info"></i>
                         <div>
-                          <strong>{{localize "RRC.Naming.ContractLabel"}}</strong>
+                          <strong>{{localize "RO.Naming.ContractLabel"}}</strong>
                           <p>{{message}}</p>
                           <code>{{code}}</code>
                         </div>
@@ -116,113 +116,113 @@
                     {{/each}}
                   </div>
                 {{/if}}
-                <dl class="rrc-definition-list compact">
-                  <dt>{{localize "RRC.Providers.Module"}}</dt><dd><code>{{moduleId}}</code></dd>
-                  <dt>{{localize "RRC.Providers.Systems"}}</dt><dd>{{systemSummary}}</dd>
-                  <dt>{{localize "RRC.Providers.Capabilities"}}</dt><dd>{{capabilitySummary}}</dd>
-                  <dt>{{localize "RRC.Providers.Contributions"}}</dt>
-                  <dd>{{packCount}} {{localize "RRC.Stats.Packs"}}, {{validatorCount}} {{localize "RRC.Stats.Validators"}}, {{migrationCount}} {{localize "RRC.Providers.Migrations"}}</dd>
+                <dl class="ro-definition-list compact">
+                  <dt>{{localize "RO.Providers.Module"}}</dt><dd><code>{{moduleId}}</code></dd>
+                  <dt>{{localize "RO.Providers.Systems"}}</dt><dd>{{systemSummary}}</dd>
+                  <dt>{{localize "RO.Providers.Capabilities"}}</dt><dd>{{capabilitySummary}}</dd>
+                  <dt>{{localize "RO.Providers.Contributions"}}</dt>
+                  <dd>{{packCount}} {{localize "RO.Stats.Packs"}}, {{validatorCount}} {{localize "RO.Stats.Validators"}}, {{migrationCount}} {{localize "RO.Providers.Migrations"}}</dd>
                 </dl>
               </article>
             {{/each}}
           </div>
         {{else}}
-          <div class="rrc-empty">{{localize "RRC.Providers.Empty"}}</div>
+          <div class="ro-empty">{{localize "RO.Providers.Empty"}}</div>
         {{/if}}
       </section>
     {{/if}}
 
     {{#if tabs.packs}}
-      <section class="rrc-panel">
-        <h2>{{localize "RRC.Packs.Title"}}</h2>
-        <p>{{localize "RRC.Packs.Help"}}</p>
+      <section class="ro-panel">
+        <h2>{{localize "RO.Packs.Title"}}</h2>
+        <p>{{localize "RO.Packs.Help"}}</p>
         {{#if packRows.length}}
-          <div class="rrc-card-list">
+          <div class="ro-card-list">
             {{#each packRows}}
-              <article class="rrc-card">
+              <article class="ro-card">
                 <header>
                   <div><h3>{{title}}</h3><code>{{id}}</code></div>
-                  {{#if version}}<span class="rrc-version">v{{version}}</span>{{/if}}
+                  {{#if version}}<span class="ro-version">v{{version}}</span>{{/if}}
                 </header>
                 {{#if description}}<p>{{description}}</p>{{/if}}
-                <dl class="rrc-definition-list compact">
-                  <dt>{{localize "RRC.Packs.Provider"}}</dt><dd><code>{{providerId}}</code></dd>
-                  <dt>{{localize "RRC.Packs.Kinds"}}</dt><dd>{{kindSummary}}</dd>
-                  <dt>{{localize "RRC.Packs.Compendia"}}</dt><dd>{{compendiumSummary}}</dd>
-                  <dt>{{localize "RRC.Packs.Entries"}}</dt><dd>{{entryCount}}</dd>
+                <dl class="ro-definition-list compact">
+                  <dt>{{localize "RO.Packs.Provider"}}</dt><dd><code>{{providerId}}</code></dd>
+                  <dt>{{localize "RO.Packs.Kinds"}}</dt><dd>{{kindSummary}}</dd>
+                  <dt>{{localize "RO.Packs.Compendia"}}</dt><dd>{{compendiumSummary}}</dd>
+                  <dt>{{localize "RO.Packs.Entries"}}</dt><dd>{{entryCount}}</dd>
                 </dl>
               </article>
             {{/each}}
           </div>
         {{else}}
-          <div class="rrc-empty">{{localize "RRC.Packs.Empty"}}</div>
+          <div class="ro-empty">{{localize "RO.Packs.Empty"}}</div>
         {{/if}}
       </section>
     {{/if}}
 
     {{#if tabs.audit}}
-      <section class="rrc-panel">
-        <h2>{{localize "RRC.Audit.Title"}}</h2>
-        <p>{{localize "RRC.Audit.Help"}}</p>
+      <section class="ro-panel">
+        <h2>{{localize "RO.Audit.Title"}}</h2>
+        <p>{{localize "RO.Audit.Help"}}</p>
         {{#if actor}}
-          <div class="rrc-actor-row">
+          <div class="ro-actor-row">
             <img src="{{actor.img}}" alt="" />
             <div><strong>{{actor.name}}</strong><code>{{actor.uuid}}</code></div>
             <button type="button" data-action="audit" {{#if actor.auditDisabled}}disabled{{/if}}>
               <i class="fa-solid fa-magnifying-glass-chart"></i>
-              {{localize "RRC.Actions.AuditActor"}}
+              {{localize "RO.Actions.AuditActor"}}
             </button>
           </div>
         {{else}}
-          <div class="rrc-empty">{{actorSelectionMessage}}</div>
+          <div class="ro-empty">{{actorSelectionMessage}}</div>
         {{/if}}
 
         {{#if auditReport}}
-          <div class="rrc-result-summary">
-            <span class="danger">{{auditReport.counts.error}} {{localize "RRC.Severity.Errors"}}</span>
-            <span class="warning">{{auditReport.counts.warning}} {{localize "RRC.Severity.Warnings"}}</span>
-            <span class="info">{{auditReport.counts.info}} {{localize "RRC.Severity.Info"}}</span>
+          <div class="ro-result-summary">
+            <span class="danger">{{auditReport.counts.error}} {{localize "RO.Severity.Errors"}}</span>
+            <span class="warning">{{auditReport.counts.warning}} {{localize "RO.Severity.Warnings"}}</span>
+            <span class="info">{{auditReport.counts.info}} {{localize "RO.Severity.Info"}}</span>
           </div>
           {{#if auditReport.issues.length}}
-            <div class="rrc-findings">
+            <div class="ro-findings">
               {{#each auditReport.issues}}
-                <article class="rrc-finding {{cssClass}}">
+                <article class="ro-finding {{cssClass}}">
                   <header><strong>{{title}}</strong><code>{{providerId}} · {{code}}</code></header>
                   <p>{{message}}</p>
-                  {{#if remediation}}<p class="rrc-remediation"><i class="fa-solid fa-screwdriver-wrench"></i> {{remediation}}</p>{{/if}}
+                  {{#if remediation}}<p class="ro-remediation"><i class="fa-solid fa-screwdriver-wrench"></i> {{remediation}}</p>{{/if}}
                 </article>
               {{/each}}
             </div>
           {{else}}
-            <div class="rrc-success"><i class="fa-solid fa-circle-check"></i> {{localize "RRC.Audit.Clean"}}</div>
+            <div class="ro-success"><i class="fa-solid fa-circle-check"></i> {{localize "RO.Audit.Clean"}}</div>
           {{/if}}
         {{/if}}
       </section>
     {{/if}}
 
     {{#if tabs.diagnostics}}
-      <section class="rrc-panel">
-        <div class="rrc-section-heading">
-          <div><h2>{{localize "RRC.Diagnostics.Title"}}</h2><p>{{localize "RRC.Diagnostics.Help"}}</p></div>
-          <div class="rrc-button-group">
+      <section class="ro-panel">
+        <div class="ro-section-heading">
+          <div><h2>{{localize "RO.Diagnostics.Title"}}</h2><p>{{localize "RO.Diagnostics.Help"}}</p></div>
+          <div class="ro-button-group">
             <button type="button" data-action="diagnostics" data-deep="false" {{#if busy}}disabled{{/if}}>
-              <i class="fa-solid fa-stethoscope"></i> {{localize "RRC.Actions.RunDiagnostics"}}
+              <i class="fa-solid fa-stethoscope"></i> {{localize "RO.Actions.RunDiagnostics"}}
             </button>
             <button type="button" data-action="diagnostics" data-deep="true" {{#if busy}}disabled{{/if}}>
-              <i class="fa-solid fa-microscope"></i> {{localize "RRC.Actions.RunDeepDiagnostics"}}
+              <i class="fa-solid fa-microscope"></i> {{localize "RO.Actions.RunDeepDiagnostics"}}
             </button>
           </div>
         </div>
 
         {{#if pendingMigrations.length}}
-          <div class="rrc-callout warning">
+          <div class="ro-callout warning">
             <i class="fa-solid fa-database"></i>
             <div>
-              <h3>{{localize "RRC.Migrations.PendingTitle"}}</h3>
-              <p><strong>{{pendingMigrationCount}}</strong> {{localize "RRC.Migrations.PendingBody"}}</p>
+              <h3>{{localize "RO.Migrations.PendingTitle"}}</h3>
+              <p><strong>{{pendingMigrationCount}}</strong> {{localize "RO.Migrations.PendingBody"}}</p>
               {{#if isGM}}
                 <button type="button" data-action="run-migrations" {{#if busy}}disabled{{/if}}>
-                  <i class="fa-solid fa-play"></i> {{localize "RRC.Actions.RunMigrations"}}
+                  <i class="fa-solid fa-play"></i> {{localize "RO.Actions.RunMigrations"}}
                 </button>
               {{/if}}
             </div>
@@ -230,23 +230,23 @@
         {{/if}}
 
         {{#if diagnosticsReport}}
-          <div class="rrc-result-summary">
-            <span class="danger">{{diagnosticsReport.counts.error}} {{localize "RRC.Severity.Errors"}}</span>
-            <span class="warning">{{diagnosticsReport.counts.warning}} {{localize "RRC.Severity.Warnings"}}</span>
-            <span class="info">{{diagnosticsReport.counts.info}} {{localize "RRC.Severity.Info"}}</span>
-            <button type="button" data-action="copy-diagnostics" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-copy"></i> {{localize "RRC.Actions.CopyJson"}}</button>
+          <div class="ro-result-summary">
+            <span class="danger">{{diagnosticsReport.counts.error}} {{localize "RO.Severity.Errors"}}</span>
+            <span class="warning">{{diagnosticsReport.counts.warning}} {{localize "RO.Severity.Warnings"}}</span>
+            <span class="info">{{diagnosticsReport.counts.info}} {{localize "RO.Severity.Info"}}</span>
+            <button type="button" data-action="copy-diagnostics" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-copy"></i> {{localize "RO.Actions.CopyJson"}}</button>
           </div>
           {{#if diagnosticsReport.findings.length}}
-            <div class="rrc-findings">
+            <div class="ro-findings">
               {{#each diagnosticsReport.findings}}
-                <article class="rrc-finding {{cssClass}}">
+                <article class="ro-finding {{cssClass}}">
                   <header><strong>{{code}}</strong>{{#if providerId}}<code>{{providerId}}{{#if packId}} · {{packId}}{{/if}}</code>{{/if}}</header>
                   <p>{{message}}</p>
                 </article>
               {{/each}}
             </div>
           {{else}}
-            <div class="rrc-success"><i class="fa-solid fa-circle-check"></i> {{localize "RRC.Diagnostics.Clean"}}</div>
+            <div class="ro-success"><i class="fa-solid fa-circle-check"></i> {{localize "RO.Diagnostics.Clean"}}</div>
           {{/if}}
         {{/if}}
       </section>

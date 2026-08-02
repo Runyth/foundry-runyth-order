@@ -1,6 +1,6 @@
 {
-  "name": "runyth-rules-core",
-  "version": "1.0.2",
+  "name": "runyth-order",
+  "version": "1.0.3",
   "private": true,
   "description": "Runyth Order: a thin Foundry VTT gateway for modular homebrew providers.",
   "type": "module",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Runyth/runyth-rules-core.git"
+    "url": "https://github.com/Runyth/runyth-order.git"
   },
   "license": "AGPL-3.0-or-later"
 }

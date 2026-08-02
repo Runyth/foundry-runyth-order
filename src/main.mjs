@@ -1,4 +1,4 @@
-import { RunythRulesApi } from "./api.mjs";
+import { RunythOrderApi } from "./api.mjs";
 import { HOOKS, MODULE_ID, MODULE_TITLE, SETTINGS } from "./constants.mjs";
 import { ActorAuditService } from "./core/audit-service.mjs";
 import { DiagnosticsService } from "./core/diagnostics-service.mjs";
@@ -69,7 +69,7 @@ Hooks.once("init", () => {
       resolveUuid: (uuid) => globalThis.fromUuid(uuid),
     });
 
-    api = new RunythRulesApi({
+    api = new RunythOrderApi({
       registry,
       auditService,
       diagnosticsService,
@@ -104,7 +104,7 @@ Hooks.once("ready", async () => {
     seenVersion.startsWith(`${currentSeries}.`);
 
   if (game.user?.isGM && showOnboarding && !alreadySeenSeries) {
-    ui.notifications?.info?.(game.i18n.localize("RRC.Notifications.Onboarding"), {
+    ui.notifications?.info?.(game.i18n.localize("RO.Notifications.Onboarding"), {
       permanent: true,
       console: false,
     });

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://runyth.github.io/schemas/runyth-rules-core/provider-descriptor-v1.json",
+  "$id": "https://runyth.github.io/schemas/runyth-order/provider-descriptor-v1.json",
   "title": "Runyth Order provider descriptor",
   "type": "object",
   "additionalProperties": false,

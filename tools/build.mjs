@@ -66,6 +66,18 @@ const report = {
   installBytes: (await readFile(resolve(dist, installName))).length,
   sourceBytes: (await readFile(resolve(dist, sourceName))).length,
   reproducibleTimestamp: "1980-01-01T00:00:00Z",
+  identity: {
+    moduleId,
+    apiLookup: `game.modules.get("${moduleId}")?.api`,
+    settingsNamespace: moduleId,
+    hookPrefix: `${moduleId}.*`,
+    sourceFlagNamespace: `flags.${moduleId}.source`,
+    localizationPrefix: "RO.",
+    cssPrefix: "ro-",
+    apiClass: "RunythOrderApi",
+    complementaryModuleUpdateRequired: true,
+    compatibilityMigrationRegistered: false,
+  },
   namingContract: {
     pattern: "Runyth Order: <Category> <Content Name>",
     recommendedIdPattern: "runyth-order-<category-slug>-<content-name-slug>",

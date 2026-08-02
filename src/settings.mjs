@@ -26,21 +26,21 @@ export function registerSettings({ RulesHub }) {
   });
 
   game.settings.register(MODULE_ID, SETTINGS.ACTOR_AUDIT_PERMISSION, {
-    name: "RRC.Settings.ActorAuditPermission.Name",
-    hint: "RRC.Settings.ActorAuditPermission.Hint",
+    name: "RO.Settings.ActorAuditPermission.Name",
+    hint: "RO.Settings.ActorAuditPermission.Hint",
     scope: "world",
     config: true,
     type: String,
     choices: {
-      owner: "RRC.Settings.ActorAuditPermission.Owner",
-      gm: "RRC.Settings.ActorAuditPermission.GM",
+      owner: "RO.Settings.ActorAuditPermission.Owner",
+      gm: "RO.Settings.ActorAuditPermission.GM",
     },
     default: "owner",
   });
 
   game.settings.register(MODULE_ID, SETTINGS.SHOW_ONBOARDING, {
-    name: "RRC.Settings.ShowOnboarding.Name",
-    hint: "RRC.Settings.ShowOnboarding.Hint",
+    name: "RO.Settings.ShowOnboarding.Name",
+    hint: "RO.Settings.ShowOnboarding.Hint",
     scope: "world",
     config: true,
     type: Boolean,
@@ -55,9 +55,9 @@ export function registerSettings({ RulesHub }) {
   });
 
   game.settings.registerMenu(MODULE_ID, "openRulesHub", {
-    name: "RRC.Settings.OpenHub.Name",
-    hint: "RRC.Settings.OpenHub.Hint",
-    label: "RRC.Settings.OpenHub.Label",
+    name: "RO.Settings.OpenHub.Name",
+    hint: "RO.Settings.OpenHub.Hint",
+    label: "RO.Settings.OpenHub.Label",
     icon: "fa-solid fa-diagram-project",
     type: RulesHub,
     restricted: true,

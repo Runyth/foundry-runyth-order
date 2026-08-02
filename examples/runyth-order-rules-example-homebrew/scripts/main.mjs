@@ -1,5 +1,5 @@
 const MODULE_ID = "runyth-order-rules-example-homebrew";
-const CORE_ID = "runyth-rules-core";
+const CORE_ID = "runyth-order";
 
 function providerVersion() {
   return game.modules.get(MODULE_ID)?.version ?? "0.0.0";
@@ -112,8 +112,8 @@ Hooks.once("init", async () => {
     ],
     validators: [actorValidator()],
     migrations: [exampleMigration()],
-    documentationUrl: "https://github.com/Runyth/runyth-rules-core/tree/master/examples/runyth-order-rules-example-homebrew",
-    repositoryUrl: "https://github.com/Runyth/runyth-rules-core",
+    documentationUrl: "https://github.com/Runyth/runyth-order/tree/master/examples/runyth-order-rules-example-homebrew",
+    repositoryUrl: "https://github.com/Runyth/runyth-order",
     authors: ["Runyth"],
     naming: {
       orderName: "Runyth Order",

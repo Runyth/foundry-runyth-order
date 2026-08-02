@@ -5,7 +5,7 @@ function openHub(activeTab = "overview") {
   promise?.catch?.((error) => {
     console.error(`${MODULE_TITLE} | Could not open Rules Hub`, error);
     ui.notifications?.error?.(
-      game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }),
+      game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }),
     );
   });
   return promise;
@@ -30,7 +30,7 @@ export function createSceneControlTool(tools) {
 
   return {
     name: `${MODULE_ID}-hub`,
-    title: "RRC.Launcher.Open",
+    title: "RO.Launcher.Open",
     icon: "fa-solid fa-diagram-project",
     order,
     button: true,
@@ -43,8 +43,8 @@ export function createSceneControlTool(tools) {
 
 export function registerLaunchers() {
   game.keybindings.register(MODULE_ID, "openRulesHub", {
-    name: "RRC.Keybindings.OpenHub.Name",
-    hint: "RRC.Keybindings.OpenHub.Hint",
+    name: "RO.Keybindings.OpenHub.Name",
+    hint: "RO.Keybindings.OpenHub.Hint",
     editable: [{ key: "KeyR", modifiers: ["Control", "Shift"] }],
     onDown: () => {
       void openHub();
@@ -63,11 +63,11 @@ export function registerLaunchers() {
     const card = document.createElement("section");
     card.className = `${MODULE_ID}-launcher`;
     card.innerHTML = `
-      <h3><i class="fa-solid fa-diagram-project"></i> ${game.i18n.localize("RRC.Title")}</h3>
-      <p>${game.i18n.localize("RRC.Launcher.Summary")}</p>
+      <h3><i class="fa-solid fa-diagram-project"></i> ${game.i18n.localize("RO.Title")}</h3>
+      <p>${game.i18n.localize("RO.Launcher.Summary")}</p>
       <button type="button" data-action="open-rules-hub">
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        <span>${game.i18n.localize("RRC.Launcher.Open")}</span>
+        <span>${game.i18n.localize("RO.Launcher.Open")}</span>
       </button>
     `;
     card.querySelector("button")?.addEventListener("click", () => void openHub());

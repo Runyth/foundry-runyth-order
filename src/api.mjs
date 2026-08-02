@@ -2,7 +2,7 @@ import { API_VERSION, DATA_SCHEMA_VERSION, HOOKS, MODULE_ID } from "./constants.
 import { normalizeSourceDescriptor, readSource, tagDocument } from "./core/source-flags.mjs";
 import { publicClone } from "./util/objects.mjs";
 
-export class RunythRulesApi {
+export class RunythOrderApi {
   #ready = false;
   #readyPromise;
   #resolveReady;

@@ -40,7 +40,7 @@ Use custom capabilities only when the concept cannot be represented by the stand
 ## Discovery example
 
 ```javascript
-const core = game.modules.get("runyth-rules-core").api;
+const core = game.modules.get("runyth-order").api;
 const hasDndAutomation = core.hasCapability("automation.activities", {
   systemId: "dnd5e"
 });

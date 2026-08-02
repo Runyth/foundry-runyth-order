@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://runyth.github.io/schemas/runyth-rules-core/source-descriptor-v1.json",
+  "$id": "https://runyth.github.io/schemas/runyth-order/source-descriptor-v1.json",
   "title": "Runyth Order managed source",
   "type": "object",
   "additionalProperties": false,

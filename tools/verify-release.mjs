@@ -46,7 +46,7 @@ async function digest(path) {
 if ((await digest(installPath)) !== expectedChecksums.get(report.installArchive)) failures.push("Install checksum mismatch.");
 if ((await digest(sourcePath)) !== expectedChecksums.get(report.sourceArchive)) failures.push("Source checksum mismatch.");
 
-const temp = await mkdtemp(resolve(tmpdir(), "runyth-rules-core-build-"));
+const temp = await mkdtemp(resolve(tmpdir(), "runyth-order-build-"));
 try {
   const firstInstall = await readFile(installPath);
   const firstSource = await readFile(sourcePath);

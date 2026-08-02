@@ -206,12 +206,12 @@ export type ManagedSource = {
   importedAt: string;
 };
 
-export interface RunythRulesCoreApi {
-  readonly moduleId: "runyth-rules-core";
+export interface RunythOrderApi {
+  readonly moduleId: "runyth-order";
   readonly apiVersion: "1.0.0";
   readonly dataSchemaVersion: 1;
   isReady(): boolean;
-  whenReady(): Promise<RunythRulesCoreApi>;
+  whenReady(): Promise<RunythOrderApi>;
   registerProvider(provider: ProviderRegistration): Readonly<ProviderDescriptor>;
   registerPack(providerId: string, pack: ContentPack): Readonly<RegisteredContentPack>;
   registerActorValidator(providerId: string, validator: ActorValidator): Readonly<RegisteredValidator>;

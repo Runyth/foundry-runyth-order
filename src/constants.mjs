@@ -1,4 +1,4 @@
-export const MODULE_ID = "runyth-rules-core";
+export const MODULE_ID = "runyth-order";
 export const MODULE_TITLE = "Runyth Order";
 export const API_VERSION = "1.0.0";
 export const DATA_SCHEMA_VERSION = 1;

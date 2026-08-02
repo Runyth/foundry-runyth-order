@@ -25,7 +25,7 @@ Add a required module relationship:
   "relationships": {
     "requires": [
       {
-        "id": "runyth-rules-core",
+        "id": "runyth-order",
         "type": "module",
         "compatibility": {
           "minimum": "1.0.0",
@@ -69,7 +69,7 @@ See [Naming Contract](NAMING_CONTRACT.md).
 const PROVIDER_ID = "runyth-order-class-example-vanguard";
 
 Hooks.once("init", () => {
-  const core = game.modules.get("runyth-rules-core")?.api;
+  const core = game.modules.get("runyth-order")?.api;
   if (!core) {
     throw new Error("Runyth Order is required but its API is unavailable.");
   }
@@ -109,7 +109,7 @@ Hooks.once("init", () => {
 });
 ```
 
-When load ordering cannot be guaranteed, listen once for `runyth-rules-core.apiReady`, but prevent duplicate registration.
+When load ordering cannot be guaranteed, listen once for `runyth-order.apiReady`, but prevent duplicate registration.
 
 ## 5. Keep canonical content in provider compendia
 

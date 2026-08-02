@@ -54,15 +54,44 @@ function diagnosticsFor(registry, modules) {
   });
 }
 
-test("renames only the display brand and preserves the technical core contract", async () => {
+test("uses the canonical Runyth Order package identity throughout the public contract", async () => {
   const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
+  const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
   const main = await readFile(new URL("../src/main.mjs", import.meta.url), "utf8");
+  const api = await readFile(new URL("../src/api.mjs", import.meta.url), "utf8");
   const constants = await readFile(new URL("../src/constants.mjs", import.meta.url), "utf8");
+  const sourceFlags = await readFile(new URL("../src/core/source-flags.mjs", import.meta.url), "utf8");
+  const exampleManifest = JSON.parse(
+    await readFile(new URL("../examples/runyth-order-rules-example-homebrew/module.json", import.meta.url), "utf8"),
+  );
+
   assert.equal(manifest.title, "Runyth Order");
-  assert.equal(manifest.id, "runyth-rules-core");
+  assert.equal(manifest.id, "runyth-order");
+  assert.equal(packageJson.name, "runyth-order");
+  assert.deepEqual(manifest.styles, ["styles/runyth-order.css"]);
   assert.match(main, /game\.modules\.get\(MODULE_ID\)/u);
-  assert.match(constants, /MODULE_ID = "runyth-rules-core"/u);
+  assert.match(main, /new RunythOrderApi\(/u);
+  assert.match(api, /export class RunythOrderApi/u);
+  assert.match(constants, /MODULE_ID = "runyth-order"/u);
+  assert.match(constants, /`\$\{MODULE_ID\}\.apiReady`/u);
+  assert.match(sourceFlags, /document\.getFlag\(MODULE_ID, SOURCE_FLAG_KEY\)/u);
+  assert.ok(
+    exampleManifest.relationships.requires.some((dependency) => dependency.id === "runyth-order"),
+  );
   assert.doesNotMatch(main, /registerMigration\(/u);
+});
+
+test("uses only the RO localization and ro- CSS namespaces", async () => {
+  const en = JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8"));
+  const de = JSON.parse(await readFile(new URL("../lang/de.json", import.meta.url), "utf8"));
+  const template = await readFile(new URL("../templates/rules-hub.hbs", import.meta.url), "utf8");
+  const css = await readFile(new URL("../styles/runyth-order.css", import.meta.url), "utf8");
+
+  assert.ok(Object.keys(en).every((key) => key.startsWith("RO.")));
+  assert.deepEqual(Object.keys(en).sort(), Object.keys(de).sort());
+  assert.match(template, /ro-shell/u);
+  assert.match(css, /\.runyth-order/u);
+  assert.match(css, /--ro-bg/u);
 });
 
 test("conforming provider and module titles register without naming warnings", () => {
@@ -169,12 +198,12 @@ test("legacy providers without metadata remain compatible and are not guessed", 
 
 test("the core module itself is excluded from complementary naming checks", () => {
   const warnings = [];
-  const module = moduleRecord({ id: "runyth-rules-core", title: "Runyth Order", flags: {} });
+  const module = moduleRecord({ id: "runyth-order", title: "Runyth Order", flags: {} });
   const { registry } = registryWith(module, warnings);
   registry.registerProvider(
     provider({
-      id: "runyth-rules-core",
-      moduleId: "runyth-rules-core",
+      id: "runyth-order",
+      moduleId: "runyth-order",
       title: "Runyth Order",
       naming: undefined,
       capabilities: [],

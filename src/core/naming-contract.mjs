@@ -98,7 +98,7 @@ export function evaluateProviderNaming({ provider, module }) {
       finding({
         severity: "warning",
         code: NAMING_CODES.METADATA_INVALID,
-        messageKey: "RRC.Naming.MetadataInvalid",
+        messageKey: "RO.Naming.MetadataInvalid",
         provider,
         module,
         expectedTitle: providerNaming?.canonicalTitle ?? null,
@@ -112,7 +112,7 @@ export function evaluateProviderNaming({ provider, module }) {
       finding({
         severity: "info",
         code: NAMING_CODES.METADATA_MISSING,
-        messageKey: "RRC.Naming.MetadataMissing",
+        messageKey: "RO.Naming.MetadataMissing",
         provider,
         module,
         expectedTitle: null,
@@ -129,7 +129,7 @@ export function evaluateProviderNaming({ provider, module }) {
       finding({
         severity: "warning",
         code: NAMING_CODES.METADATA_CONFLICT,
-        messageKey: "RRC.Naming.MetadataConflict",
+        messageKey: "RO.Naming.MetadataConflict",
         provider,
         module,
         expectedTitle,
@@ -143,7 +143,7 @@ export function evaluateProviderNaming({ provider, module }) {
       finding({
         severity: "warning",
         code: NAMING_CODES.PROVIDER_MISMATCH,
-        messageKey: "RRC.Naming.ProviderMismatch",
+        messageKey: "RO.Naming.ProviderMismatch",
         provider,
         module,
         expectedTitle,
@@ -156,7 +156,7 @@ export function evaluateProviderNaming({ provider, module }) {
       finding({
         severity: "warning",
         code: NAMING_CODES.MODULE_MISMATCH,
-        messageKey: "RRC.Naming.ModuleMismatch",
+        messageKey: "RO.Naming.ModuleMismatch",
         provider,
         module,
         expectedTitle,

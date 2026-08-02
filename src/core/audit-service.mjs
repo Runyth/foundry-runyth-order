@@ -2,6 +2,7 @@ import {
   AUDIT_SEVERITIES,
   DEFAULT_VALIDATOR_TIMEOUT_MS,
   HOOKS,
+  MODULE_ID,
 } from "../constants.mjs";
 import { withTimeout } from "../util/async.mjs";
 import { publicClone, safeError } from "../util/objects.mjs";
@@ -164,8 +165,8 @@ export class ActorAuditService {
       const sourceKey = `${source.providerId}:${source.packId}:${source.entryId}`;
       if (seen.has(sourceKey)) {
         issues.push({
-          id: issueId("runyth-rules-core", "duplicate-source", item.id),
-          providerId: "runyth-rules-core",
+          id: issueId(MODULE_ID, "duplicate-source", item.id),
+          providerId: MODULE_ID,
           severity: "warning",
           code: "DUPLICATE_SOURCE",
           title: "Duplicate managed source",
@@ -180,8 +181,8 @@ export class ActorAuditService {
       const provider = this.registry.getProvider(source.providerId);
       if (!provider) {
         issues.push({
-          id: issueId("runyth-rules-core", "missing-provider", item.id),
-          providerId: "runyth-rules-core",
+          id: issueId(MODULE_ID, "missing-provider", item.id),
+          providerId: MODULE_ID,
           severity: "error",
           code: "MISSING_PROVIDER",
           title: "Source provider unavailable",
@@ -196,8 +197,8 @@ export class ActorAuditService {
       const pack = this.registry.getPack(source.packId);
       if (!pack) {
         issues.push({
-          id: issueId("runyth-rules-core", "missing-pack", item.id),
-          providerId: "runyth-rules-core",
+          id: issueId(MODULE_ID, "missing-pack", item.id),
+          providerId: MODULE_ID,
           severity: "error",
           code: "MISSING_PACK",
           title: "Source pack unavailable",
@@ -212,8 +213,8 @@ export class ActorAuditService {
       const entry = pack.entries.find((candidate) => candidate.id === source.entryId);
       if (!entry) {
         issues.push({
-          id: issueId("runyth-rules-core", "missing-entry", item.id),
-          providerId: "runyth-rules-core",
+          id: issueId(MODULE_ID, "missing-entry", item.id),
+          providerId: MODULE_ID,
           severity: "warning",
           code: "MISSING_ENTRY",
           title: "Source entry no longer declared",
@@ -226,8 +227,8 @@ export class ActorAuditService {
 
       if (source.contentVersion && pack.version && source.contentVersion !== pack.version) {
         issues.push({
-          id: issueId("runyth-rules-core", "content-version", item.id),
-          providerId: "runyth-rules-core",
+          id: issueId(MODULE_ID, "content-version", item.id),
+          providerId: MODULE_ID,
           severity: "info",
           code: "CONTENT_VERSION_DIFFERENCE",
           title: "Newer source content may exist",
@@ -242,8 +243,8 @@ export class ActorAuditService {
         const sourceDocument = await this.resolveUuid(source.sourceUuid).catch(() => null);
         if (!sourceDocument) {
           issues.push({
-            id: issueId("runyth-rules-core", "unresolved-source-uuid", item.id),
-            providerId: "runyth-rules-core",
+            id: issueId(MODULE_ID, "unresolved-source-uuid", item.id),
+            providerId: MODULE_ID,
             severity: "warning",
             code: "UNRESOLVED_SOURCE_UUID",
             title: "Source UUID cannot be resolved",
