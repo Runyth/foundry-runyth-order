@@ -92,7 +92,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       namingWarningCount: namingFindings.filter((finding) => finding.severity === "warning").length,
       systemSummary: provider.systems.length
         ? provider.systems.map((system) => `${system.id} ${system.minimum ?? "*"}–${system.maximum ?? "*"}`).join(", ")
-        : game.i18n.localize("RRC.Hub.SystemNeutral"),
+        : game.i18n.localize("RO.Hub.SystemNeutral"),
       capabilitySummary: provider.capabilities.join(", ") || "—",
       packCount: provider.packIds.length,
       validatorCount: provider.validatorIds.length,
@@ -138,8 +138,8 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       pendingMigrations,
       actorSelectionMessage:
         selection.reason === "multiple"
-          ? game.i18n.localize("RRC.Audit.MultipleActors")
-          : game.i18n.localize("RRC.Audit.NoActor"),
+          ? game.i18n.localize("RO.Audit.MultipleActors")
+          : game.i18n.localize("RO.Audit.NoActor"),
       actor: actor
         ? {
             id: actor.id,
@@ -234,7 +234,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       await game.settings.set(MODULE_ID, SETTINGS.HUB_POSITION, {});
       this.setPosition(position);
     } catch (error) {
-      notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
+      notification("error", game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }));
     }
   }
 
@@ -244,12 +244,12 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!actor) {
       notification(
         "warn",
-        game.i18n.localize(reason === "multiple" ? "RRC.Notifications.SelectOneActor" : "RRC.Notifications.SelectActor"),
+        game.i18n.localize(reason === "multiple" ? "RO.Notifications.SelectOneActor" : "RO.Notifications.SelectActor"),
       );
       return;
     }
     if (!mayAuditActor(actor)) {
-      notification("error", game.i18n.localize("RRC.Notifications.AuditDenied"));
+      notification("error", game.i18n.localize("RO.Notifications.AuditDenied"));
       return;
     }
 
@@ -260,7 +260,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       this.activeTab = "audit";
     } catch (error) {
       console.error(`${MODULE_TITLE} | Actor audit failed`, error);
-      notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
+      notification("error", game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }));
     } finally {
       this.busy = false;
       await this.#renderIfOpen();
@@ -276,7 +276,7 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       this.activeTab = "diagnostics";
     } catch (error) {
       console.error(`${MODULE_TITLE} | Diagnostics failed`, error);
-      notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
+      notification("error", game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }));
     } finally {
       this.busy = false;
       await this.#renderIfOpen();
@@ -287,12 +287,12 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!this.diagnosticsReport || this.busy) return;
     try {
       if (!navigator.clipboard?.writeText) {
-        throw new Error(game.i18n.localize("RRC.Notifications.ClipboardUnavailable"));
+        throw new Error(game.i18n.localize("RO.Notifications.ClipboardUnavailable"));
       }
       await navigator.clipboard.writeText(JSON.stringify(this.diagnosticsReport, null, 2));
-      notification("info", game.i18n.localize("RRC.Notifications.DiagnosticsCopied"));
+      notification("info", game.i18n.localize("RO.Notifications.DiagnosticsCopied"));
     } catch (error) {
-      notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
+      notification("error", game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }));
     }
   }
 
@@ -300,13 +300,13 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!game.user?.isGM || this.busy) return;
     const pending = await this.api.listPendingMigrations();
     if (!pending.length) {
-      notification("info", game.i18n.localize("RRC.Notifications.NoMigrations"));
+      notification("info", game.i18n.localize("RO.Notifications.NoMigrations"));
       return;
     }
 
     const confirmed = await DialogV2.confirm({
-      window: { title: game.i18n.localize("RRC.Migrations.ConfirmTitle") },
-      content: `<p>${game.i18n.localize("RRC.Migrations.ConfirmBody")}</p><p><strong>${game.i18n.localize("RRC.Migrations.BackupWarning")}</strong></p>`,
+      window: { title: game.i18n.localize("RO.Migrations.ConfirmTitle") },
+      content: `<p>${game.i18n.localize("RO.Migrations.ConfirmBody")}</p><p><strong>${game.i18n.localize("RO.Migrations.BackupWarning")}</strong></p>`,
       modal: true,
       rejectClose: false,
     });
@@ -317,10 +317,10 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     try {
       await this.api.runPendingMigrations();
       this.diagnosticsReport = await this.api.runDiagnostics();
-      notification("info", game.i18n.localize("RRC.Notifications.MigrationsComplete"));
+      notification("info", game.i18n.localize("RO.Notifications.MigrationsComplete"));
     } catch (error) {
       console.error(`${MODULE_TITLE} | Migration failed`, error);
-      notification("error", game.i18n.format("RRC.Notifications.OperationFailed", { message: error.message }));
+      notification("error", game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }));
     } finally {
       this.busy = false;
       await this.#renderIfOpen();

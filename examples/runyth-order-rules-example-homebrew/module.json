@@ -24,11 +24,11 @@
     ],
     "requires": [
       {
-        "id": "runyth-rules-core",
+        "id": "runyth-order",
         "type": "module",
         "compatibility": {
           "minimum": "1.0.0",
-          "maximum": "1.0.2"
+          "maximum": "1.0.3"
         }
       }
     ]

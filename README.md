@@ -55,7 +55,7 @@ The core never creates or levels a character by itself. Correctly authored compl
 The API is exposed during Foundry's `init` lifecycle:
 
 ```javascript
-const core = game.modules.get("runyth-rules-core")?.api;
+const core = game.modules.get("runyth-order")?.api;
 
 core.registerProvider({
   id: "example-homebrew",
@@ -140,14 +140,14 @@ See [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md).
 
 A manifest range is not a substitute for live testing. Complete [the manual test checklist](docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
 
-Version 1.0.2 retains Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Order API remains 1.0.0. Version 1.0.2 adds non-breaking naming metadata and diagnostics while preserving all technical namespaces.
+Version 1.0.3 retains Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Order API remains 1.0.0. Version 1.0.3 finalizes the unpublished package identity as `runyth-order`. The public method surface remains API 1.0.0, but every complementary module must now depend on and resolve the `runyth-order` package.
 
 ## Installation
 
 The install ZIP contains exactly one non-versioned root folder:
 
 ```text
-runyth-rules-core/
+runyth-order/
 ```
 
 Extract it into:
@@ -171,10 +171,10 @@ npm run check
 
 Build output is written to `dist/`:
 
-- `runyth-rules-core-v1.0.2.zip`
-- `runyth-rules-core-source-v1.0.2.zip`
-- `runyth-rules-core-v1.0.2-SHA256SUMS.txt`
-- `runyth-rules-core-v1.0.2-build-report.json`
+- `runyth-order-v1.0.3.zip`
+- `runyth-order-source-v1.0.3.zip`
+- `runyth-order-v1.0.3-SHA256SUMS.txt`
+- `runyth-order-v1.0.3-build-report.json`
 
 ## Licence
 

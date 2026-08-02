@@ -24,11 +24,12 @@ const requiredFiles = [
   "src/ui/rules-hub.mjs",
   "src/ui/window-position.mjs",
   "templates/rules-hub.hbs",
-  "styles/runyth-rules-core.css",
+  "styles/runyth-order.css",
   "lang/en.json",
   "lang/de.json",
   "schemas/provider-descriptor.schema.json",
   "schemas/source-descriptor.schema.json",
+  "types/runyth-order.d.ts",
   "docs/API.md",
   "docs/COMPLEMENTARY_MODULE_GUIDE.md",
   "docs/DND5E_2024_GUIDE.md",
@@ -48,9 +49,9 @@ for (const path of requiredFiles) {
 
 const manifest = await readJson(resolve(root, "module.json"));
 const packageJson = await readJson(resolve(root, "package.json"));
-if (manifest.id !== "runyth-rules-core") failures.push("Manifest ID must be runyth-rules-core.");
+if (manifest.id !== "runyth-order") failures.push("Manifest ID must be runyth-order.");
 if (manifest.title !== "Runyth Order") failures.push("Manifest title must be exactly Runyth Order.");
-if (manifest.version !== "1.0.2") failures.push("Patch release version must be 1.0.2.");
+if (manifest.version !== "1.0.3") failures.push("Patch release version must be 1.0.3.");
 if (manifest.version !== packageJson.version) failures.push("Manifest and package versions differ.");
 if (manifest.compatibility?.minimum !== "13.341") failures.push("Foundry minimum must be 13.341.");
 if (manifest.compatibility?.verified !== "13.351") failures.push("Foundry verified target must be 13.351.");
@@ -85,10 +86,14 @@ const literalKeys = new Set();
 for (const base of ["src", "templates"]) {
   for (const file of await walk(resolve(root, base))) {
     const source = await readFile(file.absolute, "utf8");
-    for (const match of source.matchAll(/["'](RRC\.[A-Za-z0-9.]+)["']/gu)) literalKeys.add(match[1]);
+    for (const match of source.matchAll(/["'](RO\.[A-Za-z0-9.]+)["']/gu)) literalKeys.add(match[1]);
   }
 }
 for (const key of literalKeys) if (!(key in en)) failures.push(`Missing localization key: ${key}`);
+
+const typesSource = await readFile(resolve(root, "types/runyth-order.d.ts"), "utf8");
+if (!typesSource.includes("export interface RunythOrderApi")) failures.push("RunythOrderApi TypeScript interface is missing.");
+if (!typesSource.includes('readonly moduleId: "runyth-order"')) failures.push("TypeScript module ID is not runyth-order.");
 
 const apiSource = await readFile(resolve(root, "src/api.mjs"), "utf8");
 for (const method of [
@@ -116,10 +121,10 @@ if (!mainSource.includes("Hooks.once(\"init\"")) failures.push("Core API must in
 if (!mainSource.includes("module.api = api")) failures.push("Core API is not exposed on the module record.");
 if (!mainSource.includes("foundry.applications.instances.get")) failures.push("Rules Hub launchers do not reuse the public ApplicationV2 instance registry.");
 if (!mainSource.includes("ApplicationV2") && !(await readFile(resolve(root, "src/ui/rules-hub.mjs"), "utf8")).includes("ApplicationV2")) failures.push("ApplicationV2 UI is missing.");
-if (mainSource.includes("registerMigration(")) failures.push("Display-only rename must not register a core data migration.");
+if (mainSource.includes("registerMigration(")) failures.push("Pre-publication identity finalization must not invent a foundation migration.");
 
 const constantsSource = await readFile(resolve(root, "src/constants.mjs"), "utf8");
-if (!constantsSource.includes('MODULE_ID = "runyth-rules-core"')) failures.push("Technical module ID changed unexpectedly.");
+if (!constantsSource.includes('MODULE_ID = "runyth-order"')) failures.push("Technical module ID must be runyth-order.");
 if (!constantsSource.includes('MODULE_TITLE = "Runyth Order"')) failures.push("Runtime display title is not Runyth Order.");
 
 const namingSource = await readFile(resolve(root, "src/core/naming-contract.mjs"), "utf8");
@@ -129,7 +134,7 @@ for (const code of ["PROVIDER_NAMING_MISMATCH", "MODULE_NAMING_MISMATCH", "NAMIN
 
 const sourceFlagsSource = await readFile(resolve(root, "src/core/source-flags.mjs"), "utf8");
 if (!sourceFlagsSource.includes("document.getFlag(MODULE_ID, SOURCE_FLAG_KEY)") || !sourceFlagsSource.includes("flags.${MODULE_ID}.${SOURCE_FLAG_KEY}")) {
-  failures.push("Managed source namespace is no longer derived from runyth-rules-core.");
+  failures.push("Managed source namespace is not derived from runyth-order.");
 }
 
 for (const file of (await walk(resolve(root, "src"))).filter((entry) => extname(entry.path) === ".mjs")) {
@@ -149,6 +154,35 @@ const coreDependency = exampleManifest.relationships?.requires?.find((entry) => 
 if (!coreDependency) failures.push("Example provider does not require the core.");
 if (exampleManifest.title !== "Runyth Order: Rules Example Homebrew") failures.push("Example provider title does not follow the naming contract.");
 if (exampleManifest.flags?.runyth?.canonicalTitle !== exampleManifest.title) failures.push("Example provider manifest naming metadata is invalid.");
+
+
+const retiredIdentity = ["runyth", "rules", "core"].join("-");
+const retiredDisplayName = ["Runyth", "Rules", "Core"].join(" ");
+const retiredApiClass = ["Runyth", "Rules", "Core", "Api"].join("");
+const retiredRuntimeApiClass = ["Runyth", "Rules", "Api"].join("");
+const retiredLocalizationPrefix = `${["R", "R", "C"].join("")}.`;
+const retiredCssPrefix = `${["r", "r", "c"].join("")}-`;
+for (const file of (await walk(root)).filter((entry) => !entry.path.startsWith("dist/"))) {
+  if ([retiredIdentity, retiredCssPrefix].some((token) => file.path.includes(token))) {
+    failures.push(`Retired package identity remains in path: ${file.path}`);
+  }
+  let source;
+  try {
+    source = await readFile(file.absolute, "utf8");
+  } catch {
+    continue;
+  }
+  for (const token of [
+    retiredIdentity,
+    retiredDisplayName,
+    retiredApiClass,
+    retiredRuntimeApiClass,
+    retiredLocalizationPrefix,
+    retiredCssPrefix,
+  ]) {
+    if (source.includes(token)) failures.push(`${file.path}: retired identity token remains: ${token}`);
+  }
+}
 
 const qualityWorkflow = await readFile(resolve(root, ".github/workflows/quality.yml"), "utf8");
 if (!qualityWorkflow.includes("- master")) failures.push("Quality workflow must use master as the default branch.");

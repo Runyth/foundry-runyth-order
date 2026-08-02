@@ -4,17 +4,17 @@
 
 The user-facing name of the foundation module is **Runyth Order**.
 
-Its established technical identity remains unchanged:
+Its canonical technical identity is:
 
 | Contract | Stable value |
 |---|---|
-| Foundry module ID | `runyth-rules-core` |
-| Public API lookup | `game.modules.get("runyth-rules-core")?.api` |
-| Source flag namespace | `flags.runyth-rules-core.source` |
-| Settings namespace | `runyth-rules-core` |
-| Hook prefix | `runyth-rules-core.*` |
+| Foundry module ID | `runyth-order` |
+| Public API lookup | `game.modules.get("runyth-order")?.api` |
+| Source flag namespace | `flags.runyth-order.source` |
+| Settings namespace | `runyth-order` |
+| Hook prefix | `runyth-order.*` |
 
-The display rename does not authorize changing any of these permanent identifiers.
+These identifiers are the permanent pre-publication baseline. Complementary modules must depend on and resolve `runyth-order`; published modules must not rename these identifiers later.
 
 ## Complementary display names
 
@@ -114,17 +114,17 @@ Provider-title and module-title mismatches each produce at most one console warn
 
 Naming findings are also available through diagnostics and the provider cards in Rules Hub. UI messages are localized. Console warnings use a stable English sentence and a machine-readable details object.
 
-## Legacy compatibility policy
+## Metadata compatibility policy
 
-A provider with neither provider `naming` metadata nor manifest `flags.runyth` is treated as a legacy provider:
+A provider with neither provider `naming` metadata nor manifest `flags.runyth` is accepted for compatibility:
 
 - registration succeeds;
 - no title is guessed;
 - no mismatch warning is emitted to the console;
 - diagnostics report `NAMING_METADATA_MISSING` as informational guidance.
 
-This policy preserves existing complementary modules while giving maintainers a clear update path.
+This policy avoids blocking third-party or in-development providers while giving maintainers a clear update path.
 
 ## Core exclusion
 
-The core module itself is excluded from complementary naming checks. Its display title is simply `Runyth Order`, while its technical ID remains `runyth-rules-core`.
+The foundation module itself is excluded from complementary naming checks. Its display title is `Runyth Order` and its technical ID is `runyth-order`.

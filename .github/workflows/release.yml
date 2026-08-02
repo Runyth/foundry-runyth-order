@@ -32,8 +32,8 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            dist/runyth-rules-core-v*.zip
-            dist/runyth-rules-core-source-v*.zip
-            dist/runyth-rules-core-v*-SHA256SUMS.txt
-            dist/runyth-rules-core-v*-build-report.json
+            dist/runyth-order-v*.zip
+            dist/runyth-order-source-v*.zip
+            dist/runyth-order-v*-SHA256SUMS.txt
+            dist/runyth-order-v*-build-report.json
             module.json

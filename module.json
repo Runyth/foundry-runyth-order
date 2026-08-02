@@ -1,8 +1,8 @@
 {
-  "id": "runyth-rules-core",
+  "id": "runyth-order",
   "title": "Runyth Order",
   "description": "A thin, stable gateway for Runyth Order complementary Foundry VTT modules that provide homebrew character options, automation, validation, provenance, naming diagnostics, and controlled migrations.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "compatibility": {
     "minimum": "13.341",
     "verified": "13.351",
@@ -18,7 +18,7 @@
     "src/main.mjs"
   ],
   "styles": [
-    "styles/runyth-rules-core.css"
+    "styles/runyth-order.css"
   ],
   "languages": [
     {
@@ -37,9 +37,9 @@
     "requires": [],
     "recommends": []
   },
-  "url": "https://github.com/Runyth/runyth-rules-core",
-  "manifest": "https://github.com/Runyth/runyth-rules-core/releases/latest/download/module.json",
-  "download": "https://github.com/Runyth/runyth-rules-core/releases/download/v1.0.2/runyth-rules-core-v1.0.2.zip",
+  "url": "https://github.com/Runyth/runyth-order",
+  "manifest": "https://github.com/Runyth/runyth-order/releases/latest/download/module.json",
+  "download": "https://github.com/Runyth/runyth-order/releases/download/v1.0.3/runyth-order-v1.0.3.zip",
   "license": "LICENSE",
   "readme": "README.md",
   "changelog": "CHANGELOG.md"

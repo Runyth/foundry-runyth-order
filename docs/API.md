@@ -3,16 +3,16 @@
 Access the API through:
 
 ```javascript
-const api = game.modules.get("runyth-rules-core")?.api;
+const api = game.modules.get("runyth-order")?.api;
 ```
 
-The same object is supplied by `runyth-rules-core.apiReady` and resolves from `await api.whenReady()`.
+The same object is supplied by `runyth-order.apiReady` and resolves from `await api.whenReady()`.
 
 ## Identity
 
 | Property | Value |
 |---|---|
-| `moduleId` | `runyth-rules-core` |
+| `moduleId` | `runyth-order` |
 | `apiVersion` | `1.0.0` |
 | `dataSchemaVersion` | `1` |
 | Display title | `Runyth Order` |
@@ -159,7 +159,7 @@ Validates and normalizes a source descriptor.
 
 ### `readSource(document)`
 
-Reads `flags.runyth-rules-core.source` from a Foundry document and returns an immutable copy.
+Reads `flags.runyth-order.source` from a Foundry document and returns an immutable copy.
 
 ### `tagDocument(document, source, options)`
 
@@ -175,12 +175,12 @@ Opens or focuses the Rules Hub. Valid tabs are `overview`, `providers`, `packs`,
 
 | Hook | Arguments |
 |---|---|
-| `runyth-rules-core.apiReady` | `(api)` |
-| `runyth-rules-core.ready` | `(api)` |
-| `runyth-rules-core.providerRegistered` | `(providerDescriptor, api)` |
-| `runyth-rules-core.providerRejected` | `(submittedProvider, error, api)` |
-| `runyth-rules-core.packRegistered` | `(packDescriptor, api)` |
-| `runyth-rules-core.beforeAuditActor` | `(actor, options)` |
-| `runyth-rules-core.afterAuditActor` | `(actor, report, options)` |
-| `runyth-rules-core.beforeMigration` | `(migrationDescriptor)` |
-| `runyth-rules-core.afterMigration` | `(migrationDescriptor, report)` |
+| `runyth-order.apiReady` | `(api)` |
+| `runyth-order.ready` | `(api)` |
+| `runyth-order.providerRegistered` | `(providerDescriptor, api)` |
+| `runyth-order.providerRejected` | `(submittedProvider, error, api)` |
+| `runyth-order.packRegistered` | `(packDescriptor, api)` |
+| `runyth-order.beforeAuditActor` | `(actor, options)` |
+| `runyth-order.afterAuditActor` | `(actor, report, options)` |
+| `runyth-order.beforeMigration` | `(migrationDescriptor)` |
+| `runyth-order.afterMigration` | `(migrationDescriptor, report)` |

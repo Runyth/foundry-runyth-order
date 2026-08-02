@@ -23,17 +23,17 @@ This split keeps the core installable in worlds that use different systems and p
 Foundry init
   ├─ register core settings and launchers
   ├─ construct registry and services
-  ├─ expose game.modules.get("runyth-rules-core").api
-  └─ emit runyth-rules-core.apiReady
+  ├─ expose game.modules.get("runyth-order").api
+  └─ emit runyth-order.apiReady
        └─ complementary modules register providers
 
 Foundry ready
   ├─ resolve API readiness promise
-  ├─ emit runyth-rules-core.ready
+  ├─ emit runyth-order.ready
   └─ allow diagnostics, audits, and migrations
 ```
 
-A complementary module should normally register during `init` after declaring the core as a required relationship. It may also listen for `runyth-rules-core.apiReady` when load ordering is not guaranteed.
+A complementary module should normally register during `init` after declaring the core as a required relationship. It may also listen for `runyth-order.apiReady` when load ordering is not guaranteed.
 
 ## Registry isolation
 

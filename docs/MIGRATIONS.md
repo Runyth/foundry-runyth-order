@@ -41,6 +41,8 @@ Large worlds should process documents in deterministic batches and yield to the 
 Foundry document updates are not one global transaction. A provider should document whether rollback is possible, emit enough counts for verification, and require a world backup for material transformations.
 
 
-## Display-name changes are not migrations
+## Pre-publication package identity finalization
 
-The 1.0.2 rename to **Runyth Order** changes only user-facing text. It does not transform settings, provider IDs, source flags, migration records, or world documents. No migration is registered for this rename.
+Version 1.0.3 finalizes the unpublished foundation package as `runyth-order`, including its settings, hooks, API lookup, and managed-source namespace. No compatibility migration is registered because the earlier experimental package identity was neither published nor distributed. Test worlds using an earlier development build should remove that build and install 1.0.3 cleanly.
+
+This package-identity change does not alter provider-owned document structures or the public API method surface. Complementary modules must update their required-module ID, API lookup, hooks, source-flag expectations, documentation, and tests before being used with 1.0.3.

@@ -39,7 +39,7 @@ test("builds an atomic flag update without requiring a document", async () => {
     { providerId: "example-homebrew", packId: "example-homebrew.options", entryId: "x" },
     { update: false },
   );
-  assert.equal(update["flags.runyth-rules-core.source"].entryId, "x");
+  assert.equal(update["flags.runyth-order.source"].entryId, "x");
 });
 
 test("reads a defensive source copy", () => {
