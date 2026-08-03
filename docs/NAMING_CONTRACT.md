@@ -35,6 +35,7 @@ Examples:
 | Rules | `Runyth Order: Rules Wound Recovery` | `runyth-order-rules-wound-recovery` |
 | Equipment | `Runyth Order: Equipment Imperial Arsenal` | `runyth-order-equipment-imperial-arsenal` |
 | Setting | `Runyth Order: Setting Example Realm` | `runyth-order-setting-example-realm` |
+| Language | `Runyth Order: Language German` | `runyth-order-language-german` |
 
 Technical IDs are permanent after release. Do not rename a published module or provider merely to improve wording. Existing technical IDs remain valid even when they predate this recommendation.
 

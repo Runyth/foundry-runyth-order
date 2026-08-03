@@ -15,7 +15,7 @@ The gate covers:
 - source metadata;
 - Actor audit normalization and provider failure isolation;
 - migration completion and retry behaviour;
-- manifest, localization, path, schema, API, and example validation;
+- manifest, English localization, external language-pack metadata, placeholder, path, schema, API, and example validation;
 - JavaScript syntax with Node;
 - deterministic install/source ZIP creation;
 - archive root, file allowlist, version, checksum, and reproducibility verification.
@@ -32,3 +32,7 @@ Complementary modules should test their registration against the public API rath
 ## Naming-contract coverage
 
 Automated tests cover canonical titles, provider/module mismatches, warning deduplication, multiword metadata, legacy compatibility, core exclusion, diagnostics visibility, provider-count preservation, and absence of a display-only migration. Live tests verify module-management text and console behavior in Foundry.
+
+## Localization coverage
+
+Automated tests verify that the core manifest bundles only `en`, every literal `RO.*` key exists in the canonical dictionary, values are non-empty strings, localization metadata advertises Foundry selection and external packs, and no module-specific language control is registered. Separate language-pack repositories must compare their keys and interpolation placeholders against the target core release.

@@ -184,3 +184,7 @@ Opens or focuses the Rules Hub. Valid tabs are `overview`, `providers`, `packs`,
 | `runyth-order.afterAuditActor` | `(actor, report, options)` |
 | `runyth-order.beforeMigration` | `(migrationDescriptor)` |
 | `runyth-order.afterMigration` | `(migrationDescriptor, report)` |
+
+## Localization is not an API service
+
+Runyth Order does not expose language selection or translation registration through its JavaScript API. Localization uses Foundry’s package `languages` manifest field and global language setting. The canonical key contract is documented in `LOCALIZATION.md`. External language packs do not need to call `registerProvider` unless they also contribute actual provider content or behavior.

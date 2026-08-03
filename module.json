@@ -1,8 +1,8 @@
 {
   "id": "runyth-order",
   "title": "Runyth Order",
-  "description": "A thin, stable gateway for Runyth Order complementary Foundry VTT modules that provide homebrew character options, automation, validation, provenance, naming diagnostics, and controlled migrations.",
-  "version": "1.0.3",
+  "description": "A thin, stable gateway for Runyth Order complementary Foundry VTT modules, with an English base interface and standard Foundry localization through optional language-pack modules.",
+  "version": "1.0.4",
   "compatibility": {
     "minimum": "13.341",
     "verified": "13.351",
@@ -25,11 +25,6 @@
       "lang": "en",
       "name": "English",
       "path": "lang/en.json"
-    },
-    {
-      "lang": "de",
-      "name": "Deutsch",
-      "path": "lang/de.json"
     }
   ],
   "relationships": {
@@ -39,8 +34,19 @@
   },
   "url": "https://github.com/Runyth/runyth-order",
   "manifest": "https://github.com/Runyth/runyth-order/releases/latest/download/module.json",
-  "download": "https://github.com/Runyth/runyth-order/releases/download/v1.0.3/runyth-order-v1.0.3.zip",
+  "download": "https://github.com/Runyth/runyth-order/releases/download/v1.0.4/runyth-order-v1.0.4.zip",
   "license": "LICENSE",
   "readme": "README.md",
-  "changelog": "CHANGELOG.md"
+  "changelog": "CHANGELOG.md",
+  "flags": {
+    "runyth": {
+      "localization": {
+        "schemaVersion": 1,
+        "baseLanguage": "en",
+        "namespace": "RO",
+        "externalLanguagePacks": true,
+        "languageSelection": "foundry"
+      }
+    }
+  }
 }

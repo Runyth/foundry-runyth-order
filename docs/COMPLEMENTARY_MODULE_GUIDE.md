@@ -13,8 +13,17 @@ Prefer small modules with a clear owner and release cadence:
 | Automation | Activities, effects, rest handlers, macros, Midi-QOL workflows |
 | Campaign rules | Languages, reputation, cleanliness, luck, downtime |
 | Integration | D&D 5e adapter, Midi-QOL bridge, importer bridge |
+| Language pack | A translation dictionary for one Runyth Order or provider module |
 
 Do not place every campaign rule in one provider merely because the core permits multiple packs.
+
+## Localization policy
+
+Complementary modules should use English as their canonical interface and content language, assign stable module-owned localization keys to every user-visible UI string, and rely on Foundry’s global language selection. Do not add a language dropdown to a provider dashboard.
+
+Where practical, distribute non-English translations as independent modules named `Runyth Order: Language <Language Name>` or, for provider-specific translations, `Runyth Order: Language <Language Name> — <Provider Name>`. A translation-only module generally needs no scripts and does not need to register as a content provider.
+
+Preserve placeholders and stable source IDs. See [Localization Contract](LOCALIZATION.md).
 
 ## 2. Declare the core dependency
 

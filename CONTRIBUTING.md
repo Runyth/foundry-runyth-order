@@ -12,7 +12,8 @@ Changes to the core must remain system-neutral and broadly reusable. Campaign-sp
 - ApplicationV2 for module windows.
 - No external runtime service or socket dependency.
 - Tests for behaviour and failure cases.
-- English and German localization keys kept identical.
+- Canonical English localization kept complete; non-English translations belong in independently versioned language-pack modules.
+- All user-visible runtime strings use stable localization keys, and translation placeholders remain compatible with English.
 - Documentation and changelog updates for public contracts.
 - Deterministic install and source archives.
 

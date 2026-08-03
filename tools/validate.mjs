@@ -26,14 +26,15 @@ const requiredFiles = [
   "templates/rules-hub.hbs",
   "styles/runyth-order.css",
   "lang/en.json",
-  "lang/de.json",
   "schemas/provider-descriptor.schema.json",
   "schemas/source-descriptor.schema.json",
+  "schemas/localization-pack.schema.json",
   "types/runyth-order.d.ts",
   "docs/API.md",
   "docs/COMPLEMENTARY_MODULE_GUIDE.md",
   "docs/DND5E_2024_GUIDE.md",
   "docs/MANUAL_TEST_CHECKLIST.md",
+  "docs/LOCALIZATION.md",
   "docs/NAMING_CONTRACT.md",
   "examples/runyth-order-rules-example-homebrew/module.json",
   "examples/runyth-order-rules-example-homebrew/scripts/main.mjs"
@@ -51,13 +52,34 @@ const manifest = await readJson(resolve(root, "module.json"));
 const packageJson = await readJson(resolve(root, "package.json"));
 if (manifest.id !== "runyth-order") failures.push("Manifest ID must be runyth-order.");
 if (manifest.title !== "Runyth Order") failures.push("Manifest title must be exactly Runyth Order.");
-if (manifest.version !== "1.0.3") failures.push("Patch release version must be 1.0.3.");
+if (manifest.version !== "1.0.4") failures.push("Patch release version must be 1.0.4.");
 if (manifest.version !== packageJson.version) failures.push("Manifest and package versions differ.");
 if (manifest.compatibility?.minimum !== "13.341") failures.push("Foundry minimum must be 13.341.");
 if (manifest.compatibility?.verified !== "13.351") failures.push("Foundry verified target must be 13.351.");
 if (manifest.compatibility?.maximum !== "13.351") failures.push("Foundry maximum must be 13.351.");
 if (manifest.relationships?.requires?.length) failures.push("The core must not require another module.");
 if (manifest.relationships?.systems?.length) failures.push("The core must remain system-neutral.");
+
+const expectedLanguages = [{ lang: "en", name: "English", path: "lang/en.json" }];
+if (JSON.stringify(manifest.languages) !== JSON.stringify(expectedLanguages)) {
+  failures.push("The core manifest must bundle exactly the canonical English localization dictionary.");
+}
+const localizationMetadata = manifest.flags?.runyth?.localization;
+if (
+  localizationMetadata?.schemaVersion !== 1 ||
+  localizationMetadata?.baseLanguage !== "en" ||
+  localizationMetadata?.namespace !== "RO" ||
+  localizationMetadata?.externalLanguagePacks !== true ||
+  localizationMetadata?.languageSelection !== "foundry"
+) {
+  failures.push("Manifest localization metadata does not declare the external Foundry language-pack contract.");
+}
+try {
+  await access(resolve(root, "lang/de.json"));
+  failures.push("The core runtime must not bundle lang/de.json; German belongs in an external language pack.");
+} catch {
+  // Expected: non-English dictionaries are external modules.
+}
 
 for (const path of [...(manifest.esmodules ?? []), ...(manifest.styles ?? []), ...(manifest.languages ?? []).map((entry) => entry.path)]) {
   try {
@@ -77,10 +99,13 @@ for (const file of jsonFiles) {
 }
 
 const en = await readJson(resolve(root, "lang/en.json"));
-const de = await readJson(resolve(root, "lang/de.json"));
 const enKeys = Object.keys(en).sort();
-const deKeys = Object.keys(de).sort();
-if (JSON.stringify(enKeys) !== JSON.stringify(deKeys)) failures.push("English and German localization keys differ.");
+for (const [key, value] of Object.entries(en)) {
+  if (!key.startsWith("RO.")) failures.push(`English localization key is outside the RO namespace: ${key}`);
+  if (typeof value !== "string" || !value.trim()) failures.push(`English localization value is empty or invalid: ${key}`);
+  const placeholders = [...value.matchAll(/\{([A-Za-z][A-Za-z0-9]*)\}/gu)].map((match) => match[1]);
+  if (new Set(placeholders).size !== placeholders.length) failures.push(`English localization repeats an interpolation placeholder: ${key}`);
+}
 
 const literalKeys = new Set();
 for (const base of ["src", "templates"]) {
@@ -126,6 +151,13 @@ if (mainSource.includes("registerMigration(")) failures.push("Pre-publication id
 const constantsSource = await readFile(resolve(root, "src/constants.mjs"), "utf8");
 if (!constantsSource.includes('MODULE_ID = "runyth-order"')) failures.push("Technical module ID must be runyth-order.");
 if (!constantsSource.includes('MODULE_TITLE = "Runyth Order"')) failures.push("Runtime display title is not Runyth Order.");
+if (!constantsSource.includes('BASE_LANGUAGE: "en"')) failures.push("Localization base language constant must be English.");
+if (!constantsSource.includes('LANGUAGE_SELECTION: "foundry"')) failures.push("Localization must use Foundry language selection.");
+if (/SETTINGS\.[A-Z_]*LANGUAGE/u.test(constantsSource)) failures.push("A module-specific language setting is prohibited.");
+const settingsSource = await readFile(resolve(root, "src/settings.mjs"), "utf8");
+if (/languageSelector|moduleLanguage|languageOverride/u.test(settingsSource)) failures.push("A custom language selector is prohibited.");
+const hubTemplateSource = await readFile(resolve(root, "templates/rules-hub.hbs"), "utf8");
+if (/data-action=["'](?:set-)?language/u.test(hubTemplateSource)) failures.push("Rules Hub must not contain a language selector.");
 
 const namingSource = await readFile(resolve(root, "src/core/naming-contract.mjs"), "utf8");
 for (const code of ["PROVIDER_NAMING_MISMATCH", "MODULE_NAMING_MISMATCH", "NAMING_METADATA_MISSING"]) {
@@ -150,8 +182,15 @@ for (const file of (await walk(resolve(root, "src"))).filter((entry) => extname(
 }
 
 const exampleManifest = await readJson(resolve(root, "examples/runyth-order-rules-example-homebrew/module.json"));
+const localizationSchema = await readJson(resolve(root, "schemas/localization-pack.schema.json"));
+if (localizationSchema.properties?.targetModuleId?.const !== "runyth-order") failures.push("Localization schema target module is invalid.");
+if (localizationSchema.properties?.baseLanguage?.const !== "en") failures.push("Localization schema base language is invalid.");
+if (localizationSchema.properties?.namespace?.const !== "RO") failures.push("Localization schema namespace is invalid.");
 const coreDependency = exampleManifest.relationships?.requires?.find((entry) => entry.id === manifest.id);
 if (!coreDependency) failures.push("Example provider does not require the core.");
+if (coreDependency?.compatibility?.minimum !== "1.0.4" || coreDependency?.compatibility?.maximum !== "1.0.4") {
+  failures.push("Example provider must target Runyth Order 1.0.4.");
+}
 if (exampleManifest.title !== "Runyth Order: Rules Example Homebrew") failures.push("Example provider title does not follow the naming contract.");
 if (exampleManifest.flags?.runyth?.canonicalTitle !== exampleManifest.title) failures.push("Example provider manifest naming metadata is invalid.");
 

@@ -83,12 +83,10 @@ test("uses the canonical Runyth Order package identity throughout the public con
 
 test("uses only the RO localization and ro- CSS namespaces", async () => {
   const en = JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8"));
-  const de = JSON.parse(await readFile(new URL("../lang/de.json", import.meta.url), "utf8"));
   const template = await readFile(new URL("../templates/rules-hub.hbs", import.meta.url), "utf8");
   const css = await readFile(new URL("../styles/runyth-order.css", import.meta.url), "utf8");
 
   assert.ok(Object.keys(en).every((key) => key.startsWith("RO.")));
-  assert.deepEqual(Object.keys(en).sort(), Object.keys(de).sort());
   assert.match(template, /ro-shell/u);
   assert.match(css, /\.runyth-order/u);
   assert.match(css, /--ro-bg/u);

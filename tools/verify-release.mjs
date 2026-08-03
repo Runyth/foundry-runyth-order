@@ -17,11 +17,19 @@ const failures = [];
 
 if (report.displayTitle !== "Runyth Order") failures.push("Build report display title is not Runyth Order.");
 if (report.namingContract?.pattern !== "Runyth Order: <Category> <Content Name>") failures.push("Build report naming contract is missing.");
+if (report.localizationContract?.baseLanguage !== "en") failures.push("Build report base language is not English.");
+if (JSON.stringify(report.localizationContract?.bundledLanguages) !== JSON.stringify(["en"])) failures.push("Build report must list only English as bundled.");
+if (report.localizationContract?.externalLanguagePacks !== true) failures.push("Build report does not advertise external language packs.");
+if (report.localizationContract?.customModuleSetting !== false || report.localizationContract?.dashboardSelector !== false) {
+  failures.push("Build report incorrectly advertises a custom language selector.");
+}
 if (!installEntries.length) failures.push("Install archive is empty.");
 if (!sourceEntries.length) failures.push("Source archive is empty.");
 if (installEntries.some((entry) => !entry.startsWith(`${report.installRoot}/`))) failures.push("Install archive has an invalid root.");
 if (sourceEntries.some((entry) => !entry.startsWith(`${report.sourceRoot}/`))) failures.push("Source archive has an invalid root.");
 if (!installEntries.includes(`${report.installRoot}/module.json`)) failures.push("Install archive has no root module.json.");
+if (!installEntries.includes(`${report.installRoot}/lang/en.json`)) failures.push("Install archive has no English localization dictionary.");
+if (installEntries.includes(`${report.installRoot}/lang/de.json`)) failures.push("Install archive still bundles German localization.");
 if (!sourceEntries.includes(`${report.sourceRoot}/package.json`)) failures.push("Source archive has no package.json.");
 if (!sourceEntries.includes(`${report.sourceRoot}/tools/build.mjs`)) failures.push("Source archive is not reproducible.");
 for (const forbidden of ["node_modules/", "dist/", ".git/"]) {

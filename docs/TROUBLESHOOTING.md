@@ -14,6 +14,9 @@
 | Scene Controls button is visible but does nothing | Confirm version 1.0.1 or newer is installed. Version 1.0.0 used the V12 `onClick` tool callback instead of Foundry V13 `onChange`. |
 | Rules Hub reappears after being closed | Update to 1.0.1 or newer. Long-running operations no longer force-render a closed window. |
 | Provider is rejected for compatibility data | Use valid numeric Foundry-style versions, keep minimum less than or equal to maximum, keep verified inside the range, and do not duplicate system or dependency IDs. |
+| Runyth Order remains English | Confirm the desired language-pack module is installed and active, then select its language through Foundry’s global Configure Settings language control. The Rules Hub intentionally has no selector. |
+| Translation keys appear instead of text | The active language pack is missing keys or targets another core version. Update or disable the pack; do not edit the core dictionary in place. |
+| A translation is partly English | The language pack does not cover the complete `RO.*` key set for this core version. Report it to the language-pack maintainer. English is the canonical fallback. |
 
 
 ## Naming warning appears
