@@ -3,6 +3,13 @@ export const MODULE_TITLE = "Runyth Order";
 export const API_VERSION = "1.0.0";
 export const DATA_SCHEMA_VERSION = 1;
 
+export const LOCALIZATION = Object.freeze({
+  BASE_LANGUAGE: "en",
+  NAMESPACE: "RO",
+  EXTERNAL_LANGUAGE_PACKS: true,
+  LANGUAGE_SELECTION: "foundry",
+});
+
 export const SETTINGS = Object.freeze({
   STATE: "state",
   HUB_POSITION: "hubPosition",

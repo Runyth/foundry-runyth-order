@@ -27,8 +27,9 @@
         "id": "runyth-order",
         "type": "module",
         "compatibility": {
-          "minimum": "1.0.0",
-          "maximum": "1.0.3"
+          "minimum": "1.0.4",
+          "maximum": "1.0.4",
+          "verified": "1.0.4"
         }
       }
     ]

@@ -4,7 +4,7 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 ## Fresh install
 
-- [ ] Remove any earlier unpublished development build before extracting 1.0.3; do not merge module folders.
+- [ ] Remove any earlier unpublished development build before extracting 1.0.4; do not merge module folders.
 
 - [ ] Extract the install ZIP and confirm `Data/modules/runyth-order/module.json`.
 - [ ] Enable the module without any complementary provider.
@@ -23,7 +23,9 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Open Rules Hub through two different launchers and confirm only one ApplicationV2 instance exists.
 - [ ] Reset the window position.
 - [ ] Verify ordinary narrow widths do not clip essential controls.
-- [ ] Verify English and German UI.
+- [ ] Verify the core interface is fully English when no external language pack is active.
+- [ ] Confirm Rules Hub contains no language selector.
+- [ ] Confirm Runyth Order registers no module-specific language setting in Configure Settings.
 
 ## Empty core
 
@@ -96,6 +98,8 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Enable a provider whose module title is wrong and confirm one `MODULE_NAMING_MISMATCH` warning appears.
 - [ ] Rerender Rules Hub and run diagnostics repeatedly; confirm console warnings are not repeated.
 - [ ] Confirm naming findings appear in Rules Hub provider cards and diagnostics.
-- [ ] Switch Foundry to German and confirm naming findings are localized.
+- [ ] Install and enable `Runyth Order: Language German`, switch Foundry to German through the global Configure Settings language control, and confirm naming findings are localized.
+- [ ] Disable the German language pack and confirm the Runyth Order core remains usable with its canonical English dictionary.
+- [ ] Re-enable the German pack and confirm Rules Hub does not create duplicate controls or require a world migration.
 - [ ] Load a provider without naming metadata; confirm it remains registered and receives only an informational `NAMING_METADATA_MISSING` finding.
 - [ ] Confirm settings, completed migrations, and managed source metadata use only the `runyth-order` namespace.

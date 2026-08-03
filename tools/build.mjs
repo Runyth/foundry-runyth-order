@@ -75,7 +75,7 @@ const report = {
     localizationPrefix: "RO.",
     cssPrefix: "ro-",
     apiClass: "RunythOrderApi",
-    complementaryModuleUpdateRequired: true,
+    complementaryModuleUpdateRequired: false,
     compatibilityMigrationRegistered: false,
   },
   namingContract: {
@@ -83,6 +83,17 @@ const report = {
     recommendedIdPattern: "runyth-order-<category-slug>-<content-name-slug>",
     providerWarningCodes: ["PROVIDER_NAMING_MISMATCH", "MODULE_NAMING_MISMATCH"],
     nonBlocking: true,
+  },
+  localizationContract: {
+    schemaVersion: 1,
+    baseLanguage: "en",
+    namespace: "RO",
+    bundledLanguages: (manifest.languages ?? []).map((entry) => entry.lang),
+    externalLanguagePacks: true,
+    languageSelection: "Foundry global Configure Settings language control",
+    customModuleSetting: false,
+    dashboardSelector: false,
+    recommendedLanguagePackIdPattern: "runyth-order-language-<language-slug>",
   },
   generatedArtifacts: [installName, sourceName, checksumName, reportName],
 };

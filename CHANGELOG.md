@@ -2,6 +2,17 @@
 
 All notable changes to **Runyth Order** are documented here.
 
+## 1.0.4 — 2026-08-03
+
+- Replaced the built-in bilingual runtime bundle with an English-only canonical interface and independent language-pack modules.
+- Removed `lang/de.json` and the German manifest entry from the Runyth Order runtime package.
+- Kept all user-facing strings in the stable `RO.*` namespace and retained Foundry’s native `languages`, `game.i18n.localize`, and Handlebars localization workflow.
+- Added machine-readable localization metadata to `module.json` and a JSON schema for external language-pack metadata.
+- Added a dedicated localization contract covering Foundry’s global language selector, translation-pack identity, placeholder safety, versioning, content localization, and further-language development.
+- Added validation that the core bundles exactly one English dictionary, exposes no custom language selector, and retains complete English key coverage.
+- Released the existing German translation independently as `Runyth Order: Language German` 1.0.0.
+- Added no persistent-data migration because localization packaging does not change settings, provider IDs, source flags, or world documents.
+
 ## 1.0.3 — 2026-08-03
 
 - Finalized the unpublished foundation module ID as `runyth-order`.

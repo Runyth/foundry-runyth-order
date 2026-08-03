@@ -15,7 +15,7 @@ It is not a replacement game system, character builder, rules engine, compendium
 | No silent mutation | Actor audits are read-only. Migrations are GM-only, explicitly confirmed, and never automatic. |
 | Traceability | Imported or generated Foundry documents can carry a normalized provider/pack/entry source flag. |
 | Diagnose first | The Rules Hub explains missing modules, incompatible systems, missing compendia, stale sources, naming mismatches, and pending migrations. |
-| Runyth consistency | ApplicationV2, bilingual UI, permanent launchers, saved geometry, deterministic dual-ZIP builds, tests, checksums, and release reports. |
+| Runyth consistency | ApplicationV2, an English base UI, native Foundry localization through independent language packs, permanent launchers, saved geometry, deterministic dual-ZIP builds, tests, checksums, and release reports. |
 
 ## Intended module topology
 
@@ -26,10 +26,14 @@ Runyth Order
 ├── campaign feats and spells module
 ├── campaign equipment module
 ├── campaign automation module
-└── optional integration modules
+├── optional integration modules
     ├── D&D 5e 2024 adapter
     ├── Midi-QOL workflows
     └── other system-specific automation
+└── optional language-pack modules
+    ├── German
+    ├── Italian
+    └── other Foundry-supported languages
 ```
 
 A content module may register one or more packs. An automation module may register capabilities and Actor validators without registering content. A migration may be supplied only when provider-owned data genuinely needs transformation.
@@ -38,15 +42,16 @@ A content module may register one or more packs. An automation module may regist
 
 1. Install and enable **Runyth Order**.
 2. Install complementary modules for the homebrew actually used by the world.
-3. Open **Rules Hub** through any permanent launcher:
+3. Optional: install a compatible Runyth Order language pack and select that language through Foundry’s global **Configure Settings** interface.
+4. Open **Rules Hub** through any permanent launcher:
    - Configure Settings → Module Settings → Runyth Order → **Open Rules Hub**;
    - the Settings sidebar card;
    - Token Scene Controls;
    - `Ctrl+Shift+R`.
-4. Review registered providers, packs, system ranges, dependencies, and capabilities.
-5. Run diagnostics after installing or updating a provider.
-6. Audit representative player Actors after a class, subclass, or system update.
-7. Back up the world before explicitly running pending migrations.
+5. Review registered providers, packs, system ranges, dependencies, and capabilities.
+6. Run diagnostics after installing or updating a provider.
+7. Audit representative player Actors after a class, subclass, or system update.
+8. Back up the world before explicitly running pending migrations.
 
 The core never creates or levels a character by itself. Correctly authored complementary content should use the active system's native progression facilities. For D&D 5e, that normally means Items, Activities, Active Effects, Advancement, Scale Values, and compendium UUID references.
 
@@ -113,6 +118,7 @@ See:
 - [Capability Vocabulary](docs/CAPABILITIES.md)
 - [D&D 5e 2024 Guidance](docs/DND5E_2024_GUIDE.md)
 - [Example Complementary Module](examples/runyth-order-rules-example-homebrew/)
+- [Localization Contract](docs/LOCALIZATION.md)
 
 
 ## Complementary naming contract
@@ -127,6 +133,15 @@ They should use technical IDs in the form `runyth-order-<category-slug>-<content
 
 See [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md).
 
+
+## Localization
+
+Runyth Order 1.0.4 contains only the canonical English runtime dictionary. It uses Foundry VTT’s standard manifest `languages` declaration, `game.i18n.localize`, and Handlebars `localize` helper.
+
+Translations are separate modules such as `Runyth Order: Language German`. After installing and enabling a language pack, select the language through Foundry’s global **Configure Settings** interface. Runyth Order deliberately provides no dashboard language selector and no competing module-specific language setting.
+
+This lets translation maintainers release corrections independently and allows additional languages without modifying the foundation module. See [Localization Contract](docs/LOCALIZATION.md).
+
 ## Compatibility
 
 | Component | Support |
@@ -140,7 +155,7 @@ See [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md).
 
 A manifest range is not a substitute for live testing. Complete [the manual test checklist](docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
 
-Version 1.0.3 retains Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Order API remains 1.0.0. Version 1.0.3 finalizes the unpublished package identity as `runyth-order`. The public method surface remains API 1.0.0, but every complementary module must now depend on and resolve the `runyth-order` package.
+Version 1.0.4 retains Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Order API remains 1.0.0. Version 1.0.3 finalized the unpublished package identity as `runyth-order`. Version 1.0.4 externalizes non-English translations into optional language-pack modules. The public method surface remains API 1.0.0. Complementary modules continue to depend on and resolve the `runyth-order` package; this localization-only patch does not require provider code changes.
 
 ## Installation
 
@@ -171,10 +186,10 @@ npm run check
 
 Build output is written to `dist/`:
 
-- `runyth-order-v1.0.3.zip`
-- `runyth-order-source-v1.0.3.zip`
-- `runyth-order-v1.0.3-SHA256SUMS.txt`
-- `runyth-order-v1.0.3-build-report.json`
+- `runyth-order-v1.0.4.zip`
+- `runyth-order-source-v1.0.4.zip`
+- `runyth-order-v1.0.4-SHA256SUMS.txt`
+- `runyth-order-v1.0.4-build-report.json`
 
 ## Licence
 

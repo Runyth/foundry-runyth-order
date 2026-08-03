@@ -14,6 +14,7 @@ Runyth Order owns contracts, not campaign rules.
 | Read-only Actor audit orchestration | Provider-specific validation logic |
 | Explicit migration orchestration | Provider-specific migration implementation |
 | Diagnostics and Rules Hub | Feature-specific gameplay UI |
+| English localization contract and stable `RO.*` keys | Optional language packs and provider-specific content translations |
 
 This split keeps the core installable in worlds that use different systems and prevents a central module from becoming a monolith containing every campaign's rules.
 
@@ -78,3 +79,9 @@ Long-running audits, diagnostics, and migrations update the UI only while the ap
 ## Naming contract boundary
 
 Naming evaluation occurs only after atomic provider registration succeeds. The registry stores findings and deduplicates console warnings for the world load. Diagnostics and Rules Hub read stored findings without re-emitting warnings. No naming check mutates provider data or creates a migration.
+
+## Localization boundary
+
+The foundation module owns one canonical English dictionary and the stable `RO.*` key contract. It does not own German, Italian, or any other translation release. Optional language-pack modules contribute dictionaries through Foundry’s native `languages` manifest field and Foundry’s global language selection.
+
+No language state is stored by Runyth Order, no dashboard language selector is rendered, and no migration is required when a translation pack is installed, removed, or updated. See `LOCALIZATION.md`.

@@ -46,3 +46,9 @@ Foundry document updates are not one global transaction. A provider should docum
 Version 1.0.3 finalizes the unpublished foundation package as `runyth-order`, including its settings, hooks, API lookup, and managed-source namespace. No compatibility migration is registered because the earlier experimental package identity was neither published nor distributed. Test worlds using an earlier development build should remove that build and install 1.0.3 cleanly.
 
 This package-identity change does not alter provider-owned document structures or the public API method surface. Complementary modules must update their required-module ID, API lookup, hooks, source-flag expectations, documentation, and tests before being used with 1.0.3.
+
+## Localization packaging in 1.0.4
+
+Version 1.0.4 removes non-English dictionaries from the foundation runtime and distributes them through independent language-pack modules. This changes no world setting, provider descriptor, completed migration record, managed source flag, Actor, Item, compendium, or application state. No migration is registered.
+
+A Game Master may install or remove a language pack and use Foundry’s global language setting. Translation-package lifecycle is outside the persistent data migration service.
