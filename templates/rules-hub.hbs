@@ -234,7 +234,10 @@
             <span class="danger">{{diagnosticsReport.counts.error}} {{localize "RO.Severity.Errors"}}</span>
             <span class="warning">{{diagnosticsReport.counts.warning}} {{localize "RO.Severity.Warnings"}}</span>
             <span class="info">{{diagnosticsReport.counts.info}} {{localize "RO.Severity.Info"}}</span>
-            <button type="button" data-action="copy-diagnostics" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-copy"></i> {{localize "RO.Actions.CopyJson"}}</button>
+          </div>
+          <div class="ro-button-group">
+            <button type="button" data-action="copy-diagnostics" {{#if busy}}disabled{{/if}} title="{{localize 'RO.Diagnostics.SharingHelp'}}"><i class="fa-solid fa-copy"></i> {{localize "RO.Actions.CopySupportSummary"}}</button>
+            <button type="button" data-action="copy-diagnostics-full" {{#if busy}}disabled{{/if}} title="{{localize 'RO.Diagnostics.FullCopyHelp'}}"><i class="fa-solid fa-clipboard-list"></i> {{localize "RO.Actions.CopyFullJson"}}</button>
           </div>
           {{#if diagnosticsReport.findings.length}}
             <div class="ro-findings">

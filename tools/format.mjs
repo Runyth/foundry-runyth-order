@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { readFile, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import { walk, isExcludedSourcePath } from "./lib/files.mjs";
@@ -8,7 +10,7 @@ const supported = new Set([".mjs", ".json", ".md", ".css", ".yml", ".yaml", ".hb
 const failures = [];
 
 for (const file of await walk(root)) {
-  if (isExcludedSourcePath(file.path) || !supported.has(extname(file.path))) continue;
+  if (isExcludedSourcePath(file.path) || file.path.startsWith("node_modules/") || !supported.has(extname(file.path))) continue;
   const original = await readFile(file.absolute, "utf8");
   let formatted = original.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
   formatted = formatted

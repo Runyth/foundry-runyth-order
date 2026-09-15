@@ -4,7 +4,7 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 ## Fresh install
 
-- [ ] Remove any earlier unpublished development build before extracting 1.0.4; do not merge module folders.
+- [ ] For a clean-install test, remove the existing `runyth-order` folder before extracting 1.0.5. Separately perform the overlay-upgrade test described below.
 
 - [ ] Extract the install ZIP and confirm `Data/modules/runyth-order/module.json`.
 - [ ] Enable the module without any complementary provider.
@@ -103,3 +103,26 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Re-enable the German pack and confirm Rules Hub does not create duplicate controls or require a world migration.
 - [ ] Load a provider without naming metadata; confirm it remains registered and receives only an informational `NAMING_METADATA_MISSING` finding.
 - [ ] Confirm settings, completed migrations, and managed source metadata use only the `runyth-order` namespace.
+
+## 1.0.5 runtime-package regression
+
+- [ ] Clean install `runyth-order-v1.0.5.zip` on a case-sensitive filesystem and confirm the root folder is exactly `runyth-order/`.
+- [ ] Confirm `module.json` loads `runtime/v1.0.5/bootstrap.mjs` and that no `src/` path is listed as a browser entrypoint.
+- [ ] Confirm every file listed by `runtime/v1.0.5/graph.json` exists with exact spelling and case.
+- [ ] Clear browser cache, load the world, and confirm there are no failed requests for `modules/runyth-order/runtime/v1.0.5/*`.
+- [ ] Confirm there are no requests for the former direct runtime paths such as `src/core/registry.mjs`, `src/core/logger.mjs`, or `src/settings.mjs`.
+- [ ] Overlay 1.0.5 onto an extracted 1.0.4 folder without deleting old files, clear browser cache, reload, and confirm all active ESM requests still resolve only through `runtime/v1.0.5/`.
+- [ ] Temporarily remove one emitted runtime module in a disposable copy. Confirm startup produces one `Runyth Order | Fatal runtime initialization failure` console error and one permanent notification, with no partial provider count or usable registry. Restore the file afterward.
+- [ ] Reload repeatedly and confirm no `net::ERR_FAILED`, 404, case mismatch, or stale 1.0.4 runtime request appears.
+
+## Provider regression with a real provider
+
+Use the shipped example provider from the source archive, or any neutral homebrew provider of your own, for the following checks. Companion-module regression checks beyond the example are optional and belong to each provider's own test plan, not to core qualification.
+
+- [ ] Enable Runyth Order and the example provider. Confirm its provider registers normally and Rules Hub reports it exactly once.
+- [ ] Reload the world and confirm the provider registers once after every world load without duplicates.
+- [ ] Enable a provider that declares compendia and confirm those compendia are available and indexed in the pack tab.
+- [ ] Create a disposable Actor eligible for the provider's content and confirm the normal in-game selection flow still works with the core enabled.
+- [ ] Open an existing Actor that owns provider-managed Items and confirm their subclasses/features remain intact after the core upgrade.
+- [ ] Disable the provider module, reload, and confirm no stale provider remains in Rules Hub. Re-enable, reload, and confirm it registers exactly once.
+- [ ] Disable Runyth Order with providers still installed and confirm Foundry reports the dependency state cleanly rather than leaving stale registration. Re-enable Runyth Order and providers, reload, and confirm registration is restored.

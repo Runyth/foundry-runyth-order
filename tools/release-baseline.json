@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "description": "Verified release-history baseline. Pins the six published release commits by structure: identity, independently preserved author/committer epoch timestamps and offsets, exact message digest, and tag correspondence. Rewrite tooling and release revisions must keep every row matching the retained public history.",
+  "signingKeyFingerprint": "F00EB42FC7F91FC3D15265EFDE1C8B6662B0F96A",
+  "branch": "refs/heads/master",
+  "releases": [
+    {
+      "tag": "v1.0.0",
+      "subject": "Release 1.0.0",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1785060000,
+      "authorOffset": "+0200",
+      "committerEpoch": 1785060000,
+      "committerOffset": "+0200",
+      "messageSha256": "fd29b020ebb98ab8e3b4d52f3ed0a2c612bd57f493a9a401fc7671c411662636",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me"
+    },
+    {
+      "tag": "v1.0.1",
+      "subject": "Release 1.0.1",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1785671700,
+      "authorOffset": "+0200",
+      "committerEpoch": 1785671700,
+      "committerOffset": "+0200",
+      "messageSha256": "31a545aee06aecd224c47e6c6ce972dfcf193d629346a81e8f9fc19336aadb86",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me"
+    },
+    {
+      "tag": "v1.0.2",
+      "subject": "Release 1.0.2",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1785701400,
+      "authorOffset": "+0200",
+      "committerEpoch": 1785701400,
+      "committerOffset": "+0200",
+      "messageSha256": "d3a4647558d4ec443b160b911ef72089058af3be96a39136c8c3ad9021cac9f1",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me"
+    },
+    {
+      "tag": "v1.0.3",
+      "subject": "Release 1.0.3",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1785708960,
+      "authorOffset": "+0200",
+      "committerEpoch": 1785708960,
+      "committerOffset": "+0200",
+      "messageSha256": "9b594ca8b209d0460affff9c39dfbb3227b8146af74022b31fa6d82f7dfecc37",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me"
+    },
+    {
+      "tag": "v1.0.4",
+      "subject": "Release 1.0.4",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1785773160,
+      "authorOffset": "+0200",
+      "committerEpoch": 1785773160,
+      "committerOffset": "+0200",
+      "messageSha256": "8a10afe4abe73745638e15da19d828eeaa33d3a362a546e20fc22167bf8d8aa9",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me"
+    },
+    {
+      "tag": "v1.0.5",
+      "subject": "Release 1.0.5: harden runtime packaging",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1789508520,
+      "authorOffset": "+0200",
+      "committerEpoch": 1789508520,
+      "committerOffset": "+0200",
+      "messageSha256": "493a2f3b6e14440241bae7c8b0b5ff75ea607b9ca88829952803ada10a4e49e0",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me"
+    }
+  ]
+}

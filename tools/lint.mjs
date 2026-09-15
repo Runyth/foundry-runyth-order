@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
@@ -29,6 +31,12 @@ for (const file of await walk(resolve(root, "src"))) {
   }
   const syntax = spawnSync(process.execPath, ["--check", file.absolute], { encoding: "utf8" });
   if (syntax.status !== 0) failures.push(`${file.path}: ${syntax.stderr.trim()}`);
+}
+
+for (const file of await walk(resolve(root, "runtime"))) {
+  if (extname(file.path) !== ".mjs") continue;
+  const syntax = spawnSync(process.execPath, ["--check", file.absolute], { encoding: "utf8" });
+  if (syntax.status !== 0) failures.push(`runtime/${file.path}: ${syntax.stderr.trim()}`);
 }
 
 if (failures.length) {

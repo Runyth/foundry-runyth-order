@@ -12,23 +12,33 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # actions/checkout v4.4.0 — pinned; credentials are not persisted so that no
+      # authentication token can reach the reconstructed archive metadata.
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      # actions/setup-node v4.4.0 — pinned.
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: "24"
           cache: npm
       - name: Install locked dependencies
         run: npm ci --ignore-scripts
       - name: Validate and build
+        env:
+          RUNYTH_RELEASE_REF: ${{ github.ref }}
+          RUNYTH_PUBLIC_RELEASE: "1"
         run: npm run check
       - name: Verify tag matches manifest
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: node -e 'const m=require("./module.json"); if (`v${m.version}` !== process.env.RELEASE_TAG) process.exit(1)'
+      # softprops/action-gh-release v2.6.2 — pinned.
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           generate_release_notes: true
           files: |

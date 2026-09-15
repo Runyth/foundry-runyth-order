@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { MODULE_ID, MODULE_TITLE, SETTINGS, STANDARD_CAPABILITIES } from "../constants.mjs";
 import { mayAuditActor } from "../settings.mjs";
 import { HUB_POSITION_DEFAULTS, sanitizeHubPosition } from "./window-position.mjs";
@@ -195,7 +197,10 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
       ?.addEventListener("click", (event) => void this.#runDiagnostics(event.currentTarget.dataset.deep === "true"));
     root
       .querySelector('[data-action="copy-diagnostics"]')
-      ?.addEventListener("click", () => void this.#copyDiagnostics());
+      ?.addEventListener("click", () => void this.#copyDiagnostics({ minimal: true }));
+    root
+      .querySelector('[data-action="copy-diagnostics-full"]')
+      ?.addEventListener("click", () => void this.#copyDiagnostics({ minimal: false }));
     root
       .querySelector('[data-action="run-migrations"]')
       ?.addEventListener("click", () => void this.#runMigrations());
@@ -283,14 +288,35 @@ export class RulesHub extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  async #copyDiagnostics() {
+  async #copyDiagnostics({ minimal = false } = {}) {
     if (!this.diagnosticsReport || this.busy) return;
     try {
       if (!navigator.clipboard?.writeText) {
         throw new Error(game.i18n.localize("RO.Notifications.ClipboardUnavailable"));
       }
-      await navigator.clipboard.writeText(JSON.stringify(this.diagnosticsReport, null, 2));
-      notification("info", game.i18n.localize("RO.Notifications.DiagnosticsCopied"));
+      const payload = minimal
+        ? {
+            schemaVersion: this.diagnosticsReport.schemaVersion,
+            mode: "minimal-support",
+            generatedAt: this.diagnosticsReport.generatedAt,
+            core: this.diagnosticsReport.core,
+            system: this.diagnosticsReport.system
+              ? { id: this.diagnosticsReport.system.id, version: this.diagnosticsReport.system.version }
+              : null,
+            counts: this.diagnosticsReport.counts,
+            findings: this.diagnosticsReport.findings.map((finding) => ({
+              severity: finding.severity,
+              code: finding.code,
+              providerId: finding.providerId,
+              packId: finding.packId,
+            })),
+          }
+        : this.diagnosticsReport;
+      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+      notification(
+        "info",
+        game.i18n.localize(minimal ? "RO.Notifications.SupportCopied" : "RO.Notifications.DiagnosticsCopied"),
+      );
     } catch (error) {
       notification("error", game.i18n.format("RO.Notifications.OperationFailed", { message: error.message }));
     }

@@ -5,12 +5,23 @@ Migrations are an escape hatch for provider-owned data that cannot remain compat
 ## Properties
 
 - Registered during provider registration.
-- Listed as pending when their recorded completion version differs.
+- Listed as pending when their recorded completion record differs.
 - Executed only by a Game Master.
 - Never executed automatically on `init` or `ready`.
-- Serialized to prevent concurrent migration runs.
+- Serialized within one connected client: each Runyth Order instance owns its own queue and running-migration set. Distinct migrations called from one client run serially, and repeated calls for the same migration converge on one run.
 - Recorded complete only after successful resolution.
 - Exposed through before/after hooks for logging and testing.
+
+## Coordination across GM clients
+
+The queue and running identifiers are per client instance, not world-wide. Two Game Master clients (two browsers, two tabs, or two clients that both trigger API calls concurrently) each own their own serialization. Two GM clients can therefore execute the same migration twice before either client's completion record is visible, because every connected client copies the world setting and writes it back.
+
+Consequences for unsafe or non-idempotent provider handlers:
+
+- duplicate execution can perform provider-specific changes twice;
+- completion records written from stale state can be overwritten by another client.
+
+Required mitigation: keep provider handlers idempotent and restartable, and designate a single migration runner for material transformations — one GM client runs the migrations from the Rules Hub while other clients do not call the migration API. Record the procedure in the provider's manual checklist. Future core versions may add world-level coordination; do not rely on it yet.
 
 ## Descriptor
 

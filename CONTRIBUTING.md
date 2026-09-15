@@ -16,6 +16,7 @@ Changes to the core must remain system-neutral and broadly reusable. Campaign-sp
 - All user-visible runtime strings use stable localization keys, and translation placeholders remain compatible with English.
 - Documentation and changelog updates for public contracts.
 - Deterministic install and source archives.
+- The project licence is `AGPL-3.0-or-later`; keep the `SPDX-License-Identifier` header at the top of source files and preserve third-party notices.
 
 ## Commit convention
 

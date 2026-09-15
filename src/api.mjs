@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { API_VERSION, DATA_SCHEMA_VERSION, HOOKS, MODULE_ID } from "./constants.mjs";
 import { normalizeSourceDescriptor, readSource, tagDocument } from "./core/source-flags.mjs";
 import { publicClone } from "./util/objects.mjs";

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { API_VERSION, DATA_SCHEMA_VERSION, MODULE_ID } from "../constants.mjs";
 import { publicClone } from "../util/objects.mjs";
 import { versionInRange } from "../util/versions.mjs";
@@ -83,7 +85,7 @@ export class DiagnosticsService {
     return findings;
   }
 
-  async run({ deep = false } = {}) {
+  async run({ deep = false, minimal = false } = {}) {
     const findings = [];
     const system = this.getSystem();
     const providers = this.registry.listProviders();
@@ -236,8 +238,9 @@ export class DiagnosticsService {
       error: findings.filter((entry) => entry.severity === "error").length,
     };
 
-    return publicClone({
+    const full = {
       schemaVersion: 1,
+      mode: "full",
       generatedAt: new Date().toISOString(),
       core: {
         moduleId: MODULE_ID,
@@ -251,6 +254,23 @@ export class DiagnosticsService {
       packs,
       pendingMigrations,
       findings,
+    };
+
+    if (!minimal) return publicClone(full);
+
+    return publicClone({
+      schemaVersion: 1,
+      mode: "minimal-support",
+      generatedAt: full.generatedAt,
+      core: full.core,
+      system: { id: system.id, version: system.version },
+      counts,
+      findings: findings.map((finding) => ({
+        severity: finding.severity,
+        code: finding.code,
+        providerId: finding.providerId,
+        packId: finding.packId,
+      })),
     });
   }
 }

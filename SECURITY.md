@@ -1,6 +1,12 @@
 # Security policy
 
-Report security-sensitive defects privately through the security-advisory feature of the Runyth repository when available. Do not include campaign data, world exports, access tokens, private module source, or player information in a public issue.
+Report security-sensitive defects privately through GitHub's private vulnerability reporting for this repository at:
+
+```text
+https://github.com/Runyth/foundry-runyth-order/security/advisories/new
+```
+
+Use that route before opening any public issue. Do not include campaign data, world exports, access tokens, private module source, or player information in a public issue; the minimal support summary from the Rules Hub is the reviewed form intended for public troubleshooting.
 
 ## Supported release
 

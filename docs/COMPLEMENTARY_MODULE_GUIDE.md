@@ -37,8 +37,9 @@ Add a required module relationship:
         "id": "runyth-order",
         "type": "module",
         "compatibility": {
-          "minimum": "1.0.0",
-          "maximum": "1.0.0"
+          "minimum": "1.0.4",
+          "verified": "1.0.5",
+          "maximum": "1.0.99"
         }
       }
     ]
@@ -133,15 +134,15 @@ function createCharacterOptionsPack() {
     systemId: "dnd5e",
     contentKinds: ["class", "subclass", "feature", "feat"],
     compendia: [
-      "example-character-options.classes",
-      "example-character-options.features"
+      "runyth-order-class-example-vanguard.classes",
+      "runyth-order-class-example-vanguard.features"
     ],
     entries: [
       {
         id: "example-subclass",
         title: "Example Subclass",
         kind: "subclass",
-        uuid: "Compendium.example-character-options.classes.Item.exampleSubcl",
+        uuid: "Compendium.runyth-order-class-example-vanguard.classes.Item.exampleSubcl",
         identifier: "example-subclass",
         version: "1.0.0",
         tags: ["player-option"]
@@ -222,7 +223,7 @@ const source = core.normalizeSource({
   providerId: PROVIDER_ID,
   packId: `${PROVIDER_ID}.character-options`,
   entryId: "example-subclass",
-  sourceUuid: "Compendium.example-character-options.classes.Item.exampleSubcl",
+  sourceUuid: "Compendium.runyth-order-class-example-vanguard.classes.Item.exampleSubcl",
   contentVersion: "1.0.0",
   checksum: "sha256:..."
 });
@@ -307,3 +308,7 @@ At minimum, test:
 - core diagnostics and Actor audit output.
 
 Use the complete example under `examples/runyth-order-rules-example-homebrew` as a starting point.
+
+## Core module dependency versioning
+
+The public Runyth Order provider API is versioned separately from the module package. When a provider supports API 1.0.0 across compatible 1.0.x core patches, its Foundry `relationships.requires` entry should not hard-pin a single core patch. Prefer a tested patch-line range such as minimum `1.0.4`, verified `1.0.5`, maximum `1.0.99`, while the provider descriptor continues to declare its exact API compatibility through `coreApi`. This avoids forcing content-module releases for packaging-only core patches.

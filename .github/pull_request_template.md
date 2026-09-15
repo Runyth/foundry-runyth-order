@@ -7,7 +7,7 @@ Describe the core contract or implementation change. Campaign-specific rules bel
 - [ ] `npm ci --ignore-scripts`
 - [ ] `npm run check`
 - [ ] Public API and schemas updated when required
-- [ ] English and German localization keys match
+- [ ] Canonical English localization keys complete; placeholders unchanged for language packs
 - [ ] Changelog updated
 - [ ] Manual Foundry checklist updated or completed as appropriate
 - [ ] No quality gate was weakened

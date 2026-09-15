@@ -1,8 +1,11 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { spawnSync } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
 import { dirname, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readJson, walk } from "./lib/files.mjs";
+import { analyzeSourceGraph, verifyRuntimeGraph } from "./runtime-graph.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const failures = [];
@@ -26,9 +29,13 @@ const requiredFiles = [
   "templates/rules-hub.hbs",
   "styles/runyth-order.css",
   "lang/en.json",
+  "schemas/provider-registration.schema.json",
   "schemas/provider-descriptor.schema.json",
   "schemas/source-descriptor.schema.json",
   "schemas/localization-pack.schema.json",
+  "tools/release-baseline.json",
+  "keys/release-signing.asc",
+  "tools/stage-source.mjs",
   "types/runyth-order.d.ts",
   "docs/API.md",
   "docs/COMPLEMENTARY_MODULE_GUIDE.md",
@@ -36,6 +43,7 @@ const requiredFiles = [
   "docs/MANUAL_TEST_CHECKLIST.md",
   "docs/LOCALIZATION.md",
   "docs/NAMING_CONTRACT.md",
+  "docs/RUNTIME_PACKAGING.md",
   "examples/runyth-order-rules-example-homebrew/module.json",
   "examples/runyth-order-rules-example-homebrew/scripts/main.mjs"
 ];
@@ -52,7 +60,7 @@ const manifest = await readJson(resolve(root, "module.json"));
 const packageJson = await readJson(resolve(root, "package.json"));
 if (manifest.id !== "runyth-order") failures.push("Manifest ID must be runyth-order.");
 if (manifest.title !== "Runyth Order") failures.push("Manifest title must be exactly Runyth Order.");
-if (manifest.version !== "1.0.4") failures.push("Patch release version must be 1.0.4.");
+if (manifest.version !== "1.0.5") failures.push("Patch release version must be 1.0.5.");
 if (manifest.version !== packageJson.version) failures.push("Manifest and package versions differ.");
 if (manifest.compatibility?.minimum !== "13.341") failures.push("Foundry minimum must be 13.341.");
 if (manifest.compatibility?.verified !== "13.351") failures.push("Foundry verified target must be 13.351.");
@@ -89,7 +97,17 @@ for (const path of [...(manifest.esmodules ?? []), ...(manifest.styles ?? []), .
   }
 }
 
-const jsonFiles = (await walk(root)).filter((file) => extname(file.path) === ".json" && !file.path.startsWith("dist/"));
+const sourceGraph = await analyzeSourceGraph(root);
+failures.push(...sourceGraph.failures.map((failure) => `Source graph: ${failure}`));
+try {
+  const runtimeVerification = await verifyRuntimeGraph(root, { version: manifest.version, moduleId: manifest.id });
+  failures.push(...runtimeVerification.failures.map((failure) => `Runtime graph: ${failure}`));
+  if (manifest.esmodules?.[0] !== runtimeVerification.graph.entrypoint) failures.push("Manifest ESM entrypoint does not match the generated runtime graph.");
+} catch (error) {
+  failures.push(`Runtime graph verification failed: ${error.message}`);
+}
+
+const jsonFiles = (await walk(root)).filter((file) => extname(file.path) === ".json" && !file.path.startsWith("dist/") && !file.path.startsWith("node_modules/") && !file.path.startsWith(".staging/"));
 for (const file of jsonFiles) {
   try {
     JSON.parse(await readFile(file.absolute, "utf8"));
@@ -188,8 +206,8 @@ if (localizationSchema.properties?.baseLanguage?.const !== "en") failures.push("
 if (localizationSchema.properties?.namespace?.const !== "RO") failures.push("Localization schema namespace is invalid.");
 const coreDependency = exampleManifest.relationships?.requires?.find((entry) => entry.id === manifest.id);
 if (!coreDependency) failures.push("Example provider does not require the core.");
-if (coreDependency?.compatibility?.minimum !== "1.0.4" || coreDependency?.compatibility?.maximum !== "1.0.4") {
-  failures.push("Example provider must target Runyth Order 1.0.4.");
+if (coreDependency?.compatibility?.minimum !== "1.0.4" || coreDependency?.compatibility?.verified !== "1.0.5" || coreDependency?.compatibility?.maximum !== "1.0.99") {
+  failures.push("Example provider must accept the compatible Runyth Order 1.0 patch line.");
 }
 if (exampleManifest.title !== "Runyth Order: Rules Example Homebrew") failures.push("Example provider title does not follow the naming contract.");
 if (exampleManifest.flags?.runyth?.canonicalTitle !== exampleManifest.title) failures.push("Example provider manifest naming metadata is invalid.");
@@ -201,7 +219,7 @@ const retiredApiClass = ["Runyth", "Rules", "Core", "Api"].join("");
 const retiredRuntimeApiClass = ["Runyth", "Rules", "Api"].join("");
 const retiredLocalizationPrefix = `${["R", "R", "C"].join("")}.`;
 const retiredCssPrefix = `${["r", "r", "c"].join("")}-`;
-for (const file of (await walk(root)).filter((entry) => !entry.path.startsWith("dist/"))) {
+for (const file of (await walk(root)).filter((entry) => !entry.path.startsWith("dist/") && !entry.path.startsWith(".git/") && !entry.path.startsWith("node_modules/") && !entry.path.startsWith(".staging/"))) {
   if ([retiredIdentity, retiredCssPrefix].some((token) => file.path.includes(token))) {
     failures.push(`Retired package identity remains in path: ${file.path}`);
   }

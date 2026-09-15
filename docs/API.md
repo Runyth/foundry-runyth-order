@@ -90,16 +90,23 @@ The registry entry must contain a resolvable `uuid`. Providers may use their own
 
 ### `auditActor(actorOrUuid, options)`
 
-Runs generic source checks and matching provider Actor validators. The core does not update the Actor. The report shape is:
+Runs generic source checks and matching provider Actor validators. The core does not update the Actor.
+
+The configured actor-audit permission (`owner` or `gm`, with Game Masters always allowed) is enforced centrally for every call: the service authorizes the resolved Actor before running any boundary hook, source inspection, or provider validator. Denied calls reject without producing a report or invoking validators. The Rules Hub applies the same policy before its own button becomes available.
+
+The report shape is:
 
 ```javascript
 {
   schemaVersion: 1,
-  generatedAt: "2026-07-26T20:00:00.000Z",
   actor: {
     uuid: "Actor.abc",
-    name: "Example"
+    id: "abc",
+    name: "Example",
+    type: "character"
   },
+  startedAt: "2026-07-26T20:00:00.000Z",
+  completedAt: "2026-07-26T20:00:00.041Z",
   counts: {
     info: 0,
     warning: 1,
@@ -117,13 +124,23 @@ Runs generic source checks and matching provider Actor validators. The core does
       documentUuid: "Actor.abc",
       data: {}
     }
+  ],
+  providerRuns: [
+    {
+      validatorId: "example-homebrew.progression",
+      status: "ok",
+      issueCount: 1,
+      durationMs: 4
+    }
   ]
 }
 ```
 
+`startedAt`/`completedAt` are the canonical timestamp contract of the audit report; the Diagnostics report uses `generatedAt` because it represents one completed snapshot.
+
 ## Diagnostics
 
-### `runDiagnostics({ deep = false })`
+### `runDiagnostics({ deep = false, minimal = false })`
 
 Checks:
 
@@ -135,7 +152,7 @@ Checks:
 - pending migrations;
 - entry UUID resolution when `deep` is true.
 
-The report is JSON-safe and suitable for support requests after private fields have been reviewed.
+The full report uses `mode: "full"` and includes normalized provider and pack descriptors, pending migration detail, and finding data. With `minimal: true` it returns `mode: "minimal-support"`: the same `generatedAt`, core versions, system id/version, counts, and finding codes only — no descriptors, titles, UUIDs, migration detail, or finding data. The full report is JSON-safe and suitable for support requests after private fields have been reviewed. The minimal export is the pre-reviewed form for public issue reports; the same summary is available from the Rules Hub "Copy support summary" action.
 
 ## Migrations
 
@@ -145,7 +162,7 @@ Lists registered migrations whose version has not been recorded as completed. Su
 
 ### `runMigration(migrationId)`
 
-Runs one migration as a Game Master. Concurrent runs are serialized. Completion is recorded only after the handler resolves successfully.
+Runs one migration as a Game Master. Serialization applies within this client: concurrent calls for distinct migrations in one client run serially, and repeated calls for one migration return the same tracked run. This is not world-wide coordination — two Game Master clients can run the same migration concurrently because each client owns its own queue. Designate a single migration runner and keep provider handlers idempotent. See [Migrations](MIGRATIONS.md#coordination-across-gm-clients). Completion is recorded only after the handler resolves successfully.
 
 ### `runPendingMigrations(filters)`
 
@@ -180,8 +197,8 @@ Opens or focuses the Rules Hub. Valid tabs are `overview`, `providers`, `packs`,
 | `runyth-order.providerRegistered` | `(providerDescriptor, api)` |
 | `runyth-order.providerRejected` | `(submittedProvider, error, api)` |
 | `runyth-order.packRegistered` | `(packDescriptor, api)` |
-| `runyth-order.beforeAuditActor` | `(actor, options)` |
-| `runyth-order.afterAuditActor` | `(actor, report, options)` |
+| `runyth-order.beforeAuditActor` | `(actor)` |
+| `runyth-order.afterAuditActor` | `(actor, report)` |
 | `runyth-order.beforeMigration` | `(migrationDescriptor)` |
 | `runyth-order.afterMigration` | `(migrationDescriptor, report)` |
 

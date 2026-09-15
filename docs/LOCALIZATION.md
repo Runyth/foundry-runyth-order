@@ -96,8 +96,8 @@ Example German manifest:
         "type": "module",
         "compatibility": {
           "minimum": "1.0.4",
-          "verified": "1.0.4",
-          "maximum": "1.0.4"
+          "verified": "1.0.5",
+          "maximum": "1.0.99"
         }
       }
     ]
@@ -111,7 +111,7 @@ Example German manifest:
       "localization": {
         "schemaVersion": 1,
         "targetModuleId": "runyth-order",
-        "targetModuleVersion": "1.0.4",
+        "targetModuleVersion": "1.0.5",
         "baseLanguage": "en",
         "language": "de",
         "namespace": "RO"

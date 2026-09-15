@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import { RunythOrderApi } from "./api.mjs";
 import { HOOKS, MODULE_ID, MODULE_TITLE, SETTINGS } from "./constants.mjs";
 import { ActorAuditService } from "./core/audit-service.mjs";
@@ -5,7 +7,7 @@ import { DiagnosticsService } from "./core/diagnostics-service.mjs";
 import { createLogger } from "./core/logger.mjs";
 import { MigrationService } from "./core/migration-service.mjs";
 import { ProviderRegistry } from "./core/registry.mjs";
-import { registerSettings } from "./settings.mjs";
+import { registerSettings, mayAuditActor } from "./settings.mjs";
 import { registerLaunchers } from "./ui/launchers.mjs";
 import { RulesHub } from "./ui/rules-hub.mjs";
 import { versionSeries } from "./util/versions.mjs";
@@ -58,6 +60,7 @@ Hooks.once("init", () => {
       resolveUuid: (uuid) => globalThis.fromUuid(uuid),
       hooks: Hooks,
       logger,
+      authorize: (actor) => mayAuditActor(actor),
     });
     const diagnosticsService = new DiagnosticsService({
       registry,
