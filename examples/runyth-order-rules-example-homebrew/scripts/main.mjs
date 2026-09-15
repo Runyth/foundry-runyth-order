@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 const MODULE_ID = "runyth-order-rules-example-homebrew";
 const CORE_ID = "runyth-order";
 
@@ -112,8 +114,8 @@ Hooks.once("init", async () => {
     ],
     validators: [actorValidator()],
     migrations: [exampleMigration()],
-    documentationUrl: "https://github.com/Runyth/runyth-order/tree/master/examples/runyth-order-rules-example-homebrew",
-    repositoryUrl: "https://github.com/Runyth/runyth-order",
+    documentationUrl: "https://github.com/Runyth/foundry-runyth-order/tree/master/examples/runyth-order-rules-example-homebrew",
+    repositoryUrl: "https://github.com/Runyth/foundry-runyth-order",
     authors: ["Runyth"],
     naming: {
       orderName: "Runyth Order",

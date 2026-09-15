@@ -1,16 +1,33 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 export type Compatibility = {
   minimum?: string | null;
   verified?: string | null;
   maximum?: string | null;
 };
 
-export type ProviderDependency = Compatibility & {
+export type CoreCompatibility = Compatibility &
+  (
+    | { minimum: string; maximum?: string | null }
+    | { minimum?: string | null; maximum: string }
+  );
+
+export type ProviderSystemInput = Compatibility & {
+  id: string;
+};
+
+export type ProviderDependencyInput = Compatibility & {
   moduleId: string;
   required?: boolean;
 };
 
 export type ProviderSystem = Compatibility & {
   id: string;
+};
+
+export type ProviderDependency = Compatibility & {
+  moduleId: string;
+  required: boolean;
 };
 
 export type RunythNamingMetadata = {
@@ -60,6 +77,11 @@ export type ContentEntry = {
   metadata?: Record<string, unknown>;
 };
 
+export type RegisteredContentEntry = ContentEntry & {
+  tags: string[];
+  metadata: Record<string, unknown>;
+};
+
 export type ContentPack = {
   id: string;
   title: string;
@@ -69,14 +91,30 @@ export type ContentPack = {
   contentKinds?: ContentKind[];
   compendia?: string[];
   entries?: ContentEntry[];
-  dependencies?: ProviderDependency[];
+  dependencies?: ProviderDependencyInput[];
   documentationUrl?: string | null;
   metadata?: Record<string, unknown>;
 };
 
+export type RegisteredContentPack = {
+  id: `${string}.${string}`;
+  localId: string;
+  providerId: string;
+  title: string;
+  description: string | null;
+  version: string | null;
+  systemId: string | null;
+  contentKinds: ContentKind[];
+  compendia: string[];
+  entries: RegisteredContentEntry[];
+  dependencies: ProviderDependency[];
+  documentationUrl: string | null;
+  metadata: Record<string, unknown>;
+};
+
 export type AuditSeverity = "info" | "warning" | "error";
 
-export type AuditIssue = {
+export type AuditIssueInput = {
   id?: string;
   severity?: AuditSeverity;
   code?: string;
@@ -85,6 +123,43 @@ export type AuditIssue = {
   remediation?: string | null;
   documentUuid?: string | null;
   data?: Record<string, unknown>;
+};
+
+export type AuditIssue = {
+  id: string;
+  providerId: string;
+  severity: AuditSeverity;
+  code: string;
+  title: string;
+  message: string;
+  remediation: string | null;
+  documentUuid: string | null;
+  data: Readonly<Record<string, unknown>>;
+};
+
+export type AuditActorInfo = {
+  uuid: string;
+  id: string;
+  name: string;
+  type: string;
+};
+
+export type AuditReport = {
+  schemaVersion: 1;
+  actor: Readonly<AuditActorInfo>;
+  startedAt: string;
+  completedAt: string;
+  counts: Readonly<{ info: number; warning: number; error: number }>;
+  issues: ReadonlyArray<Readonly<AuditIssue>>;
+  providerRuns: ReadonlyArray<
+    Readonly<{
+      validatorId: string;
+      status: "ok" | "failed";
+      issueCount: number;
+      durationMs: number;
+      error?: Readonly<{ name: string; message: string; stack: string | null }>;
+    }>
+  >;
 };
 
 export type ActorValidator = {
@@ -103,7 +178,7 @@ export type ActorValidator = {
       resolveUuid(uuid: string): Promise<unknown>;
       readSource(document: unknown): ManagedSource | null;
     };
-  }): Promise<AuditIssue[]> | AuditIssue[];
+  }): Promise<AuditIssueInput[]> | AuditIssueInput[];
 };
 
 export type ProviderMigration = {
@@ -126,9 +201,9 @@ export type ProviderRegistration = {
   title: string;
   description?: string;
   version?: string;
-  coreApi?: Compatibility;
-  systems?: ProviderSystem[];
-  dependencies?: ProviderDependency[];
+  coreApi: CoreCompatibility;
+  systems?: ProviderSystemInput[];
+  dependencies?: ProviderDependencyInput[];
   capabilities?: string[];
   packs?: ContentPack[];
   validators?: ActorValidator[];
@@ -140,30 +215,25 @@ export type ProviderRegistration = {
   metadata?: Record<string, unknown>;
 };
 
-export type ProviderDescriptor = Omit<
-  ProviderRegistration,
-  "packs" | "validators" | "migrations"
-> & {
+export type ProviderDescriptor = {
+  id: string;
   moduleId: string;
+  title: string;
+  description: string | null;
   version: string;
   coreApi: Compatibility;
   systems: ProviderSystem[];
   dependencies: ProviderDependency[];
   capabilities: string[];
+  documentationUrl: string | null;
+  repositoryUrl: string | null;
+  authors: string[];
+  naming: RunythNamingMetadata | null;
+  metadata: Readonly<Record<string, unknown>>;
   packIds: string[];
   validatorIds: string[];
   migrationIds: string[];
   registeredAt: string;
-};
-
-export type RegisteredContentPack = Omit<ContentPack, "id"> & {
-  id: string;
-  localId: string;
-  providerId: string;
-  contentKinds: ContentKind[];
-  compendia: string[];
-  entries: ContentEntry[];
-  dependencies: ProviderDependency[];
 };
 
 export type RegisteredValidator = {
@@ -206,6 +276,11 @@ export type ManagedSource = {
   importedAt: string;
 };
 
+export type ManagedSourceInput =
+  | ManagedSource
+  | (Pick<ManagedSource, "providerId" | "packId" | "entryId"> &
+      Partial<Pick<ManagedSource, "sourceUuid" | "contentVersion" | "checksum" | "importedAt">>);
+
 export interface RunythOrderApi {
   readonly moduleId: "runyth-order";
   readonly apiVersion: "1.0.0";
@@ -235,13 +310,13 @@ export interface RunythOrderApi {
   }): boolean;
   snapshot(): Readonly<RegistrySnapshot>;
   resolveContent(reference: string | { packId: string; entryId: string }): Promise<unknown>;
-  auditActor(actorOrUuid: unknown, options?: { includeProviderValidators?: boolean }): Promise<unknown>;
-  runDiagnostics(options?: { deep?: boolean }): Promise<unknown>;
+  auditActor(actorOrUuid: unknown, options?: { includeProviderValidators?: boolean }): Promise<Readonly<AuditReport>>;
+  runDiagnostics(options?: { deep?: boolean; minimal?: boolean }): Promise<unknown>;
   listPendingMigrations(filters?: { providerId?: string }): Promise<ReadonlyArray<Readonly<RegisteredMigration>>>;
   runMigration(migrationId: string): Promise<unknown>;
   runPendingMigrations(filters?: { providerId?: string }): Promise<ReadonlyArray<unknown>>;
-  normalizeSource(source: Omit<ManagedSource, "schemaVersion" | "importedAt"> & Partial<Pick<ManagedSource, "importedAt">>): Readonly<ManagedSource>;
+  normalizeSource(source: ManagedSourceInput): Readonly<ManagedSource>;
   readSource(document: unknown): Readonly<ManagedSource> | null;
-  tagDocument(document: unknown, source: Partial<ManagedSource>, options?: { update?: boolean }): Promise<unknown>;
+  tagDocument(document: unknown, source: ManagedSourceInput, options?: { update?: boolean }): Promise<unknown>;
   openHub(options?: { activeTab?: "overview" | "providers" | "packs" | "audit" | "diagnostics" }): Promise<unknown>;
 }

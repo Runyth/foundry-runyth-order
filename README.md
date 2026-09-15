@@ -111,14 +111,14 @@ await core.whenReady();
 
 See:
 
-- [Complementary Module Developer Guide](docs/COMPLEMENTARY_MODULE_GUIDE.md)
-- [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md)
-- [API Reference](docs/API.md)
-- [Provider Schema](docs/PROVIDER_SCHEMA.md)
-- [Capability Vocabulary](docs/CAPABILITIES.md)
-- [D&D 5e 2024 Guidance](docs/DND5E_2024_GUIDE.md)
-- [Example Complementary Module](examples/runyth-order-rules-example-homebrew/)
-- [Localization Contract](docs/LOCALIZATION.md)
+- [Complementary Module Developer Guide](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/COMPLEMENTARY_MODULE_GUIDE.md)
+- [Runyth Order Naming Contract](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/NAMING_CONTRACT.md)
+- [API Reference](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/API.md)
+- [Provider Schema](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/PROVIDER_SCHEMA.md)
+- [Capability Vocabulary](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/CAPABILITIES.md)
+- [D&D 5e 2024 Guidance](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/DND5E_2024_GUIDE.md)
+- [Example Complementary Module](https://github.com/Runyth/foundry-runyth-order/tree/master/examples/runyth-order-rules-example-homebrew)
+- [Localization Contract](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/LOCALIZATION.md)
 
 
 ## Complementary naming contract
@@ -131,16 +131,16 @@ Runyth Order: <Category> <Content Name>
 
 They should use technical IDs in the form `runyth-order-<category-slug>-<content-name-slug>` and declare matching metadata in `module.json` under `flags.runyth` and in the provider descriptor under `naming`. Legacy providers without metadata remain registered and receive only an informational diagnostic. Title mismatches are non-blocking, deduplicated, and visible in the console, diagnostics, and Rules Hub.
 
-See [Runyth Order Naming Contract](docs/NAMING_CONTRACT.md).
+See [Runyth Order Naming Contract](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/NAMING_CONTRACT.md).
 
 
 ## Localization
 
-Runyth Order 1.0.4 contains only the canonical English runtime dictionary. It uses Foundry VTT’s standard manifest `languages` declaration, `game.i18n.localize`, and Handlebars `localize` helper.
+Runyth Order 1.0.5 contains only the canonical English runtime dictionary. It uses Foundry VTT’s standard manifest `languages` declaration, `game.i18n.localize`, and Handlebars `localize` helper.
 
 Translations are separate modules such as `Runyth Order: Language German`. After installing and enabling a language pack, select the language through Foundry’s global **Configure Settings** interface. Runyth Order deliberately provides no dashboard language selector and no competing module-specific language setting.
 
-This lets translation maintainers release corrections independently and allows additional languages without modifying the foundation module. See [Localization Contract](docs/LOCALIZATION.md).
+This lets translation maintainers release corrections independently and allows additional languages without modifying the foundation module. See [Localization Contract](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/LOCALIZATION.md).
 
 ## Compatibility
 
@@ -153,9 +153,16 @@ This lets translation maintainers release corrections independently and allows a
 | Runtime dependencies | None |
 | Socket library | None |
 
-A manifest range is not a substitute for live testing. Complete [the manual test checklist](docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
+A manifest range is not a substitute for live testing. Complete [the manual test checklist](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
 
-Version 1.0.4 retains Foundry V13's public `SceneControlTool.onChange` and record-based Scene Controls contract. It no longer carries the V12 array/`onClick` compatibility branch. The public Runyth Order API remains 1.0.0. Version 1.0.3 finalized the unpublished package identity as `runyth-order`. Version 1.0.4 externalizes non-English translations into optional language-pack modules. The public method surface remains API 1.0.0. Complementary modules continue to depend on and resolve the `runyth-order` package; this localization-only patch does not require provider code changes.
+Version 1.0.5 retains Foundry V13's public `SceneControlTool.onChange` contract and API 1.0.0. Its runtime packaging is hardened: editable modules under `src/` are compiled into a deterministic versioned ESM graph under `runtime/v1.0.5/`, and the manifest loads only a guarded bootstrap. This prevents stale or renamed source paths from being fetched by the browser and allows one clear fatal error if a required emitted module cannot load. Provider API, hook, setting, source-flag, and migration contracts are unchanged.
+
+
+## Runtime packaging
+
+The editable source remains modular under `src/`, but Foundry does not load those filenames directly. `npm run build` deterministically emits a versioned browser graph under `runtime/v1.0.5/`, rewrites all relative ESM edges to exact emitted files, and records the graph in `runtime/v1.0.5/graph.json`. `module.json` loads only `runtime/v1.0.5/bootstrap.mjs`.
+
+The bootstrap dynamically imports the emitted main module and catches linking or fetch failure once. If a required runtime resource is missing, Runyth Order does not construct a partial provider registry; it writes one fatal console error and schedules one permanent GM-visible notification after Foundry reaches `ready`. See [Runtime Packaging Contract](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/RUNTIME_PACKAGING.md).
 
 ## Installation
 
@@ -173,6 +180,18 @@ FoundryVTT/Data/modules/
 
 Replace the existing folder rather than merging releases. Restart Foundry when required, enable the module in the world, and reload connected clients.
 
+When the release is published, the module can also be installed without manual extraction. Paste the following manifest URL into Foundry's
+
+```text
+Add-on Modules → Install Module → Manifest URL
+```
+
+dialog:
+
+```text
+https://github.com/Runyth/foundry-runyth-order/releases/latest/download/module.json
+```
+
 ## Development
 
 Node.js `22.13.0` or newer is required.
@@ -182,15 +201,21 @@ npm ci --ignore-scripts
 npm run check
 ```
 
-`npm run check` performs formatting verification, repository linting, unit tests, manifest/localization/path/API audits, deterministic dual-ZIP packaging, and release verification.
+`npm run check` performs formatting verification, repository linting, unit tests, manifest/localization/path/API audits, standard schema validation against real runtime output, deterministic dual-ZIP packaging through a credential-free publication staging tree, and release verification of the staged artifacts including baseline signature checks and a clean-extraction rebuild.
+
+Publication builds stage exactly one resolved revision: the release tag when `RUNYTH_RELEASE_REF` is set (public CI sets it), otherwise the checked-out `HEAD`. Tracked uncommitted changes fail the build unless `RUNYTH_ALLOW_UNCOMMITTED=1` is set for local developer builds.
 
 Build output is written to `dist/`:
 
-- `runyth-order-v1.0.4.zip`
-- `runyth-order-source-v1.0.4.zip`
-- `runyth-order-v1.0.4-SHA256SUMS.txt`
-- `runyth-order-v1.0.4-build-report.json`
+- `runyth-order-v1.0.5.zip`
+- `runyth-order-source-v1.0.5.zip`
+- `runyth-order-v1.0.5-SHA256SUMS.txt`
+- `runyth-order-v1.0.5-build-report.json`
 
 ## Licence
 
-Runyth Order is released under the **GNU Affero General Public License, version 3 or any later version** (`SPDX-License-Identifier: AGPL-3.0-or-later`). The complete licence text ships in `LICENSE` inside the install and source archives. Complementary modules provide their own code and content and may be distributed under independent licences where their rights and combination permit. Homebrew content exported into a world remains owned by its authors.
+Runyth Order is released under the **GNU Affero General Public License, version 3 or any later version** (`SPDX-License-Identifier: AGPL-3.0-or-later`). The complete licence text ships in `LICENSE` inside both the install and source archives. This means:
+
+- you may use, study, share, and improve Runyth Order;
+- if you modify it and distribute the result, including modified versions that are offered for remote network interaction, you must release your modified version's source code under the same `AGPL-3.0-or-later` terms;
+- complementary modules provide their own code and content and may be distributed under independent licences where their rights and combination permit. Homebrew content exported into a world remains owned by its authors.

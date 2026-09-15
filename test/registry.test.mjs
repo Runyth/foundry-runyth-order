@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import assert from "node:assert/strict";
 import test from "node:test";
 import { ProviderRegistry, ProviderValidationError } from "../src/core/registry.mjs";
@@ -147,4 +149,18 @@ test("rejects non-array nested contribution collections without partial registra
     (error) => error instanceof ProviderValidationError,
   );
   assert.equal(subject.getProvider("example-homebrew"), null);
+});
+
+test("provider registration state is removed on unregister and never leaks into a fresh registry", () => {
+  const first = registry();
+  first.registerProvider(provider());
+  assert.equal(first.listProviders().length, 1);
+  assert.equal(first.unregisterProvider("example-homebrew"), true);
+  assert.equal(first.listProviders().length, 0);
+  assert.deepEqual(first.listPacks(), []);
+
+  const reloaded = registry();
+  assert.equal(reloaded.listProviders().length, 0);
+  reloaded.registerProvider(provider());
+  assert.equal(reloaded.listProviders().length, 1);
 });

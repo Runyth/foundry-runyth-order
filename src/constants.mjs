@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 export const MODULE_ID = "runyth-order";
 export const MODULE_TITLE = "Runyth Order";
 export const API_VERSION = "1.0.0";

@@ -6,7 +6,7 @@ labels:
 body:
   - type: markdown
     attributes:
-      value: Do not attach credentials, private world exports, paid module source, or sensitive player data.
+      value: Do not attach credentials, private world exports, paid module source, or sensitive player data. Prefer the minimal support summary from the Rules Hub; if you attach full JSON, review it first.
   - type: input
     id: core-version
     attributes:

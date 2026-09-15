@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
 import {
   AUDIT_SEVERITIES,
   DEFAULT_VALIDATOR_TIMEOUT_MS,
@@ -6,6 +8,7 @@ import {
 } from "../constants.mjs";
 import { withTimeout } from "../util/async.mjs";
 import { publicClone, safeError } from "../util/objects.mjs";
+import { mayAuditActor } from "../settings.mjs";
 import { readSource } from "./source-flags.mjs";
 
 const SEVERITY_SET = new Set(AUDIT_SEVERITIES);
@@ -42,11 +45,12 @@ function normalizeIssue(issue, providerId, index) {
 }
 
 export class ActorAuditService {
-  constructor({ registry, resolveUuid, hooks = globalThis.Hooks, logger }) {
+  constructor({ registry, resolveUuid, hooks = globalThis.Hooks, logger, authorize = mayAuditActor }) {
     this.registry = registry;
     this.resolveUuid = resolveUuid;
     this.hooks = hooks;
     this.logger = logger;
+    this.authorize = authorize;
   }
 
   async resolveActor(actorOrUuid) {
@@ -65,6 +69,9 @@ export class ActorAuditService {
 
   async auditActor(actorOrUuid, { includeProviderValidators = true } = {}) {
     const actor = await this.resolveActor(actorOrUuid);
+    if (!this.authorize(actor, { includeProviderValidators })) {
+      throw new Error("Actor audit is denied by the configured audit permission.");
+    }
     const startedAt = new Date().toISOString();
     const issues = [];
     const providerRuns = [];

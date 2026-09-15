@@ -2,36 +2,52 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://runyth.github.io/schemas/runyth-order/audit-report-v1.json",
   "title": "Runyth Order Actor audit report",
+  "description": "Validates the output returned by auditActor. The report uses the startedAt/completedAt timestamp contract; see docs/API.md.",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "schemaVersion",
-    "generatedAt",
     "actor",
+    "startedAt",
+    "completedAt",
     "counts",
-    "issues"
+    "issues",
+    "providerRuns"
   ],
   "properties": {
     "schemaVersion": {
       "const": 1
     },
-    "generatedAt": {
-      "type": "string",
-      "format": "date-time"
-    },
     "actor": {
       "type": "object",
       "required": [
         "uuid",
-        "name"
+        "id",
+        "name",
+        "type"
       ],
       "properties": {
         "uuid": {
           "type": "string"
         },
+        "id": {
+          "type": "string"
+        },
         "name": {
+          "type": "string"
+        },
+        "type": {
           "type": "string"
         }
       }
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
     },
     "counts": {
       "type": "object",
@@ -65,7 +81,10 @@
           "severity",
           "code",
           "title",
-          "message"
+          "message",
+          "remediation",
+          "documentUuid",
+          "data"
         ],
         "properties": {
           "id": {
@@ -104,6 +123,59 @@
           },
           "data": {
             "type": "object"
+          }
+        }
+      }
+    },
+    "providerRuns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "validatorId",
+          "status",
+          "issueCount",
+          "durationMs"
+        ],
+        "properties": {
+          "validatorId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "failed"
+            ]
+          },
+          "issueCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "name",
+              "message",
+              "stack"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "stack": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
           }
         }
       }

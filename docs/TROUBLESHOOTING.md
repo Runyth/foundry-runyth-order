@@ -24,3 +24,9 @@
 Open Rules Hub → Providers or run diagnostics. Compare the provider title, active module title, provider `naming`, and manifest `flags.runyth` with the canonical title. The required pattern is `Runyth Order: <Category> <Content Name>`.
 
 Naming warnings are non-blocking. Legacy providers without metadata receive `NAMING_METADATA_MISSING` as information and continue to work. Do not rename an already published technical module or provider ID merely to silence a display-name warning.
+
+## Browser reports `ERR_FAILED` for Runyth Order ESM resources
+
+Version 1.0.5 no longer loads editable `src/core/*.mjs` files directly. Verify that `module.json` points to `runtime/v1.0.5/bootstrap.mjs`, then inspect `runtime/v1.0.5/graph.json`. Every recorded runtime file must exist exactly, including case. A clean install and an overlay-upgrade test should both request only the versioned runtime path.
+
+If an emitted dependency is genuinely absent or blocked, the guarded bootstrap reports one fatal initialization error and the core API remains unavailable rather than leaving a partial provider registry. Reinstall the ZIP, clear the browser cache, and reload. Do not patch complementary providers around a missing core runtime resource.

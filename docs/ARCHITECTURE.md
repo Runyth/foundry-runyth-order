@@ -85,3 +85,9 @@ Naming evaluation occurs only after atomic provider registration succeeds. The r
 The foundation module owns one canonical English dictionary and the stable `RO.*` key contract. It does not own German, Italian, or any other translation release. Optional language-pack modules contribute dictionaries through Foundry’s native `languages` manifest field and Foundry’s global language selection.
 
 No language state is stored by Runyth Order, no dashboard language selector is rendered, and no migration is required when a translation pack is installed, removed, or updated. See `LOCALIZATION.md`.
+
+## Browser runtime graph
+
+The repository keeps maintainable modules under `src/`, but the distributed browser runtime is generated under a versioned `runtime/v<module-version>/` directory. Every relative source import is resolved against an exact case-sensitive inventory, rewritten to a neutral emitted module name, and recorded in `graph.json`. The install ZIP does not expose `src/` as browser runtime.
+
+The manifest loads only a guarded `bootstrap.mjs`. The bootstrap dynamically imports the emitted main module, so an unavailable dependency rejects one import boundary that can be reported once. Because ESM linking completes before the imported module evaluates, a missing emitted dependency cannot leave the registry half-constructed. A new patch version uses a new runtime directory, preventing an overlay upgrade or browser cache from satisfying imports with a previous release's files.

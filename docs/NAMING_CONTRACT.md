@@ -31,9 +31,9 @@ Examples:
 | Provider type | Canonical title | Recommended technical ID |
 |---|---|---|
 | Class | `Runyth Order: Class Example Vanguard` | `runyth-order-class-example-vanguard` |
-| Species | `Runyth Order: Species Crystal-Blooded` | `runyth-order-species-crystal-blooded` |
+| Species | `Runyth Order: Species Example Realm` | `runyth-order-species-example-realm` |
 | Rules | `Runyth Order: Rules Wound Recovery` | `runyth-order-rules-wound-recovery` |
-| Equipment | `Runyth Order: Equipment Imperial Arsenal` | `runyth-order-equipment-imperial-arsenal` |
+| Equipment | `Runyth Order: Equipment Example Arsenal` | `runyth-order-equipment-example-arsenal` |
 | Setting | `Runyth Order: Setting Example Realm` | `runyth-order-setting-example-realm` |
 | Language | `Runyth Order: Language German` | `runyth-order-language-german` |
 
@@ -83,8 +83,8 @@ core.registerProvider({
     canonicalTitle: "Runyth Order: Class Example Vanguard"
   },
   coreApi: {
-    minimum: "1.0.0",
-    maximum: "1.0.0"
+    minimum: "1.0.4",
+    maximum: "1.0.99"
   }
 });
 ```

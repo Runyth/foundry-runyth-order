@@ -1,6 +1,11 @@
 # Provider schema
 
-The executable registration object contains descriptors plus optional handler functions. `schemas/provider-descriptor.schema.json` validates the serializable descriptor subset.
+The executable registration object contains descriptors plus optional handler functions. Two JSON schemas describe the public contracts:
+
+- `schemas/provider-registration.schema.json` validates the object passed to `registerProvider`. It describes registration intent: pack IDs are provider-local, generated fields (`localId`, `providerId`, global pack IDs) are absent, and fields the core defaults (`moduleId`, `version`, empty arrays) stay optional.
+- `schemas/provider-descriptor.schema.json` validates the normalized, immutable descriptors the core returns. The same file carries a `normalizedPack` definition for returned pack descriptors.
+
+Both contracts distinguish compatibility composition from sibling fields: a system or dependency object carries its own `minimum`/`verified`/`maximum` next to `id` or `moduleId`/`required`. `schemas/audit-report.schema.json` validates the audit report output, which uses the `startedAt`/`completedAt` timestamp contract, and `schemas/source-descriptor.schema.json` validates normalized managed-source flags. Both `naming` forms — an object or an explicit `null` — are accepted wherever registration permits it. Schema validation in the automated gate uses the standard Draft 2020-12 validator (dev-only dependency) against real registration examples and live runtime output; descriptors still lacking required fields, malformed naming metadata, or invalid compatibility ranges must be rejected by fixtures. Runtime responsibilities that remain executable checks outside the schemas: duplicate-ID rollback, handler signatures, naming consistency between provider and manifest, and live module-activity requirements.
 
 ## Provider fields
 
