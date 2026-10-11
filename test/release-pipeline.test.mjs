@@ -84,12 +84,22 @@ async function makeProjectFixture(testContext) {
   // existing refs; fixtures whose pipeline shape needs unavailable refs skip explicitly.
   const branchSource = MASTER_SOURCES.find((ref) => listSourceRefs(ref).includes(ref));
   const sourceTagRefs = listSourceRefs("refs/tags/v*");
-  if (!branchSource || !sourceTagRefs.includes(releaseTag)) {
+  // Full production verification pins every baseline release tag in the archived
+  // history, so the fixture also requires the complete checked-in baseline set.
+  const baselineTags = await (async () => {
+    try {
+      return JSON.parse(readFileSync(resolve(fixture, "tools/release-baseline.json"), "utf8")).releases.map((row) => `refs/tags/${row.tag}`);
+    } catch {
+      return [];
+    }
+  })();
+  const missingTags = baselineTags.filter((tag) => !sourceTagRefs.includes(tag));
+  if (!branchSource || missingTags.length) {
     await cleanup(fixture);
     testContext?.skip(
       !branchSource
         ? "the checked-out source exposes no retained master ref; pipeline shapes cannot be reconstructed"
-        : `the release tag ${releaseTag} is not present in the checked-out source`,
+        : `the checked-out source is missing baseline release refs: ${missingTags.join(", ")}`,
     );
     return null;
   }
