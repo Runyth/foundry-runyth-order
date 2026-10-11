@@ -19,6 +19,29 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      # Tag checkouts detach HEAD and do not materialize every retained public ref as
+      # a local ref. Reconstruct the retained branch (and the release tag when the
+      # checkout mirrored it under a remote-tracking ref) so canonical staging and the
+      # retained-ref pipeline see the exact published pointers.
+      - name: Reconstruct retained public refs
+        run: |
+          branch_target="$(git rev-parse --verify --quiet refs/heads/master || true)"
+          if [ -z "$branch_target" ]; then
+            branch_target="$(git rev-parse --verify --quiet refs/remotes/origin/master || git rev-parse --verify --quiet refs/remotes/upstream/master || true)"
+          fi
+          if [ -z "$branch_target" ]; then
+            echo "The checkout exposes no retained master ref; canonical staging is impossible." >&2
+            exit 1
+          fi
+          git update-ref refs/heads/master "$branch_target"
+          if ! git show-ref --verify --quiet "refs/tags/${GITHUB_REF_NAME}"; then
+            tag_target="$(git rev-parse --verify --quiet "refs/remotes/origin/${GITHUB_REF_NAME}" || git rev-parse --verify --quiet "refs/upstream/${GITHUB_REF_NAME}" || true)"
+            if [ -z "$tag_target" ]; then
+              echo "The release tag ${GITHUB_REF_NAME} is not present in the checkout." >&2
+              exit 1
+            fi
+            git update-ref "refs/tags/${GITHUB_REF_NAME}" "$tag_target"
+          fi
       # actions/setup-node v7.1.0 — pinned.
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
