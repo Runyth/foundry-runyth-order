@@ -4,7 +4,7 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 ## Fresh install
 
-- [ ] For a clean-install test, remove the existing `runyth-order` folder before extracting 1.0.6. Separately perform the overlay-upgrade test described below.
+- [ ] For a clean-install test, remove the existing `runyth-order` folder before extracting 1.0.7. Separately perform the overlay-upgrade test described below.
 
 - [ ] Extract the install ZIP and confirm `Data/modules/runyth-order/module.json`.
 - [ ] Enable the module without any complementary provider.
@@ -104,16 +104,16 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 - [ ] Load a provider without naming metadata; confirm it remains registered and receives only an informational `NAMING_METADATA_MISSING` finding.
 - [ ] Confirm settings, completed migrations, and managed source metadata use only the `runyth-order` namespace.
 
-## 1.0.6 runtime-package regression
+## 1.0.7 runtime-package regression
 
-- [ ] Clean install `runyth-order-v1.0.6.zip` on a case-sensitive filesystem and confirm the root folder is exactly `runyth-order/`.
-- [ ] Confirm `module.json` loads `runtime/v1.0.6/bootstrap.mjs` and that no `src/` path is listed as a browser entrypoint.
-- [ ] Confirm every file listed by `runtime/v1.0.6/graph.json` exists with exact spelling and case.
-- [ ] Clear browser cache, load the world, and confirm there are no failed requests for `modules/runyth-order/runtime/v1.0.6/*`.
+- [ ] Clean install `runyth-order-v1.0.7.zip` on a case-sensitive filesystem and confirm the root folder is exactly `runyth-order/`.
+- [ ] Confirm `module.json` loads `runtime/v1.0.7/bootstrap.mjs` and that no `src/` path is listed as a browser entrypoint.
+- [ ] Confirm every file listed by `runtime/v1.0.7/graph.json` exists with exact spelling and case.
+- [ ] Clear browser cache, load the world, and confirm there are no failed requests for `modules/runyth-order/runtime/v1.0.7/*`.
 - [ ] Confirm there are no requests for the former direct runtime paths such as `src/core/registry.mjs`, `src/core/logger.mjs`, or `src/settings.mjs`.
-- [ ] Overlay 1.0.6 onto an extracted 1.0.5 folder without deleting old files, clear browser cache, reload, and confirm all active ESM requests still resolve only through `runtime/v1.0.6/`.
+- [ ] Overlay 1.0.7 onto an extracted 1.0.6 folder without deleting old files, clear browser cache, reload, and confirm all active ESM requests still resolve only through `runtime/v1.0.7/`.
 - [ ] Temporarily remove one emitted runtime module in a disposable copy. Confirm startup produces one `Runyth Order | Fatal runtime initialization failure` console error and one permanent notification, with no partial provider count or usable registry. Restore the file afterward.
-- [ ] Reload repeatedly and confirm no `net::ERR_FAILED`, 404, case mismatch, or stale 1.0.5 runtime request appears.
+- [ ] Reload repeatedly and confirm no `net::ERR_FAILED`, 404, case mismatch, or stale 1.0.6 runtime request appears.
 
 ## Provider regression with a real provider
 

@@ -43,6 +43,30 @@ export function createSceneControlTool(tools) {
   };
 }
 
+// Installed language providers contribute localized strings, so launcher text is
+// always inserted as text nodes: markup comes from string literals only and no
+// localized value is ever parsed as HTML.
+export function buildLauncherCard(document, localized) {
+  const card = document.createElement("section");
+  card.className = `${MODULE_ID}-launcher`;
+  const heading = document.createElement("h3");
+  const headingIcon = document.createElement("i");
+  headingIcon.className = "fa-solid fa-diagram-project";
+  heading.append(headingIcon, document.createTextNode(localized.title));
+  const summary = document.createElement("p");
+  summary.textContent = localized.summary;
+  const button = document.createElement("button");
+  button.type = "button";
+  button.dataset.action = "open-rules-hub";
+  const buttonIcon = document.createElement("i");
+  buttonIcon.className = "fa-solid fa-arrow-up-right-from-square";
+  const label = document.createElement("span");
+  label.textContent = localized.label;
+  button.append(buttonIcon, label);
+  card.append(heading, summary, button);
+  return card;
+}
+
 export function registerLaunchers() {
   game.keybindings.register(MODULE_ID, "openRulesHub", {
     name: "RO.Keybindings.OpenHub.Name",
@@ -62,16 +86,11 @@ export function registerLaunchers() {
     const target = settingsLauncherTarget(root);
     if (!target) return;
 
-    const card = document.createElement("section");
-    card.className = `${MODULE_ID}-launcher`;
-    card.innerHTML = `
-      <h3><i class="fa-solid fa-diagram-project"></i> ${game.i18n.localize("RO.Title")}</h3>
-      <p>${game.i18n.localize("RO.Launcher.Summary")}</p>
-      <button type="button" data-action="open-rules-hub">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        <span>${game.i18n.localize("RO.Launcher.Open")}</span>
-      </button>
-    `;
+    const card = buildLauncherCard(document, {
+      title: game.i18n.localize("RO.Title"),
+      summary: game.i18n.localize("RO.Launcher.Summary"),
+      label: game.i18n.localize("RO.Launcher.Open"),
+    });
     card.querySelector("button")?.addEventListener("click", () => void openHub());
     target.prepend(card);
   });

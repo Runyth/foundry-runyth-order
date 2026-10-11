@@ -95,6 +95,20 @@
       "committerOffset": "+0200",
       "messageSha256": "b092473037b445714b5a8768758d0f4465a0239874b782856d3f26c285acd06b",
       "chainMode": "release"
+    },
+    {
+      "tag": "v1.0.7",
+      "subject": "Release: Prepare 1.0.7",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1791756600,
+      "authorOffset": "+0200",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me",
+      "committerEpoch": 1791756600,
+      "committerOffset": "+0200",
+      "messageSha256": "ac2eefec6a1ce383f416a5c77a2879729b58982263b106421d3c7ba2cd8d9461",
+      "chainMode": "release"
     }
   ]
 }

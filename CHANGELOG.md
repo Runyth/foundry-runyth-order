@@ -2,10 +2,11 @@
 
 All notable changes to **Runyth Order** are documented here.
 
-## Unreleased
+## 1.0.7 — 2026-10-11
 
 - Hardened the Rules Hub settings launcher: localized values (including text from installed language-pack modules) are inserted only through text-safe DOM nodes so no localized value is ever parsed as HTML markup.
 - Enforced the published `date-time` schema format during contract validation: contract tests now register canonical RFC 3339 enforcement instead of silently ignoring the declared format, while runtime timestamps continue to satisfy it.
+- Synchronized the publication metadata for the 1.0.7 patch: manifest, package metadata, the regenerated `runtime/v1.0.7/` ESM graph, and the appended release baseline row.
 
 ## 1.0.6 — 2026-10-11
 

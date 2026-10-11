@@ -60,7 +60,7 @@ const manifest = await readJson(resolve(root, "module.json"));
 const packageJson = await readJson(resolve(root, "package.json"));
 if (manifest.id !== "runyth-order") failures.push("Manifest ID must be runyth-order.");
 if (manifest.title !== "Runyth Order") failures.push("Manifest title must be exactly Runyth Order.");
-if (manifest.version !== "1.0.6") failures.push("Patch release version must be 1.0.6.");
+if (manifest.version !== "1.0.7") failures.push("Patch release version must be 1.0.7.");
 if (manifest.version !== packageJson.version) failures.push("Manifest and package versions differ.");
 if (manifest.compatibility?.minimum !== "13.341") failures.push("Foundry minimum must be 13.341.");
 if (manifest.compatibility?.verified !== "13.351") failures.push("Foundry verified target must be 13.351.");
