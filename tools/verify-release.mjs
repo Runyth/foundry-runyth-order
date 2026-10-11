@@ -529,7 +529,7 @@ async function verifyReleaseBaseline(workRoot, tempRoot) {
       failures.push(`Baseline tag ${expected.tag} does not resolve in the archived history.`);
       return;
     }
-    rowTargets.push({ tag: expected.tag, tagTarget: commit });
+    rowTargets.push({ tag: expected.tag, tagTarget: commit, chainMode: expected.chainMode ?? "rewrite" });
 
     const commitBody = spawnSync("git", ["-C", workRoot, "cat-file", "commit", commit], {
       encoding: "utf8",
@@ -556,8 +556,15 @@ async function verifyReleaseBaseline(workRoot, tempRoot) {
     }
 
     if (rowTargets.length > 1) {
-      const parentTarget = rowTargets.at(-2).tagTarget;
-      if (rowResult.parents.length !== 1 || rowResult.parents[0] !== parentTarget) {
+      const previousTarget = rowTargets.at(-2).tagTarget;
+      if ((expected.chainMode ?? "rewrite") === "release") {
+        // Appended release rows bless a normal Git release flow: the previous retained
+        // release must be an ancestor even when intermediate non-release commits exist.
+        const ancestry = runGit(["merge-base", "--is-ancestor", previousTarget, commit]);
+        if (ancestry.status !== 0) {
+          failures.push(`${expected.tag}: does not retain the previous release (${previousTarget.slice(0, 12)}) in its history.`);
+        }
+      } else if (rowResult.parents.length !== 1 || rowResult.parents[0] !== previousTarget) {
         failures.push(`${expected.tag}: parent mapping does not linearly follow the previous release commit.`);
       }
     } else if (rowResult.parents.length !== 0) {
@@ -566,9 +573,16 @@ async function verifyReleaseBaseline(workRoot, tempRoot) {
   }
 
   const commits = runGit(["rev-list", "--reverse", "--topo-order", "refs/heads/master"]).stdout.trim().split(/\s+/u).filter(Boolean);
-  rowTargets.forEach((row, index) => {
+  const rewriteRows = rowTargets.filter((row) => row.chainMode === "rewrite");
+  rewriteRows.forEach((row, index) => {
     if (commits.length > index && commits[index] !== row.tagTarget) {
-      failures.push(`${row.tag}: does not occupy baseline position ${index} of the retained branch.`);
+      failures.push(`${row.tag}: does not occupy retained-chain position ${index} of the retained branch.`);
     }
   });
+  for (const row of rowTargets.filter((entry) => entry.chainMode === "release")) {
+    const branchContains = runGit(["merge-base", "--is-ancestor", row.tagTarget, "refs/heads/master"]);
+    if (branchContains.status !== 0) {
+      failures.push(`${row.tag}: recorded release is not reachable from the retained branch.`);
+    }
+  }
 }

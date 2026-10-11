@@ -2,14 +2,7 @@
 
 All notable changes to **Runyth Order** are documented here.
 
-## Unreleased
-
-- Updated the pinned GitHub Actions to their current stable releases: `actions/checkout` v7.0.1, `actions/setup-node` v7.1.0, `actions/upload-artifact` v7.0.2, and `softprops/action-gh-release` v3.0.3.
-- Disabled Dependabot update automation while keeping its configuration in the repository as `.github/dependabot.yml.disabled` for later re-enabling.
-
-## 1.0.5 project preparation
-
-The following implementation and release-integrity changes are part of the 1.0.5 publication revision.
+## 1.0.6 — 2026-10-11
 
 - Release verification now stages a single, explicit build revision (release tag in public CI via `RUNYTH_RELEASE_REF`, checked-out `HEAD` otherwise), rejects uncommitted tracked inputs, and cross-checks the archived install/source manifests and licence against the working tree manifest and upload checksums.
 - Git metadata reconstruction switched to a canonical object closure (`git pack-objects --no-reuse-delta --no-reuse-object` plus `git index-pack`) with pinned pack settings, template-free initialization, sanitized Git environment, an enforced metadata allow-list, and byte-reproducible pack storage across independent staging runs; reproducibility comparisons preserve the first artifacts before re-running.

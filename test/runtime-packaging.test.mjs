@@ -22,15 +22,15 @@ test("generated browser graph is complete, hashed, versioned, and manifest-align
   const result = await verifyRuntimeGraph(root, { version: manifest.version, moduleId: manifest.id });
   assert.deepEqual(result.failures, []);
   assert.equal(result.graph.entrypoint, manifest.esmodules[0]);
-  assert.match(result.graph.entrypoint, /^runtime\/v1\.0\.5\/bootstrap\.mjs$/u);
+  assert.match(result.graph.entrypoint, /^runtime\/v1\.0\.6\/bootstrap\.mjs$/u);
   assert.equal(result.graph.sourceFiles, 17);
   assert.equal(result.graph.files.length, 17);
-  assert.ok(result.graph.files.every((file) => /^runtime\/v1\.0\.5\/m\d{2}\.mjs$/u.test(file.runtime)));
-  assert.ok(result.graph.edges.every((edge) => edge.importer.startsWith("runtime/v1.0.5/") && edge.target.startsWith("runtime/v1.0.5/")));
+  assert.ok(result.graph.files.every((file) => /^runtime\/v1\.0\.6\/m\d{2}\.mjs$/u.test(file.runtime)));
+  assert.ok(result.graph.edges.every((edge) => edge.importer.startsWith("runtime/v1.0.6/") && edge.target.startsWith("runtime/v1.0.6/")));
 });
 
 test("guarded bootstrap contains one fatal boundary and no direct source import", async () => {
-  const bootstrap = await readFile(resolve(root, "runtime/v1.0.5/bootstrap.mjs"), "utf8");
+  const bootstrap = await readFile(resolve(root, "runtime/v1.0.6/bootstrap.mjs"), "utf8");
   assert.match(bootstrap, /await import\("\.\/m\d{2}\.mjs"\)/u);
   assert.match(bootstrap, /Fatal runtime initialization failure/u);
   assert.match(bootstrap, /if \(!reported\)/u);
