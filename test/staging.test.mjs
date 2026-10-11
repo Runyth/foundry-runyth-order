@@ -7,6 +7,14 @@ import { stageSource, assertGitAllowlist, isolatedGitEnv } from "../tools/stage-
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 
+// Production tooling reads RUNYTH_* machine context from process.env, and release
+// workflows export that context around the whole quality gate; in-process fixtures must
+// build their own environments explicitly, so ambient values are neutralized here before
+// any staging fixture runs instead of leaking into synthetic repositories.
+for (const key of Object.keys(process.env)) {
+  if (key.startsWith("RUNYTH_")) delete process.env[key];
+}
+
 function git(root, args, options = {}) {
   const result = spawnSync("git", ["-C", root, ...args], {
     encoding: "utf8",
