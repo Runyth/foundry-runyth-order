@@ -106,10 +106,12 @@ test("an annotated release version tag transfers and passes full production veri
       "-a",
       "v1.0.5",
       "-m",
-      "Rarely Registered fixture annotated release tag",
+      "fixture annotated release tag over the identical release commit",
       releaseCommit,
     ]);
-    fixtureGit(fixture, ["reset", "--quiet", "--mixed", "refs/tags/v1.0.5"]);
+    // The checkout worktree keeps the current branch state; staging materializes the
+    // selected revision tree, mirroring the public tag pipeline while master advances.
+    fixtureGit(fixture, ["reset", "--quiet", "--mixed", "refs/remotes/origin/master"]);
 
     const build = runProductionStep(fixture, "tools/build.mjs", {
       RUNYTH_RELEASE_REF: "refs/tags/v1.0.5",
