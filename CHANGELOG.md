@@ -6,6 +6,7 @@ All notable changes to **Runyth Order** are documented here.
 
 - Updated the pinned GitHub Actions to their current stable releases: `actions/checkout` v7.0.1, `actions/setup-node` v7.1.0, `actions/upload-artifact` v7.0.2, and `softprops/action-gh-release` v3.0.3.
 - Disabled Dependabot update automation while keeping its configuration in the repository as `.github/dependabot.yml.disabled` for later re-enabling.
+- Continuous integration reconstructs retained public refs after tag checkouts so canonical staging works without a complete local ref inventory.
 
 ## 1.0.5 project preparation
 
