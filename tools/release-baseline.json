@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Verified release-history baseline. Pins the six published release commits by structure: identity, independently preserved author/committer epoch timestamps and offsets, exact message digest, and tag correspondence. Rewrite tooling and release revisions must keep every row matching the retained public history.",
+  "description": "Verified release-history baseline. Pins the six published release commits by structure: identity, independently preserved author/committer epoch timestamps and offsets, exact message digest, and tag correspondence. Rewrite tooling and release revisions must keep every row matching the retained public history. Rows with chainMode release are appended through a normal signed release flow: their target must be reachable from the retained branch and retain the previous release in its history instead of occupying the original rewritten position chain.",
   "signingKeyFingerprint": "F00EB42FC7F91FC3D15265EFDE1C8B6662B0F96A",
   "branch": "refs/heads/master",
   "releases": [
@@ -81,6 +81,20 @@
       "messageSha256": "493a2f3b6e14440241bae7c8b0b5ff75ea607b9ca88829952803ada10a4e49e0",
       "committerName": "Daniel Braniewski",
       "committerEmail": "akki@ik.me"
+    },
+    {
+      "tag": "v1.0.6",
+      "subject": "Release: Prepare 1.0.6",
+      "authorName": "Daniel Braniewski",
+      "authorEmail": "akki@ik.me",
+      "authorEpoch": 1791749700,
+      "authorOffset": "+0200",
+      "committerName": "Daniel Braniewski",
+      "committerEmail": "akki@ik.me",
+      "committerEpoch": 1791749700,
+      "committerOffset": "+0200",
+      "messageSha256": "b092473037b445714b5a8768758d0f4465a0239874b782856d3f26c285acd06b",
+      "chainMode": "release"
     }
   ]
 }

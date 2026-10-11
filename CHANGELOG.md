@@ -2,16 +2,7 @@
 
 All notable changes to **Runyth Order** are documented here.
 
-## Unreleased
-
-- Updated the pinned GitHub Actions to their current stable releases: `actions/checkout` v7.0.1, `actions/setup-node` v7.1.0, `actions/upload-artifact` v7.0.2, and `softprops/action-gh-release` v3.0.3.
-- Disabled Dependabot update automation while keeping its configuration in the repository as `.github/dependabot.yml.disabled` for later re-enabling.
-- Continuous integration reconstructs retained public refs after tag checkouts so canonical staging works without a complete local ref inventory.
-- Pipeline fixtures neutralize ambient release environment variables and fetch only refs that actually exist in the checked-out source, skipping explicitly when required public refs are absent.
-
-## 1.0.5 project preparation
-
-The following implementation and release-integrity changes are part of the 1.0.5 publication revision.
+## 1.0.6 — 2026-10-11
 
 - Release verification now stages a single, explicit build revision (release tag in public CI via `RUNYTH_RELEASE_REF`, checked-out `HEAD` otherwise), rejects uncommitted tracked inputs, and cross-checks the archived install/source manifests and licence against the working tree manifest and upload checksums.
 - Git metadata reconstruction switched to a canonical object closure (`git pack-objects --no-reuse-delta --no-reuse-object` plus `git index-pack`) with pinned pack settings, template-free initialization, sanitized Git environment, an enforced metadata allow-list, and byte-reproducible pack storage across independent staging runs; reproducibility comparisons preserve the first artifacts before re-running.
@@ -30,6 +21,8 @@ The following implementation and release-integrity changes are part of the 1.0.5
 - Publication packaging now reconstructs credential-free Git metadata from explicitly selected public refs instead of archiving the checkout's working `.git`, disables checkout credential persistence in CI, and release verification checks complete history, exact refs, reconstructed config, signatures, and a byte-identical rebuild from a clean extraction.
 - Corrected public distribution URLs to the intended repository and documented a concrete private vulnerability-reporting route; pinned workflow actions to full commit SHAs.
 - Neutralized example identities in documentation and tests; replaced campaign-specific regression checks with example-provider checks and optional companion-provider notes.
+- Continuous integration reconstructs retained public refs after tag checkouts so canonical staging works without a complete local ref inventory.
+- Pipeline fixtures neutralize ambient release environment variables and fetch only refs that actually exist in the checked-out source, skipping explicitly when required public refs are absent.
 
 ## 1.0.5 — 2026-09-15
 
