@@ -27,6 +27,6 @@ Naming warnings are non-blocking. Legacy providers without metadata receive `NAM
 
 ## Browser reports `ERR_FAILED` for Runyth Order ESM resources
 
-Version 1.0.6 no longer loads editable `src/core/*.mjs` files directly. Verify that `module.json` points to `runtime/v1.0.6/bootstrap.mjs`, then inspect `runtime/v1.0.6/graph.json`. Every recorded runtime file must exist exactly, including case. A clean install and an overlay-upgrade test should both request only the versioned runtime path.
+Version 1.0.7 no longer loads editable `src/core/*.mjs` files directly. Verify that `module.json` points to `runtime/v1.0.7/bootstrap.mjs`, then inspect `runtime/v1.0.7/graph.json`. Every recorded runtime file must exist exactly, including case. A clean install and an overlay-upgrade test should both request only the versioned runtime path.
 
 If an emitted dependency is genuinely absent or blocked, the guarded bootstrap reports one fatal initialization error and the core API remains unavailable rather than leaving a partial provider registry. Reinstall the ZIP, clear the browser cache, and reload. Do not patch complementary providers around a missing core runtime resource.
