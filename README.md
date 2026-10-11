@@ -213,9 +213,17 @@ Build output is written to `dist/`:
 - `runyth-order-v1.0.5-build-report.json`
 
 ## Licence
+Copyright © 2026  [Daniel Braniewski](https://brani.dev/)
 
-Runyth Order is released under the **GNU Affero General Public License, version 3 or any later version** (`SPDX-License-Identifier: AGPL-3.0-or-later`). The complete licence text ships in `LICENSE` inside both the install and source archives. This means:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-- you may use, study, share, and improve Runyth Order;
-- if you modify it and distribute the result, including modified versions that are offered for remote network interaction, you must release your modified version's source code under the same `AGPL-3.0-or-later` terms;
-- complementary modules provide their own code and content and may be distributed under independent licences where their rights and combination permit. Homebrew content exported into a world remains owned by its authors.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
