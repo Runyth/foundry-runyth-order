@@ -2,6 +2,10 @@
 
 All notable changes to **Runyth Order** are documented here.
 
+## Unreleased
+
+- Hardened the Rules Hub settings launcher: localized values (including text from installed language-pack modules) are inserted only through text-safe DOM nodes so no localized value is ever parsed as HTML markup.
+
 ## 1.0.6 — 2026-10-11
 
 - Release verification now stages a single, explicit build revision (release tag in public CI via `RUNYTH_RELEASE_REF`, checked-out `HEAD` otherwise), rejects uncommitted tracked inputs, and cross-checks the archived install/source manifests and licence against the working tree manifest and upload checksums.
