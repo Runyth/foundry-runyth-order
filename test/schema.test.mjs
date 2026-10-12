@@ -16,16 +16,27 @@ for (const file of files) {
   schemas.set(file, JSON.parse(await readFile(new URL(file, schemaRoot), "utf8")));
 }
 
+// Published schemas use the standard `date-time` format; registering the canonical
+// RFC 3339 shape keeps the contract tests enforcing real timestamp syntax instead of
+// silently ignoring the declared format.
+const DATE_TIME_PATTERN = /^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})$/u;
+
+function createAjv() {
+  const ajv = new Ajv({ strict: false, allErrors: true });
+  ajv.addFormat("date-time", { validate: (value) => DATE_TIME_PATTERN.test(value), compare: undefined });
+  return ajv;
+}
+
 function validatorFor(file) {
   const schema = schemas.get(file);
-  const ajv = new Ajv({ strict: false, allErrors: true });
+  const ajv = createAjv();
   ajv.compile(schema);
   return { schema, validate: ajv.compile(schema) };
 }
 
 function validatorForDefinition(file, definition) {
   const parent = schemas.get(file);
-  const ajv = new Ajv({ strict: false, allErrors: true });
+  const ajv = createAjv();
   return ajv.compile({ $schema: "https://json-schema.org/draft/2020-12/schema", $defs: parent.$defs, ...definition });
 }
 
@@ -253,4 +264,21 @@ test("real diagnostics output satisfies the report contract and minimal export o
   for (const finding of minimal.findings) {
     assert.deepEqual(Object.keys(finding).sort(), ["code", "packId", "providerId", "severity"]);
   }
+});
+
+test("declared date-time fields enforce RFC 3339 timestamp syntax", async () => {
+  const registry = new ProviderRegistry({ getModule: () => ({ active: true, version: "1.0.0" }) });
+  const descriptor = registry.registerProvider({
+    id: "example-homebrew",
+    title: "Example",
+    coreApi: { minimum: "1.0.0", maximum: "1.0.0" },
+    packs: [{ id: "options", title: "Options", compendia: [] }],
+  });
+  const { validate } = validatorFor("provider-descriptor.schema.json");
+  validate({ ...descriptor, registeredAt: "2026-10-11 20:15:00" });
+  assert.equal(validate.errors?.some((error) => error.message?.includes("date-time")), true, "a spaced, non-RFC 3339 timestamp must be rejected");
+  validate({ ...descriptor, registeredAt: "20261011T201500Z" });
+  assert.equal(validate.errors?.some((error) => error.message?.includes("date-time")), true, "a compact non-RFC 3339 timestamp must be rejected");
+  validate(descriptor);
+  assert.ok(!validate.errors, `the runtime RFC 3339 timestamp must pass: ${JSON.stringify(validate.errors)}`);
 });
