@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+
 import { createHash } from "node:crypto";
 
 // Row-level release-baseline verification. The verifier provides raw commit text and

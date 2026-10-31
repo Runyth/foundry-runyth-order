@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+
 // Shared sanitized-Git-environment policy for staging, verification and closure scans.
 const UNSET_ENV_KEYS = [
   "GIT_TEMPLATE_DIR",
