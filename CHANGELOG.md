@@ -2,6 +2,12 @@
 
 All notable changes to **Runyth Order** are documented here.
 
+## 1.0.8 — 2026-10-31
+
+- Renamed the release archives to `runyth-order-v1.0.8-mod.zip`, `-src.zip`, and `-doc.zip`.
+- Pointed the Foundry download URL at the `-mod` archive.
+- Regenerated the guarded runtime graph at `runtime/v1.0.8/`.
+
 ## 1.0.7 — 2026-10-11
 
 - Hardened the Rules Hub settings launcher: localized values (including text from installed language-pack modules) are inserted only through text-safe DOM nodes so no localized value is ever parsed as HTML markup.
