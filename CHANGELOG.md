@@ -2,6 +2,11 @@
 
 All notable changes to **Runyth Order** are documented here.
 
+## 1.0.10 — 2026-11-01
+
+- Added the shared AGPL notice to the four release tooling libraries under `tools/lib/`.
+- Regenerated the guarded runtime graph at `runtime/v1.0.10/`.
+
 ## 1.0.9 — 2026-11-01
 
 - Added the shared AGPL notice to the three build tooling sources under `tools/`.
