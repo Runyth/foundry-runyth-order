@@ -65,8 +65,9 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            dist/runyth-order-v*.zip
-            dist/runyth-order-source-v*.zip
+            dist/runyth-order-v*-mod.zip
+            dist/runyth-order-v*-src.zip
+            dist/runyth-order-v*-doc.zip
             dist/runyth-order-v*-SHA256SUMS.txt
             dist/runyth-order-v*-build-report.json
             module.json

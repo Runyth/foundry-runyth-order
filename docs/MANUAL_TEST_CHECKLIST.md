@@ -106,7 +106,7 @@ Test in a cloned Foundry VTT 13.351 world before production use.
 
 ## 1.0.7 runtime-package regression
 
-- [ ] Clean install `runyth-order-v1.0.7.zip` on a case-sensitive filesystem and confirm the root folder is exactly `runyth-order/`.
+- [ ] Clean install `runyth-order-v1.0.8-mod.zip` on a case-sensitive filesystem and confirm the root folder is exactly `runyth-order/`.
 - [ ] Confirm `module.json` loads `runtime/v1.0.7/bootstrap.mjs` and that no `src/` path is listed as a browser entrypoint.
 - [ ] Confirm every file listed by `runtime/v1.0.7/graph.json` exists with exact spelling and case.
 - [ ] Clear browser cache, load the world, and confirm there are no failed requests for `modules/runyth-order/runtime/v1.0.7/*`.

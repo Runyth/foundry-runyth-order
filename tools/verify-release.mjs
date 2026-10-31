@@ -82,7 +82,7 @@ if (manifest.url !== "https://github.com/Runyth/foundry-runyth-order") {
 if (manifest.manifest !== "https://github.com/Runyth/foundry-runyth-order/releases/latest/download/module.json") {
   failures.push("Manifest manifest URL is not the intended public release asset.");
 }
-if (manifest.download !== `https://github.com/Runyth/foundry-runyth-order/releases/download/v${manifest.version}/runyth-order-v${manifest.version}.zip`) {
+if (manifest.download !== `https://github.com/Runyth/foundry-runyth-order/releases/download/v${manifest.version}/runyth-order-v${manifest.version}-mod.zip`) {
   failures.push("Manifest download URL is not the intended public release asset.");
 }
 if (manifest.license !== "LICENSE") failures.push("Manifest license field must point at the LICENSE file.");
@@ -145,7 +145,7 @@ const checksumMap = new Map(
       return [name, hash];
     }),
 );
-for (const [name, path] of [[report.installArchive, installPath], [report.sourceArchive, sourcePath]]) {
+for (const [name, path] of [[report.installArchive, installPath], [report.sourceArchive, sourcePath], [report.documentationArchive, resolve(dist, report.documentationArchive)]]) {
   const actual = createHash("sha256").update(await readFile(path)).digest("hex");
   if (checksumMap.get(name) !== actual) failures.push(`${name} checksum mismatch.`);
 }

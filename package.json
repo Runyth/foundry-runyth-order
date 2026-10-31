@@ -1,6 +1,6 @@
 {
   "name": "runyth-order",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "description": "Runyth Order: a thin Foundry VTT gateway for modular homebrew providers.",
   "type": "module",

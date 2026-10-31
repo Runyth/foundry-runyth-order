@@ -12,13 +12,15 @@ function artifactNames(manifest) {
   const version = manifest.version;
   const moduleId = manifest.id;
   return {
-    install: `${moduleId}-v${version}.zip`,
-    source: `${moduleId}-source-v${version}.zip`,
+    install: `${moduleId}-v${version}-mod.zip`,
+    source: `${moduleId}-v${version}-src.zip`,
+    doc: `${moduleId}-v${version}-doc.zip`,
     checksums: `${moduleId}-v${version}-SHA256SUMS.txt`,
     report: `${moduleId}-v${version}-build-report.json`,
     installRoot: moduleId,
-    sourceRoot: `${moduleId}-source-v${version}`,
-    all: (names = {}) => [names.install, names.source, names.checksums, names.report],
+    sourceRoot: `${moduleId}-v${version}-src`,
+    docRoot: `${moduleId}-v${version}-doc`,
+    all: (names = {}) => [names.install, names.source, names.doc, names.checksums, names.report],
   };
 }
 
@@ -52,12 +54,14 @@ function assertBuildInputs(root, manifest, revision) {
 
 export async function packageModule(sourceRoot, manifest, { stagingReport }) {
   const names = {
-    install: `${manifest.id}-v${manifest.version}.zip`,
-    source: `${manifest.id}-source-v${manifest.version}.zip`,
+    install: `${manifest.id}-v${manifest.version}-mod.zip`,
+    source: `${manifest.id}-v${manifest.version}-src.zip`,
+    doc: `${manifest.id}-v${manifest.version}-doc.zip`,
     checksums: `${manifest.id}-v${manifest.version}-SHA256SUMS.txt`,
     report: `${manifest.id}-v${manifest.version}-build-report.json`,
     installRoot: manifest.id,
-    sourceRoot: `${manifest.id}-source-v${manifest.version}`,
+    sourceRoot: `${manifest.id}-v${manifest.version}-src`,
+    docRoot: `${manifest.id}-v${manifest.version}-doc`,
   };
   const version = manifest.version;
   const moduleId = manifest.id;
@@ -100,18 +104,28 @@ export async function packageModule(sourceRoot, manifest, { stagingReport }) {
     resolve(dist, names.source),
     sourceFiles.map((file) => ({ path: file.absolute, name: `${names.sourceRoot}/${file.path}` })),
   );
+  const docFiles = sourceFiles.filter((file) => (
+    ["README.md", "CHANGELOG.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md"].includes(file.path)
+    || file.path.startsWith("docs/")
+  ));
+  await createZip(
+    resolve(dist, names.doc),
+    docFiles.map((file) => ({ path: file.absolute, name: `${names.docRoot}/${file.path}` })),
+  );
 
   const moduleChecksum = await sha256(resolve(sourceRoot, "module.json"));
   const installChecksum = await sha256(resolve(dist, names.install));
   const sourceChecksum = await sha256(resolve(dist, names.source));
+  const docChecksum = await sha256(resolve(dist, names.doc));
   const checksumLines = [
     `${installChecksum}  ${names.install}`,
     `${sourceChecksum}  ${names.source}`,
+    `${docChecksum}  ${names.doc}`,
     `${moduleChecksum}  module.json`,
   ].join("\n") + "\n";
   await writeFile(resolve(dist, names.checksums), checksumLines);
   names.checksumLines = checksumLines;
-  names.generatedArtifacts = [names.install, names.source, names.checksums, names.report];
+  names.generatedArtifacts = [names.install, names.source, names.doc, names.checksums, names.report];
 
   const report = {
     schemaVersion: 1,
@@ -123,6 +137,7 @@ export async function packageModule(sourceRoot, manifest, { stagingReport }) {
     foundry: manifest.compatibility,
     installArchive: names.install,
     sourceArchive: names.source,
+    documentationArchive: names.doc,
     checksumFile: names.checksums,
     checksumEntries: names.checksumLines.trim().split("\n"),
     installRoot: names.installRoot,
