@@ -155,12 +155,12 @@ This lets translation maintainers release corrections independently and allows a
 
 A manifest range is not a substitute for live testing. Complete [the manual test checklist](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/MANUAL_TEST_CHECKLIST.md) in a cloned world before production use.
 
-Version 1.0.10 retains Foundry V13's public `SceneControlTool.onChange` contract and API 1.0.0. Its runtime packaging is hardened: editable modules under `src/` are compiled into a deterministic versioned ESM graph under `runtime/v1.0.10/`, and the manifest loads only a guarded bootstrap. This prevents stale or renamed source paths from being fetched by the browser and allows one clear fatal error if a required emitted module cannot load. Provider API, hook, setting, source-flag, and migration contracts are unchanged.
+Version 1.0.11 retains Foundry V13's public `SceneControlTool.onChange` contract and API 1.0.0. Its runtime packaging is hardened: editable modules under `src/` are compiled into a deterministic versioned ESM graph under `runtime/v1.0.11/`, and the manifest loads only a guarded bootstrap. This prevents stale or renamed source paths from being fetched by the browser and allows one clear fatal error if a required emitted module cannot load. Provider API, hook, setting, source-flag, and migration contracts are unchanged.
 
 
 ## Runtime packaging
 
-The editable source remains modular under `src/`, but Foundry does not load those filenames directly. `npm run build` deterministically emits a versioned browser graph under `runtime/v1.0.10/`, rewrites all relative ESM edges to exact emitted files, and records the graph in `runtime/v1.0.10/graph.json`. `module.json` loads only `runtime/v1.0.10/bootstrap.mjs`.
+The editable source remains modular under `src/`, but Foundry does not load those filenames directly. `npm run build` deterministically emits a versioned browser graph under `runtime/v1.0.11/`, rewrites all relative ESM edges to exact emitted files, and records the graph in `runtime/v1.0.11/graph.json`. `module.json` loads only `runtime/v1.0.11/bootstrap.mjs`.
 
 The bootstrap dynamically imports the emitted main module and catches linking or fetch failure once. If a required runtime resource is missing, Runyth Order does not construct a partial provider registry; it writes one fatal console error and schedules one permanent GM-visible notification after Foundry reaches `ready`. See [Runtime Packaging Contract](https://github.com/Runyth/foundry-runyth-order/blob/master/docs/RUNTIME_PACKAGING.md).
 
@@ -207,11 +207,11 @@ Publication builds stage exactly one resolved revision: the release tag when `RU
 
 Build output is written to `dist/`:
 
-- `runyth-order-v1.0.10-mod.zip`
-- `runyth-order-v1.0.10-src.zip`
-- `runyth-order-v1.0.10-doc.zip`
-- `runyth-order-v1.0.10-SHA256SUMS.txt`
-- `runyth-order-v1.0.10-build-report.json`
+- `runyth-order-v1.0.11-mod.zip`
+- `runyth-order-v1.0.11-src.zip`
+- `runyth-order-v1.0.11-doc.zip`
+- `runyth-order-v1.0.11-SHA256SUMS.txt`
+- `runyth-order-v1.0.11-build-report.json`
 
 ## Licence
 Copyright © 2026  [Daniel Braniewski](https://brani.dev/)

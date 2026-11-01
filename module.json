@@ -2,7 +2,7 @@
   "id": "runyth-order",
   "title": "Runyth Order",
   "description": "A thin, stable gateway for Runyth Order complementary Foundry VTT modules, with an English base interface and standard Foundry localization through optional language-pack modules.",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "compatibility": {
     "minimum": "13.341",
     "verified": "13.351",
@@ -15,7 +15,7 @@
     }
   ],
   "esmodules": [
-    "runtime/v1.0.10/bootstrap.mjs"
+    "runtime/v1.0.11/bootstrap.mjs"
   ],
   "styles": [
     "styles/runyth-order.css"
@@ -34,7 +34,7 @@
   },
   "url": "https://github.com/Runyth/foundry-runyth-order",
   "manifest": "https://github.com/Runyth/foundry-runyth-order/releases/latest/download/module.json",
-  "download": "https://github.com/Runyth/foundry-runyth-order/releases/download/v1.0.10/runyth-order-v1.0.10-mod.zip",
+  "download": "https://github.com/Runyth/foundry-runyth-order/releases/download/v1.0.11/runyth-order-v1.0.11-mod.zip",
   "license": "LICENSE",
   "readme": "README.md",
   "changelog": "CHANGELOG.md",

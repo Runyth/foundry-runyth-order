@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2026 Runyth. See the LICENSE file for rights and obligations.
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { spawnSync } from "node:child_process";
 import { access, readFile } from "node:fs/promises";
 import { dirname, extname, resolve } from "node:path";
@@ -60,7 +60,7 @@ const manifest = await readJson(resolve(root, "module.json"));
 const packageJson = await readJson(resolve(root, "package.json"));
 if (manifest.id !== "runyth-order") failures.push("Manifest ID must be runyth-order.");
 if (manifest.title !== "Runyth Order") failures.push("Manifest title must be exactly Runyth Order.");
-if (manifest.version !== "1.0.10") failures.push("Patch release version must be 1.0.10.");
+if (manifest.version !== "1.0.11") failures.push("Patch release version must be 1.0.11.");
 if (manifest.version !== packageJson.version) failures.push("Manifest and package versions differ.");
 if (manifest.compatibility?.minimum !== "13.341") failures.push("Foundry minimum must be 13.341.");
 if (manifest.compatibility?.verified !== "13.351") failures.push("Foundry verified target must be 13.351.");
