@@ -1,27 +1,27 @@
 {
-  "schemaVersion": 1,
   "entries": [
     {
       "id": "harbor-discipline",
-      "title": "Harbor Discipline",
-      "kind": "feature",
       "identifier": "harbor-discipline",
-      "version": "1.0.0",
+      "kind": "feature",
       "tags": [
         "example",
         "player-option"
-      ]
+      ],
+      "title": "Harbor Discipline",
+      "version": "1.0.0"
     },
     {
       "id": "watchful-tide",
-      "title": "Watchful Tide",
-      "kind": "feat",
       "identifier": "watchful-tide",
-      "version": "1.0.0",
+      "kind": "feat",
       "tags": [
         "example",
         "player-option"
-      ]
+      ],
+      "title": "Watchful Tide",
+      "version": "1.0.0"
     }
-  ]
+  ],
+  "schemaVersion": 1
 }

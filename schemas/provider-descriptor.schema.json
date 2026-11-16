@@ -1,10 +1,444 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "coreCompatibility": {
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "properties": {
+            "minimum": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "minimum"
+          ]
+        },
+        {
+          "properties": {
+            "maximum": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "maximum"
+          ]
+        }
+      ],
+      "properties": {
+        "maximum": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "minimum": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verified": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "minimum",
+        "verified",
+        "maximum"
+      ],
+      "type": "object"
+    },
+    "dependencyDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "minimum": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "moduleId": {
+          "$ref": "#/$defs/id"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "verified": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "moduleId",
+        "required",
+        "minimum",
+        "verified",
+        "maximum"
+      ],
+      "type": "object"
+    },
+    "globalId": {
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "type": "string"
+    },
+    "naming": {
+      "additionalProperties": false,
+      "properties": {
+        "canonicalTitle": {
+          "minLength": 1,
+          "pattern": "^Runyth Order: .+ .+$",
+          "type": "string"
+        },
+        "contentName": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "moduleKind": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "orderName": {
+          "const": "Runyth Order"
+        }
+      },
+      "required": [
+        "orderName",
+        "moduleKind",
+        "contentName",
+        "canonicalTitle"
+      ],
+      "type": "object"
+    },
+    "normalizedPack": {
+      "$comment": "Refs below resolve against this document (draft 2020-12). When extracting this definition standalone, resolve refs against its parent document.",
+      "additionalProperties": false,
+      "description": "Validates normalized pack descriptors returned by registerPack, getPack, and listPacks. Pack IDs are already provider-namespaced and contain the generated localId and providerId fields.",
+      "properties": {
+        "compendia": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "contentKinds": {
+          "items": {
+            "enum": [
+              "background",
+              "class",
+              "equipment",
+              "feature",
+              "feat",
+              "species",
+              "spell",
+              "subclass",
+              "condition",
+              "macro",
+              "other"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/dependencyDescriptor"
+          },
+          "type": "array"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "documentationUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "entries": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                "type": "string"
+              },
+              "identifier": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "background",
+                  "class",
+                  "equipment",
+                  "feature",
+                  "feat",
+                  "species",
+                  "spell",
+                  "subclass",
+                  "condition",
+                  "macro",
+                  "other"
+                ]
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "tags": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "title": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "uuid": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "version": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "kind",
+              "uuid",
+              "identifier",
+              "version",
+              "tags",
+              "metadata"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        "localId": {
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "providerId": {
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "type": "string"
+        },
+        "systemId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "localId",
+        "providerId",
+        "title",
+        "description",
+        "version",
+        "systemId",
+        "contentKinds",
+        "compendia",
+        "entries",
+        "dependencies",
+        "documentationUrl",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "systemDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "maximum": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "minimum": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verified": {
+          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "minimum",
+        "verified",
+        "maximum"
+      ],
+      "type": "object"
+    }
+  },
   "$id": "https://runyth.github.io/schemas/runyth-order/provider-descriptor-v1.json",
-  "title": "Runyth Order normalized provider descriptor",
-  "description": "Validates the normalized, immutable descriptor returned by registerProvider, getProvider, and listProviders. It mirrors the runtime output exactly: global generated pack IDs live in the returned pack descriptors, not in the provider; all documented keys are always present.",
-  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "description": "Validates the normalized, immutable descriptor returned by registerProvider, getProvider, and listProviders. It mirrors the runtime output exactly: global generated pack IDs live in the returned pack descriptors, not in the provider; all documented keys are always present.",
+  "properties": {
+    "authors": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "capabilities": {
+      "items": {
+        "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "coreApi": {
+      "$ref": "#/$defs/coreCompatibility"
+    },
+    "dependencies": {
+      "items": {
+        "$ref": "#/$defs/dependencyDescriptor"
+      },
+      "type": "array"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "documentationUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "migrationIds": {
+      "items": {
+        "$ref": "#/$defs/globalId"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "moduleId": {
+      "$ref": "#/$defs/id"
+    },
+    "naming": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/naming"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "packIds": {
+      "items": {
+        "$ref": "#/$defs/globalId"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "registeredAt": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "repositoryUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "systems": {
+      "items": {
+        "$ref": "#/$defs/systemDescriptor"
+      },
+      "type": "array"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "validatorIds": {
+      "items": {
+        "$ref": "#/$defs/globalId"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "version": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
   "required": [
     "id",
     "moduleId",
@@ -25,440 +459,6 @@
     "migrationIds",
     "registeredAt"
   ],
-  "properties": {
-    "id": {
-      "$ref": "#/$defs/id"
-    },
-    "moduleId": {
-      "$ref": "#/$defs/id"
-    },
-    "title": {
-      "type": "string",
-      "minLength": 1
-    },
-    "description": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "version": {
-      "type": "string",
-      "minLength": 1
-    },
-    "coreApi": {
-      "$ref": "#/$defs/coreCompatibility"
-    },
-    "systems": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/systemDescriptor"
-      }
-    },
-    "dependencies": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/dependencyDescriptor"
-      }
-    },
-    "capabilities": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
-      }
-    },
-    "documentationUrl": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "repositoryUrl": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "authors": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "naming": {
-      "oneOf": [
-        {
-          "$ref": "#/$defs/naming"
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "metadata": {
-      "type": "object"
-    },
-    "packIds": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/$defs/globalId"
-      }
-    },
-    "validatorIds": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/$defs/globalId"
-      }
-    },
-    "migrationIds": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/$defs/globalId"
-      }
-    },
-    "registeredAt": {
-      "type": "string",
-      "format": "date-time"
-    }
-  },
-  "$defs": {
-    "id": {
-      "type": "string",
-      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-    },
-    "globalId": {
-      "type": "string",
-      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$"
-    },
-    "coreCompatibility": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "minimum",
-        "verified",
-        "maximum"
-      ],
-      "properties": {
-        "minimum": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        },
-        "verified": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        },
-        "maximum": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        }
-      },
-      "anyOf": [
-        {
-          "required": [
-            "minimum"
-          ],
-          "properties": {
-            "minimum": {
-              "type": "string"
-            }
-          }
-        },
-        {
-          "required": [
-            "maximum"
-          ],
-          "properties": {
-            "maximum": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
-    "systemDescriptor": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "minimum",
-        "verified",
-        "maximum"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "minimum": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        },
-        "verified": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        },
-        "maximum": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        }
-      }
-    },
-    "dependencyDescriptor": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "moduleId",
-        "required",
-        "minimum",
-        "verified",
-        "maximum"
-      ],
-      "properties": {
-        "moduleId": {
-          "$ref": "#/$defs/id"
-        },
-        "required": {
-          "type": "boolean"
-        },
-        "minimum": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        },
-        "verified": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        },
-        "maximum": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "pattern": "^v?\\d+(?:\\.\\d+){0,2}(?:[-+].*)?$"
-        }
-      }
-    },
-    "naming": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "orderName",
-        "moduleKind",
-        "contentName",
-        "canonicalTitle"
-      ],
-      "properties": {
-        "orderName": {
-          "const": "Runyth Order"
-        },
-        "moduleKind": {
-          "type": "string",
-          "minLength": 1
-        },
-        "contentName": {
-          "type": "string",
-          "minLength": 1
-        },
-        "canonicalTitle": {
-          "type": "string",
-          "minLength": 1,
-          "pattern": "^Runyth Order: .+ .+$"
-        }
-      }
-    },
-    "normalizedPack": {
-      "description": "Validates normalized pack descriptors returned by registerPack, getPack, and listPacks. Pack IDs are already provider-namespaced and contain the generated localId and providerId fields.",
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "localId",
-        "providerId",
-        "title",
-        "description",
-        "version",
-        "systemId",
-        "contentKinds",
-        "compendia",
-        "entries",
-        "dependencies",
-        "documentationUrl",
-        "metadata"
-      ],
-      "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$"
-        },
-        "localId": {
-          "type": "string",
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-        },
-        "providerId": {
-          "type": "string",
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "description": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "version": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "systemId": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "contentKinds": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "enum": [
-              "background",
-              "class",
-              "equipment",
-              "feature",
-              "feat",
-              "species",
-              "spell",
-              "subclass",
-              "condition",
-              "macro",
-              "other"
-            ]
-          }
-        },
-        "compendia": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "entries": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "id",
-              "title",
-              "kind",
-              "uuid",
-              "identifier",
-              "version",
-              "tags",
-              "metadata"
-            ],
-            "properties": {
-              "id": {
-                "type": "string",
-                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-              },
-              "title": {
-                "type": "string",
-                "minLength": 1
-              },
-              "kind": {
-                "enum": [
-                  "background",
-                  "class",
-                  "equipment",
-                  "feature",
-                  "feat",
-                  "species",
-                  "spell",
-                  "subclass",
-                  "condition",
-                  "macro",
-                  "other"
-                ]
-              },
-              "uuid": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "identifier": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "version": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "tags": {
-                "type": "array",
-                "uniqueItems": true,
-                "items": {
-                  "type": "string"
-                }
-              },
-              "metadata": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "dependencies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/dependencyDescriptor"
-          }
-        },
-        "documentationUrl": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "metadata": {
-          "type": "object"
-        }
-      },
-      "$comment": "Refs below resolve against this document (draft 2020-12). When extracting this definition standalone, resolve refs against its parent document."
-    }
-  }
+  "title": "Runyth Order normalized provider descriptor",
+  "type": "object"
 }

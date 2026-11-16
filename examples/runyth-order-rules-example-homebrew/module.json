@@ -1,45 +1,45 @@
 {
-  "id": "runyth-order-rules-example-homebrew",
-  "title": "Runyth Order: Rules Example Homebrew",
-  "description": "Reference complementary provider for Runyth Order. Development example only.",
-  "version": "1.0.0",
   "compatibility": {
+    "maximum": "13.351",
     "minimum": "13.341",
-    "verified": "13.351",
-    "maximum": "13.351"
+    "verified": "13.351"
   },
+  "description": "Reference complementary provider for Runyth Order. Development example only.",
   "esmodules": [
     "scripts/main.mjs"
   ],
+  "flags": {
+    "runyth": {
+      "canonicalTitle": "Runyth Order: Rules Example Homebrew",
+      "contentName": "Example Homebrew",
+      "moduleKind": "Rules",
+      "orderName": "Runyth Order"
+    }
+  },
+  "id": "runyth-order-rules-example-homebrew",
   "relationships": {
-    "systems": [
-      {
-        "id": "dnd5e",
-        "type": "system",
-        "compatibility": {
-          "minimum": "5.3.3",
-          "maximum": "5.3.3"
-        }
-      }
-    ],
     "requires": [
       {
-        "id": "runyth-order",
-        "type": "module",
         "compatibility": {
+          "maximum": "1.0.99",
           "minimum": "1.0.4",
-          "verified": "1.0.5",
-          "maximum": "1.0.99"
-        }
+          "verified": "1.0.5"
+        },
+        "id": "runyth-order",
+        "type": "module"
+      }
+    ],
+    "systems": [
+      {
+        "compatibility": {
+          "maximum": "5.3.3",
+          "minimum": "5.3.3"
+        },
+        "id": "dnd5e",
+        "type": "system"
       }
     ]
   },
-  "flags": {
-    "runyth": {
-      "orderName": "Runyth Order",
-      "moduleKind": "Rules",
-      "contentName": "Example Homebrew",
-      "canonicalTitle": "Runyth Order: Rules Example Homebrew"
-    }
-  }
+  "title": "Runyth Order: Rules Example Homebrew",
+  "version": "1.0.0"
 }

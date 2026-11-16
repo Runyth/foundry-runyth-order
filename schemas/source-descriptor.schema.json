@@ -1,36 +1,9 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://runyth.github.io/schemas/runyth-order/source-descriptor-v1.json",
-  "title": "Runyth Order managed source",
-  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "required": [
-    "schemaVersion",
-    "providerId",
-    "packId",
-    "entryId",
-    "sourceUuid",
-    "contentVersion",
-    "checksum",
-    "importedAt"
-  ],
   "properties": {
-    "schemaVersion": {
-      "const": 1
-    },
-    "providerId": {
-      "type": "string",
-      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-    },
-    "packId": {
-      "type": "string",
-      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+$"
-    },
-    "entryId": {
-      "type": "string",
-      "minLength": 1
-    },
-    "sourceUuid": {
+    "checksum": {
       "type": [
         "string",
         "null"
@@ -42,15 +15,42 @@
         "null"
       ]
     },
-    "checksum": {
+    "entryId": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "importedAt": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "packId": {
+      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+$",
+      "type": "string"
+    },
+    "providerId": {
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceUuid": {
       "type": [
         "string",
         "null"
       ]
-    },
-    "importedAt": {
-      "type": "string",
-      "format": "date-time"
     }
-  }
+  },
+  "required": [
+    "schemaVersion",
+    "providerId",
+    "packId",
+    "entryId",
+    "sourceUuid",
+    "contentVersion",
+    "checksum",
+    "importedAt"
+  ],
+  "title": "Runyth Order managed source",
+  "type": "object"
 }

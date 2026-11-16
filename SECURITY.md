@@ -1,26 +1,11 @@
 # Security policy
 
-Report security-sensitive defects privately through GitHub's private vulnerability reporting for this repository at:
+Report vulnerabilities privately through GitHub's private vulnerability
+reporting for the repository. Do not disclose unreleased exploit details in a
+public issue.
 
-```text
-https://github.com/Runyth/foundry-runyth-order/security/advisories/new
-```
+Supported releases are the newest minor release and the latest patch of the
+previous minor release unless a module documents a stricter policy.
 
-Use that route before opening any public issue. Do not include campaign data, world exports, access tokens, private module source, or player information in a public issue; the minimal support summary from the Rules Hub is the reviewed form intended for public troubleshooting.
-
-## Supported release
-
-The newest `1.x` release receives security fixes. Compatibility is limited to the Foundry versions declared in `module.json`.
-
-## Trust boundary
-
-Runyth Order validates descriptors and coordinates code supplied by active complementary modules. Foundry modules execute with the permissions available to the logged-in client. Installing a complementary module therefore means trusting its code independently of this core.
-
-The core deliberately does not:
-
-- load executable code from provider URLs;
-- evaluate provider strings as JavaScript;
-- accept player-authoritative migration requests;
-- run provider migrations automatically;
-- treat hidden client-side data as a security boundary;
-- store credentials or real-world secrets.
+Security-sensitive changes must preserve least privilege, avoid logging secret
+or hidden content, validate imported data, and avoid private Foundry internals.

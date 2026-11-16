@@ -1,16 +1,20 @@
 name: Bug report
-description: Report a reproducible Runyth Order defect.
+description: Report a reproducible module defect.
 title: "Bug: "
 labels:
   - bug
 body:
-  - type: markdown
+  - type: textarea
+    id: summary
     attributes:
-      value: Do not attach credentials, private world exports, paid module source, or sensitive player data. Prefer the minimal support summary from the Rules Hub; if you attach full JSON, review it first.
+      label: Defect
+      description: Describe what happened and what you expected.
+    validations:
+      required: true
   - type: input
-    id: core-version
+    id: module-version
     attributes:
-      label: Runyth Order version
+      label: Module version
     validations:
       required: true
   - type: input
@@ -19,16 +23,6 @@ body:
       label: Foundry VTT version
     validations:
       required: true
-  - type: input
-    id: system
-    attributes:
-      label: Game system and version
-    validations:
-      required: true
-  - type: textarea
-    id: providers
-    attributes:
-      label: Complementary providers and versions
   - type: textarea
     id: reproduction
     attributes:
@@ -36,18 +30,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: expected
+    id: logs
     attributes:
-      label: Expected result
-    validations:
-      required: true
-  - type: textarea
-    id: actual
-    attributes:
-      label: Actual result and relevant console output
-    validations:
-      required: true
-  - type: textarea
-    id: diagnostics
-    attributes:
-      label: Reviewed Rules Hub diagnostics JSON
+      label: Relevant logs
+      description: Remove secrets and protected campaign content.

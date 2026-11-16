@@ -1,17 +1,13 @@
-## Scope
+## Summary
 
-Describe the core contract or implementation change. Campaign-specific rules belong in a complementary module.
+## Compatibility and stored-data impact
 
-## Validation
+- [ ] Module ID, flags, settings, pack IDs, UUIDs, and public APIs remain compatible.
+- [ ] Any stored-data change has an idempotent migration and regression tests.
+- [ ] Optional integrations use documented public APIs.
 
-- [ ] `npm ci --ignore-scripts`
+## Verification
+
 - [ ] `npm run check`
-- [ ] Public API and schemas updated when required
-- [ ] Canonical English localization keys complete; placeholders unchanged for language packs
-- [ ] Changelog updated
-- [ ] Manual Foundry checklist updated or completed as appropriate
-- [ ] No quality gate was weakened
-
-## Compatibility and migration
-
-State the Foundry/API compatibility impact and whether provider or world data requires an explicit migration.
+- [ ] Live Foundry acceptance performed, or pending checks are explicitly documented.
+- [ ] User-facing changes are documented and localized in English and German.

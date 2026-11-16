@@ -1,28 +1,35 @@
 {
-  "name": "runyth-order",
-  "version": "1.0.11",
-  "private": true,
   "description": "Runyth Order: a thin Foundry VTT gateway for modular homebrew providers.",
-  "type": "module",
+  "devDependencies": {
+    "ajv": "^8.20.0"
+  },
   "engines": {
     "node": ">=22.13.0 <27"
   },
-  "scripts": {
-    "format": "node tools/format.mjs --write",
-    "format:check": "node tools/format.mjs --check",
-    "lint": "node tools/lint.mjs",
-    "test": "node --test test/*.test.mjs",
-    "validate": "node tools/validate.mjs",
-    "check": "npm run format:check && npm run lint && npm test && npm run validate && npm run build && npm run verify:release",
-    "build": "node tools/build.mjs",
-    "verify:release": "node tools/verify-release.mjs"
-  },
+  "license": "AGPL-3.0-or-later",
+  "name": "runyth-order",
+  "packageManager": "npm@11.16.0",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Runyth/foundry-runyth-order.git"
   },
-  "license": "AGPL-3.0-or-later",
-  "devDependencies": {
-    "ajv": "^8.20.0"
-  }
+  "scripts": {
+    "adopt": "node tools/adopt-existing.mjs",
+    "audit": "node tools/audit-foundry.mjs",
+    "bootstrap": "node tools/bootstrap.mjs",
+    "build": "node tools/build.mjs",
+    "check": "npm run format:check && npm run lint && npm test && npm run validate && npm run build && npm run verify:release",
+    "format": "node tools/format.mjs --write",
+    "format:check": "node tools/format.mjs --check",
+    "lint": "node tools/lint.mjs",
+    "release:assert": "node tools/assert-release-tag.mjs",
+    "template:sync": "node tools/template-sync.mjs",
+    "test": "node --test --test-reporter=spec",
+    "validate": "node tools/validate.mjs",
+    "verify:release": "node tools/verify-release.mjs",
+    "version:set": "node tools/set-version.mjs"
+  },
+  "type": "module",
+  "version": "1.0.11"
 }

@@ -7,67 +7,53 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      # actions/checkout v7.0.1 — pinned; credentials are not persisted so that no
-      # authentication token can reach the reconstructed archive metadata.
       - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
           fetch-depth: 0
-      # Tag checkouts detach HEAD and do not materialize every retained public ref as
-      # a local ref. Reconstruct the retained branch (and the release tag when the
-      # checkout mirrored it under a remote-tracking ref) so canonical staging and the
-      # retained-ref pipeline see the exact published pointers.
-      - name: Reconstruct retained public refs
-        run: |
-          branch_target="$(git rev-parse --verify --quiet refs/heads/master || true)"
-          if [ -z "$branch_target" ]; then
-            branch_target="$(git rev-parse --verify --quiet refs/remotes/origin/master || git rev-parse --verify --quiet refs/remotes/upstream/master || true)"
-          fi
-          if [ -z "$branch_target" ]; then
-            echo "The checkout exposes no retained master ref; canonical staging is impossible." >&2
-            exit 1
-          fi
-          git update-ref refs/heads/master "$branch_target"
-          if ! git show-ref --verify --quiet "refs/tags/${GITHUB_REF_NAME}"; then
-            tag_target="$(git rev-parse --verify --quiet "refs/remotes/origin/${GITHUB_REF_NAME}" || git rev-parse --verify --quiet "refs/upstream/${GITHUB_REF_NAME}" || true)"
-            if [ -z "$tag_target" ]; then
-              echo "The release tag ${GITHUB_REF_NAME} is not present in the checkout." >&2
-              exit 1
-            fi
-            git update-ref "refs/tags/${GITHUB_REF_NAME}" "$tag_target"
-          fi
-      # actions/setup-node v7.1.0 — pinned.
+          persist-credentials: false
       - name: Set up Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: "24"
+          node-version-file: .node-version
           cache: npm
-      - name: Install locked dependencies
+      - name: Install dependencies
         run: npm ci --ignore-scripts
-      - name: Validate and build
+      - name: Verify tag and build
         env:
-          RUNYTH_RELEASE_REF: ${{ github.ref }}
-          RUNYTH_PUBLIC_RELEASE: "1"
-        run: npm run check
-      - name: Verify tag matches manifest
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: node -e 'const m=require("./module.json"); if (`v${m.version}` !== process.env.RELEASE_TAG) process.exit(1)'
-      # softprops/action-gh-release v3.0.3 — pinned.
-      - name: Publish GitHub release
-        uses: softprops/action-gh-release@e598afbe1493e6b1bafb1f389cabb956eab91231
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          npm run release:assert
+          npm run check
+      - name: Attest release archives
+        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6 # v4.2.0
         with:
-          generate_release_notes: true
-          files: |
-            dist/runyth-order-v*-mod.zip
-            dist/runyth-order-v*-src.zip
-            dist/runyth-order-v*-doc.zip
-            dist/runyth-order-v*-SHA256SUMS.txt
-            dist/runyth-order-v*-build-report.json
-            module.json
+          subject-path: |
+            dist/*-mod.zip
+            dist/*-src.zip
+            dist/*-doc.zip
+            dist/*-SHA256SUMS.txt
+            dist/module.json
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "${{ github.ref_name }}"
+          dist/*-mod.zip
+          dist/*-src.zip
+          dist/*-doc.zip
+          dist/*-SHA256SUMS.txt
+          dist/module.json
+          dist/build-report.json
+          --generate-notes
+          --title "${{ github.ref_name }}"
+          --verify-tag
